@@ -491,53 +491,53 @@ pre[class*="language-"] {
   <li>The Mission Planning Dashboard allows for configuring drone missions by specifying which devices to use, what the context (criticality) of the mission is, who the supervisors and viewers of the mission are, and logistics information. Configure these options to tune the criticality of the mission dictating the zero trust levels. The device fields are automatically populated based on the availability of the suitable types of devices.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-mission-planning.png" width="60%" alt="ch4-mission-planning"></p> 
+<p align = "center"><img src="../img/ch4-mission-planning.png" width="60%" alt="ch4-mission-planning"></p> 
 
 
 <ul>
   <li>The page also provides maps of locations to choose from. On these maps, users can pick a destination point for the delivery of supplies (here, the case of Stealthy Reconnaissance and Resupply mission). Try creating the mission without pointing a destination on the map, and the mission creation will not go ahead asking the user to place a destination on the map.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-map-locations.png" width="60%" alt="ch4-map-locations"></p> 
+<p align = "center"><img src="../img/ch4-map-locations.png" width="60%" alt="ch4-map-locations"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-point-des.png" width="60%" alt="ch4-point-des"></p> 
+<p align = "center"><img src="../img/ch4-point-des.png" width="60%" alt="ch4-point-des"></p> 
 
 <ul>
   <li>Click anywhere on the map to set the supply destination to that location.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-click-anywhere.png" width="60%" alt="ch4-click-anywhere"></p> 
+<p align = "center"><img src="../img/ch4-click-anywhere.png" width="60%" alt="ch4-click-anywhere"></p> 
 
 <ul>
   <li>Try updating the capabilities and remove one of the privileges specified in the device configuration step. The mission creation won’t go ahead because, inability of any of the devices to perform their respective functions will cause the mission to fail for sure. This validation mechanism is a proactive approach to missions whose failure cannot be afforded.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-pic1.png" width="60%" alt="ch4-pic1"></p> 
+<p align = "center"><img src="../img/ch4-pic1.png" width="60%" alt="ch4-pic1"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-pic2.png" width="60%" alt="ch4-pic2"></p> 
+<p align = "center"><img src="../img/ch4-pic2.png" width="60%" alt="ch4-pic2"></p> 
 
 <ul>
   <li>Besides normal creation of missions, the “Download Mission Manifest” button allows users to download a repeatable manifest of their mission. This prevents multiple reconfigurations of a mission. The files are encrypted and downloaded with a .mconf extension.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-mission-manifest.png" width="60%" alt="ch4-mission-manifest"></p> 
+<p align = "center"><img src="../img/ch4-mission-manifest.png" width="60%" alt="ch4-mission-manifest"></p> 
 
 <ul>
   <li>From the screenshot below, the manifest files are encrypted and hence, modifications to these files by external actors invalidates the files, leaving no space for deliberate mission adulteration. The next screenshot shows how the Arculus application fetches the mission information from the .mconf file on executing with manifest.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-mission-manifest2.png" width="60%" alt="ch4-mission-manifest2"></p> 
+<p align = "center"><img src="../img/ch4-mission-manifest2.png" width="60%" alt="ch4-mission-manifest2"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-mission-manifest-dashboard.png" width="60%" alt="ch4-mission-manifest-dashboard"></p> 
+<p align = "center"><img src="../img/ch4-mission-manifest-dashboard.png" width="60%" alt="ch4-mission-manifest-dashboard"></p> 
 
 
 <ul>
   <li>However, try adding your own text to the manifest file and try to poison it as shown below. The application throws an error message identifying the manifest file to be bad.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-mission-manifest-3.png" width="60%" alt="ch4-mission-manifest-3"></p> 
+<p align = "center"><img src="../img/ch4-mission-manifest-3.png" width="60%" alt="ch4-mission-manifest-3"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-dash-2.png" width="60%" alt="ch4-dash-2"></p> 
+<p align = "center"><img src="../img/ch4-dash-2.png" width="60%" alt="ch4-dash-2"></p> 
 
 
 <h2 id="toc_3">2.3 Managing Policies</h2>
@@ -546,31 +546,31 @@ pre[class*="language-"] {
   <li>Before trying to execute a mission, click the “Manage Policies” tab that takes you to the Network Policy Management Dashboard. It can be seen as in the below screenshot, that there are no active network policies and all traffic is denied by default.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch.2_aws_region.png" width="60%" alt="ch.2_aws_region"></p> 
+<!-- <p align = "center"><img src="../img/ch.2_aws_region.png" width="60%" alt="ch.2_aws_region"></p>  -->
 
 <ul>
   <li>Now, let us create a mission on the mission planning dashboard and execute it using the EXECUTE (▷) button on the “Missions created by me” tab. The mission starts executing within seconds and the application takes us to the “Mission Execution” tab where the live mission and its logs can be monitored.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-manage-policy.png" width="60%" alt="ch4-manage-policy"></p> 
+<p align = "center"><img src="../img/ch4-manage-policy.png" width="60%" alt="ch4-manage-policy"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-mission-success.png" width="60%" alt="ch4-mission-success"></p> 
+<p align = "center"><img src="../img/ch4-mission-success.png" width="60%" alt="ch4-mission-success"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-mission-log.png" width="60%" alt="ch4-mission-log"></p> 
+<p align = "center"><img src="../img/ch4-mission-log.png" width="60%" alt="ch4-mission-log"></p> 
 
 <ul>
   <li>It can be observer that, on navigating to the Network Policy Management Dashboard, new policies are created during the mission execution to facilitate communication for respective tasks. However, as soon as the mission execution finishes/terminates, all the network policies are deleted. This demonstrates the extraordinary and dynamic execution of Task-based Access Control (TBAC) for good privilege management for devices on the network.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-network-policy.png" width="60%" alt="ch4-network-policy"></p> 
+<p align = "center"><img src="../img/ch4-network-policy.png" width="60%" alt="ch4-network-policy"></p> 
 
 <ul>
   <li>By playing around with the simulation buttons provided on the Mission Execution Dashboard, we can explore the various zero trust capabilities and countermeasures taken by Arculus for secure and successful completion of missions under adverse conditions. These include DDIL scenarios like communication loss, GPS Spoofing attacks, physical hijacking, Denial of Service, Low battery, Brute force attacks, etc.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-med1.png" width="60%" alt="ch4-med1"></p> 
+<p align = "center"><img src="../img/ch4-med1.png" width="60%" alt="ch4-med1"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch4-med2.png" width="60%" alt="ch4-med2"></p> 
+<p align = "center"><img src="../img/ch4-med2.png" width="60%" alt="ch4-med2"></p> 
 
 <h2 id="toc_3">2.4 As a Result</h2>
 
