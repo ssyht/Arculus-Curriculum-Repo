@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Chapter 3</title>
+
+
+<style type="text/css">
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  /* padding-top: 10px;
+  padding-bottom: 10px; */
+  background-color: white;
+  /* padding: 30px; */ }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+/* img {
+  max-width: 100%; } */
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #bbb
+}
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+/* @media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+} */
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+  body {
+    padding: 2cm; 
+  }
+}
+</style>
+
+<style type="text/css">
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: black;
+	background: none;
+	text-shadow: 0 1px white;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+	text-shadow: none;
+	background: #b3d4fc;
+}
+
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+	text-shadow: none;
+	background: #b3d4fc;
+}
+
+@media print {
+	code[class*="language-"],
+	pre[class*="language-"] {
+		text-shadow: none;
+	}
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #f5f2f0;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: slategray;
+}
+
+.token.punctuation {
+	color: #999;
+}
+
+.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #905;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #690;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+	color: #a67f59;
+	background: hsla(0, 0%, 100%, .5);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+	color: #07a;
+}
+
+.token.function {
+	color: #DD4A68;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+	color: #e90;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+</style>
+</head>
+
+<body>
+
+<h2 id="toc_2">5.1 Overview</h2>
+
+<p>In this chapter, you will bring the Arculus Portal fully online using a combination of Terraform, automated provisioning scripts, and a set of pre-configured services that run on an Ubuntu EC2 instance. The goal of this chapter is to transition from infrastructure creation (Chapter 4) to a fully functional zero-trust portal that students can interact with through a browser.</p>
+
+<p>You begin by using Terraform to deploy an Ubuntu instance, generate an SSH key pair, discover the instance’s public IP, and configure the required inbound rules. Once the instance is created, Terraform automatically connects to it and runs a provisioning script. This script installs dependencies, clones the arculus-sw repository, sets up the backend and UI services, and launches the stack using PM2. When provisioning completes successfully, Terraform outputs a browser-ready URL pointing to the Arculus web interface.</p> 
+
+<p>With the services running, students open the portal in a web browser and complete the first-time setup by creating their initial Arculus user. This initializes the system and unlocks the Sign-In page, where users can now log into the portal. By the end of this chapter, the Arculus policy and mission-management UI is fully operational and ready for use in later chapters.</p>
+
+
+<h2 id="toc_4">5.2 CloudShell Setup (same pattern as Chapter 4)</h2>
+
+<p><b>What this does:</b> Installs Terraform to /tmp, uses CloudShell role creds, stores TF state/plugins in /tmp, and prepares the chapter 5 working directory.</p>
+
+
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">$ export AWS_REGION=${AWS_REGION:-us-east-1}
+
+$ unset AWS_PROFILE AWS_SDK_LOAD_CONFIG AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+
+$ TF_VERSION="1.9.5"
+$ ARCH=$(uname -m;); case "$ARCH" in x86_64) TF_ARCH="amd64" ;; aarch64) TF_ARCH="arm64" ;; *) echo "Unsupported arch: $ARCH"; exit 1;; esac
+$ mkdir -p /tmp/bin /tmp/arculus/ch5
+$ curl -fsSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_${TF_ARCH}.zip"
+$ unzip -o /tmp/terraform.zip -d /tmp/bin >/dev/null
+$ export PATH="/tmp/bin:$PATH"
+$ terraform -version
+
+$ export TF_DATA_DIR=/tmp/.tfdata
+$ export TF_PLUGIN_CACHE_DIR=/tmp/.tfplugins
+$ mkdir -p "$TF_PLUGIN_CACHE_DIR"
+
+$ cd /tmp/arculus/ch5</code><code id = "3-1-1" hidden>export AWS_REGION=${AWS_REGION:-us-east-1}
+
+unset AWS_PROFILE AWS_SDK_LOAD_CONFIG AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+
+TF_VERSION="1.9.5"
+ARCH=$(uname -m;); case "$ARCH" in x86_64) TF_ARCH="amd64" ;; aarch64) TF_ARCH="arm64" ;; *) echo "Unsupported arch: $ARCH"; exit 1;; esac
+mkdir -p /tmp/bin /tmp/arculus/ch5
+curl -fsSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_${TF_ARCH}.zip"
+unzip -o /tmp/terraform.zip -d /tmp/bin >/dev/null
+export PATH="/tmp/bin:$PATH"
+terraform -version
+
+export TF_DATA_DIR=/tmp/.tfdata
+export TF_PLUGIN_CACHE_DIR=/tmp/.tfplugins
+mkdir -p "$TF_PLUGIN_CACHE_DIR"
+
+cd /tmp/arculus/ch5</code></pre></div>
+
+<p align = "center"><img src="/MizzouCloudDevOps/img/lab12/ch5_env.png" width="40%" alt="ch5_env"></p> 
+
+<h2 id="toc_4">5.3 Write main.tf Scripts</h2>
+
+<p>In this section, we will begin constructing the Terraform configuration that will deploy the core infrastructure. The goal is to help you understand where Terraform stores files, how the configuration is organized, and what the first blocks of Terraform code actually do.</p>
+
+<h3 id="toc_4">5.3.1 Create Infrastructure Directory</h3>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">$ mkdir infrastructure
+$ cd infrastructure
+$ nano main.tf</code><code id = "3-1-1" hidden>mkdir infrastructure
+cd infrastructure
+nano main.tf</code></pre></div>
+
+<h3 id="toc_4">5.3.2 Edit infrastructure/main.tf script</h3>
+
+<ul>
+  <li>The region “us-east-1” is where everything will be created.</li>
+  <li>Arculus runs inside an EC2 instance.</li>
+</ul>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}</code><code id = "3-1-1" hidden>terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}</code></pre></div>
+
+
+<p>Using the default VPC ensures:</p>
+<ul>
+  <li>An EC2 instance inside a subnet</li>
+  <li>Web Access</li>
+  <li>Ability to communicate with agents and drone nodes</li>
+</ul>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}</code><code id = "3-1-1" hidden>data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}</code></pre></div>
+
+<ul>
+  <li>Creating a SSH Key.</li>
+</ul>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "arculus" {
+  key_name   = "arculus-key-test"     ###<--------- CHANGE THIS TO YOUR UNIQUE NAME ###############
+  public_key = tls_private_key.ssh.public_key_openssh
+}
+
+resource "local_file" "private_key" {
+  filename = "${path.module}/arculus-key.pem"
+  content  = tls_private_key.ssh.private_key_pem
+}</code><code id = "3-1-1" hidden>resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "arculus" {
+  key_name   = "arculus-key-test"     ###<--------- CHANGE THIS TO YOUR UNIQUE NAME ###############
+  public_key = tls_private_key.ssh.public_key_openssh
+}
+
+resource "local_file" "private_key" {
+  filename = "${path.module}/arculus-key.pem"
+  content  = tls_private_key.ssh.private_key_pem
+}</code></pre></div>
+
+<ul>
+  <li>The security group acts as the firewall for the Arculus Portal EC2 instance, opening all the required ports for the UI, controller services, drone telemetry, and mission-control communication.</li>
+  <li>It ensures the Arculus Portal can interact properly with student browsers, drone nodes, and all internal Arculus services needed for mission execution.</li>
+</ul>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">resource "aws_security_group" "arculus" {
+  name   = "arculus-sg-test-network"          ###<--------- CHANGE THIS TO YOUR UNIQUE NAME ###############
+  vpc_id = data.aws_vpc.default.id
+
+  # ----- HTTP / HTTPS -----
+  ingress { 
+    from_port = 80 
+    to_port = 80 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  ingress { 
+    from_port = 443 
+    to_port = 443 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- UI Ports -----
+  ingress { 
+    from_port = 3000 
+    to_port = 3003 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+    
+  # ----- Arculus Ports -----
+  ingress { 
+    from_port = 8440 
+    to_port = 8440 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  ingress { 
+    from_port = 8441 
+    to_port = 8441 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  ingress { 
+    from_port = 8442 
+    to_port = 8442 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  ingress { 
+    from_port = 8443 
+    to_port = 8443 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- Kubernetes / Node Agent -----
+  ingress { 
+    from_port = 10250 
+    to_port = 10250 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- Drone UDP Ports -----
+  ingress { 
+    from_port = 8285 
+    to_port = 8285 
+    protocol = "udp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+  ingress { 
+    from_port = 14550 
+    to_port = 14558 
+    protocol = "udp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- BGP (Seen in screenshot) -----
+  ingress { 
+    from_port = 179 
+    to_port = 179 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- ALL TCP (because screenshot has this rule) -----
+  ingress { 
+    from_port = 0 
+    to_port = 65535 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- ALL UDP (because screenshot has this rule) -----
+  ingress { 
+    from_port = 0 
+    to_port = 65535 
+    protocol = "udp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- SSH (CloudShell + global) -----
+  ingress { 
+    from_port = 22 
+    to_port = 22 
+    protocol = "tcp" 
+    cidr_blocks = ["3.230.143.85/32"] 
+    }
+
+  ingress { 
+    from_port = 22 
+    to_port = 22 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- Outbound -----
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+</code><code id = "3-1-1" hidden>resource "aws_security_group" "arculus" {
+  name   = "arculus-sg-test-network"          ###<--------- CHANGE THIS TO YOUR UNIQUE NAME ###############
+  vpc_id = data.aws_vpc.default.id
+
+  # ----- HTTP / HTTPS -----
+  ingress { 
+    from_port = 80 
+    to_port = 80 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  ingress { 
+    from_port = 443 
+    to_port = 443 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- UI Ports -----
+  ingress { 
+    from_port = 3000 
+    to_port = 3003 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+    
+  # ----- Arculus Ports -----
+  ingress { 
+    from_port = 8440 
+    to_port = 8440 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  ingress { 
+    from_port = 8441 
+    to_port = 8441 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  ingress { 
+    from_port = 8442 
+    to_port = 8442 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  ingress { 
+    from_port = 8443 
+    to_port = 8443 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- Kubernetes / Node Agent -----
+  ingress { 
+    from_port = 10250 
+    to_port = 10250 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- Drone UDP Ports -----
+  ingress { 
+    from_port = 8285 
+    to_port = 8285 
+    protocol = "udp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+  ingress { 
+    from_port = 14550 
+    to_port = 14558 
+    protocol = "udp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- BGP (Seen in screenshot) -----
+  ingress { 
+    from_port = 179 
+    to_port = 179 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- ALL TCP (because screenshot has this rule) -----
+  ingress { 
+    from_port = 0 
+    to_port = 65535 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- ALL UDP (because screenshot has this rule) -----
+  ingress { 
+    from_port = 0 
+    to_port = 65535 
+    protocol = "udp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- SSH (CloudShell + global) -----
+  ingress { 
+    from_port = 22 
+    to_port = 22 
+    protocol = "tcp" 
+    cidr_blocks = ["3.230.143.85/32"] 
+    }
+
+  ingress { 
+    from_port = 22 
+    to_port = 22 
+    protocol = "tcp" 
+    cidr_blocks = ["0.0.0.0/0"] 
+    }
+
+  # ----- Outbound -----
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+</code></pre></div>
+
+<ul>
+  <li>The code below will create the actual virtual machine that will run Arculus.</li>
+</ul>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">resource "aws_instance" "arculus" {
+  ami                         = "ami-034003b238ddb708b"
+  instance_type               = "t2.large"
+  subnet_id                   = data.aws_subnets.default.ids[0]
+  vpc_security_group_ids      = [aws_security_group.arculus.id]
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.arculus.key_name
+
+  tags = {
+    Name = "ch5-arculus-portal-ui" ###<--------- CHANGE THIS TO YOUR UNIQUE NAME ###############
+  }
+}</code><code id = "3-1-1" hidden>resource "aws_instance" "arculus" {
+  ami                         = "ami-034003b238ddb708b"
+  instance_type               = "t2.large"
+  subnet_id                   = data.aws_subnets.default.ids[0]
+  vpc_security_group_ids      = [aws_security_group.arculus.id]
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.arculus.key_name
+
+  tags = {
+    Name = "ch5-arculus-portal-ui" ###<--------- CHANGE THIS TO YOUR UNIQUE NAME ###############
+  }
+}</code></pre></div>
+
+<ul>
+  <li>Terraform prints important information after deployment.</li>
+</ul>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">output "public_ip" {
+  value = aws_instance.arculus.public_ip
+}
+
+output "key_path" {
+  value = "${path.module}/arculus-key.pem"
+}</code><code id = "3-1-1" hidden>output "public_ip" {
+  value = aws_instance.arculus.public_ip
+}
+
+output "key_path" {
+  value = "${path.module}/arculus-key.pem"
+}</code></pre></div>
+
+<ul>
+  <li>After copying and pasting all the script codes, press "<b>CTRL S</b>" to save the script and "<b>CTRL X</b>" to exit from the nano editor.</li>
+</ul>
+
+<h3 id="toc_4">5.3.3 Run infrastructure script</h3>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">$ terraform init
+$ terraform apply -auto-approve</code><code id = "3-1-1" hidden>terraform init
+terraform apply -auto-approve</code></pre></div>
+
+<p align = "center"><img src="/MizzouCloudDevOps/img/lab12/ch5_ter_init.png" width="50%" alt="ch5_env"></p> 
+<p align = "center"><img src="/MizzouCloudDevOps/img/lab12/ch5_terra_apply.png" width="50%" alt="ch5_terra_apply"></p> 
+
+<p>After Terraform finishes creating your EC2 instance, it will display an "Outputs" section that includes the public_ip of your server.</p>
+
+<p><b>Copy this IP address and save it somewhere safe (Notes app, text file, etc.).</b></p>
+
+<p><b>You will need this IP address in the upcoming steps to:</b></p>
+<ul>
+  <li>connect to your instance</li>
+  <li>configure your security groups</li>
+  <li>run provisioning scripts</li>
+  <li>access the browser-based UI later in the chapter</li>
+</ul>
+
+<p>If you lose it, you will have to run terraform output again or check the EC2 console—so it’s easier to store it now.</p>
+
+<p align = "center"><img src="/MizzouCloudDevOps/img/lab12/ch5_ip_check.png" width="50%" alt="ch5_ip_check"></p> 
+
+<h3 id="toc_4">5.3.4 Create Provision Directory</h3>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">$ cd ..
+$ mkdir provision
+$ cd provision
+$ nano main.tf</code><code id = "3-1-1" hidden>cd ..
+mkdir provision
+cd provision
+nano main.tf</code></pre></div>
+
+<h3 id="toc_4">5.3.5 Paste the following into provision/main.tf script</h3>
+
+<ul>
+  <li>This script connects into the EC2 instance using SSH and automatically installs and configures the entire Arculus Controller + Portal UI system. Think of this as the “automatic setup robot” that logs into the server and performs all the steps that a human administrator would normally do manually.</li>
+</ul>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">terraform {
+  required_providers {
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.2"
+    }
+  }
+}
+
+variable "public_ip" {
+  type = string
+}
+
+resource "null_resource" "arculus_provision" {
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = var.public_ip
+    private_key = file("../infrastructure/arculus-key.pem")
+    timeout     = "5m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+
+      "echo '============================='",
+      "echo 'Starting Arculus Provisioning'",
+      "echo '============================='",
+
+      # 1. Update OS packages
+      "sudo apt-get update -y",
+
+      # 2. Clone arculus-sw repo
+      "cd /home/ubuntu",
+      "sudo rm -rf arculus-sw",
+      "git clone https://github.com/arculus-zt/arculus-sw.git",
+
+      "cd /home/ubuntu/arculus-sw",
+      "chmod +x setup_controller.sh arculus-setup.sh",
+
+      # 3. Run controller setup
+      "./setup_controller.sh",
+
+
+      # ------------------------------------------------------
+      # 5. Run arculus-setup.sh (DB password only)
+      #    ENCRYPTION KEY WILL BE SKIPPED (file already exists)
+      # ------------------------------------------------------
+      "cd /home/ubuntu/arculus-sw",
+      "printf \"vimanceri\n\" | ./arculus-setup.sh",
+
+      # ------------------------------------------------------
+      # 4. Generate Encryption Key and WRITE IT TO THE PATH
+      # ------------------------------------------------------
+      "echo ''",
+      "echo '[5/8] Generating 256-bit encryption key...'",
+
+      # Generate key
+      "ENC_KEY=$(openssl rand -hex 32)",
+
+    
+      # WRITE the key directly to ENCRYPTION_SECRET.txt
+      "echo \"$ENC_KEY\" | sudo tee /home/ubuntu/arculus-sw/arculus-gcs-node/configs/ENCRYPTION_SECRET.txt > /dev/null",
+
+      "echo ''",
+      "echo '=========================================================='",
+      "echo '  Encryption key generated & stored automatically at:'",
+      "echo '  arculus-gcs-node/configs/ENCRYPTION_SECRET.txt'",
+      "echo ''",
+      "echo '  Key used:'",
+      "echo \"     $ENC_KEY\"",
+      "echo '=========================================================='",
+      "echo ''",
+
+      # ------------------------------------------------------
+      # 6. Proceed with UI build and PM2 start
+      # ------------------------------------------------------
+      "echo '[6/8] Waiting for MySQL and backend...'",
+      "sleep 20",
+
+      "echo '[7/8] Building UI...'",
+      "cd /home/ubuntu/arculus-sw/arculus-gcs-ui",
+      "npm install",
+      "npm run build",
+
+      "echo '[8/8] Starting UI server with PM2...'",
+      "sudo npm install -g pm2",
+      "pm2 start server.js",
+
+      "echo '=================================='",
+      "echo ' Arculus Provision Completed'",
+      "echo '=================================='"
+    ]
+  }
+}
+
+output "ui_url" {
+  value = "http://${var.public_ip}:3000"
+}</code><code id = "3-1-1" hidden>terraform {
+  required_providers {
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.2"
+    }
+  }
+}
+
+variable "public_ip" {
+  type = string
+}
+
+resource "null_resource" "arculus_provision" {
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = var.public_ip
+    private_key = file("../infrastructure/arculus-key.pem")
+    timeout     = "5m"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+
+      "echo '============================='",
+      "echo 'Starting Arculus Provisioning'",
+      "echo '============================='",
+
+      # 1. Update OS packages
+      "sudo apt-get update -y",
+
+      # 2. Clone arculus-sw repo
+      "cd /home/ubuntu",
+      "sudo rm -rf arculus-sw",
+      "git clone https://github.com/arculus-zt/arculus-sw.git",
+
+      "cd /home/ubuntu/arculus-sw",
+      "chmod +x setup_controller.sh arculus-setup.sh",
+
+      # 3. Run controller setup
+      "./setup_controller.sh",
+
+
+      # ------------------------------------------------------
+      # 5. Run arculus-setup.sh (DB password only)
+      #    ENCRYPTION KEY WILL BE SKIPPED (file already exists)
+      # ------------------------------------------------------
+      "cd /home/ubuntu/arculus-sw",
+      "printf \"vimanceri\n\" | ./arculus-setup.sh",
+
+      # ------------------------------------------------------
+      # 4. Generate Encryption Key and WRITE IT TO THE PATH
+      # ------------------------------------------------------
+      "echo ''",
+      "echo '[5/8] Generating 256-bit encryption key...'",
+
+      # Generate key
+      "ENC_KEY=$(openssl rand -hex 32)",
+
+    
+      # WRITE the key directly to ENCRYPTION_SECRET.txt
+      "echo \"$ENC_KEY\" | sudo tee /home/ubuntu/arculus-sw/arculus-gcs-node/configs/ENCRYPTION_SECRET.txt > /dev/null",
+
+      "echo ''",
+      "echo '=========================================================='",
+      "echo '  Encryption key generated & stored automatically at:'",
+      "echo '  arculus-gcs-node/configs/ENCRYPTION_SECRET.txt'",
+      "echo ''",
+      "echo '  Key used:'",
+      "echo \"     $ENC_KEY\"",
+      "echo '=========================================================='",
+      "echo ''",
+
+      # ------------------------------------------------------
+      # 6. Proceed with UI build and PM2 start
+      # ------------------------------------------------------
+      "echo '[6/8] Waiting for MySQL and backend...'",
+      "sleep 20",
+
+      "echo '[7/8] Building UI...'",
+      "cd /home/ubuntu/arculus-sw/arculus-gcs-ui",
+      "npm install",
+      "npm run build",
+
+      "echo '[8/8] Starting UI server with PM2...'",
+      "sudo npm install -g pm2",
+      "pm2 start server.js",
+
+      "echo '=================================='",
+      "echo ' Arculus Provision Completed'",
+      "echo '=================================='"
+    ]
+  }
+}
+
+output "ui_url" {
+  value = "http://${var.public_ip}:3000"
+}</code></pre></div>
+
+<ul>
+  <li>After copying and pasting all the script codes, press "<b>CTRL S</b>" to save the script and "<b>CTRL X</b>" to exit from the nano editor.</li>
+</ul>
+
+<h3 id="toc_4">5.3.6 Run provision script</h3>
+
+<div><pre><button ng-click="copyToClipboard('3-1-1')" type="button" class="copyButton"><i class="fa fa-files-o"></i></button><code class="language-bash">$ terraform init
+$ terraform apply -auto-approve -var="public_ip=<YOUR_PUBLIC_IP>"</code><code id = "3-1-1" hidden>terraform init
+terraform apply -auto-approve -var="public_ip=<YOUR_PUBLIC_IP>"</code></pre></div>
+
+<ul>
+  <li>For example:</li>
+</ul>
+
+<div><pre><code class="language-bash">$ terraform init
+$ terraform apply -auto-approve -var="public_ip=98.81.222.110"</code></pre></div></li>
+
+<p align = "center"><img src="/MizzouCloudDevOps/img/lab12/provision_output.png" width="75%" alt="provision_output"></p> 
+
+<h2 id="toc_4">5.4 Run provision script</h2>
+
+<p>Terraform has now completed the full Arculus provisioning process and returned a UI URL in the Outputs section. This URL points to the Arculus web portal running on your EC2 instance.</p>
+
+<p>Copy this entire link and paste it into a new browser tab. Make sure you include the port number :3000, since that is where the UI service is running. Once you paste the link into your browser, you should see the Arculus setup screen. This page allows you to create your first user account and initialize the portal.</p>
+
+<p><b>You will be asked to provide:</b></p>
+
+<ul>
+  <li>Username</li>
+  <li>Email ID</li>
+  <li>Role (Mission Creator, Mission Operator, etc.)</li>
+  <li>Domain</li>
+  <li>Password</li>
+  <li>Confirmation Password</li>
+</ul>
+
+<p align = "center"><img src="/MizzouCloudDevOps/img/lab12/ch5_create+user.png" width="60%" alt="ch5_create+user"></p> 
+
+<p>This onboarding screen appears only the first time the portal is launched. Once you create the first user, the system will take you into the Arculus dashboard.</p>
+
+<h2 id="toc_4">5.5 Sign-in to the Portal</h2>
+
+<p>Once you have created your first Arculus user account, the portal will automatically redirect you to the Sign-in page. This login interface is where you will authenticate yourself every time you return to the Arculus system.</p>
+
+<h3 id="toc_4">5.5.1 To sign in:</h3>
+
+<ul>
+  <li>Enter the Username you created during the setup process.</li>
+  <li>Enter the Password associated with that account.</li>
+  <li>(Optional) Select "Remember me" if you want the browser to keep you logged in.</li>
+  <li>Click the Sign In button.</li>
+</ul>
+
+
+<p align = "center"><img src="/MizzouCloudDevOps/img/lab12/ch5_sign+in.png" width="40%" alt="ch5_sign+in"></p> 
+
+<p>If the credentials are correct, you will be directed into the main Arculus dashboard where you can begin exploring the mission controls, UI components, and the services provisioned in the previous steps.</p>
+
+<p align = "center"><img src="/MizzouCloudDevOps/img/lab12/ch5_portal.png" width="70%" alt="ch5_portal"></p> 
+
+<p>This confirms that your Terraform deployment, backend services, and web UI are all functioning correctly.</p>
+
+<h2 id="toc_4">5.6 Conclusion</h2>
+
+<p>In this chapter, you successfully deployed a fully operational Arculus Portal from scratch using Terraform and an automated provisioning workflow. By combining infrastructure creation with remote-exec provisioning, you installed all backend services, launched the UI, and accessed the portal through your instance’s public IP address.</p>
+
+<p>You completed the first-time user setup, authenticated into the system, and viewed the full Arculus dashboard—confirming that the EC2 instance, PM2 processes, network configurations, and UI components are all running as expected. With the portal now active, you have a functioning policy-and-control plane that will support mission planning, device enrollment, policy management, honeypot deployment, and more.</p>
+
+<p>This chapter marks the transition from building infrastructure to interacting with the actual Arculus platform.</p>
+
+<script type="text/javascript">
+var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(\w+)\b/i,t=0,n=_self.Prism={util:{encode:function(e){return e instanceof a?new a(e.type,n.util.encode(e.content),e.alias):"Array"===n.util.type(e)?e.map(n.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},objId:function(e){return e.__id||Object.defineProperty(e,"__id",{value:++t}),e.__id},clone:function(e){var t=n.util.type(e);switch(t){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=n.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return n.util.clone(e)})}return e}},languages:{extend:function(e,t){var a=n.util.clone(n.languages[e]);for(var r in t)a[r]=t[r];return a},insertBefore:function(e,t,a,r){r=r||n.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==t)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return n.languages.DFS(n.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,t,a,r){r=r||{};for(var l in e)e.hasOwnProperty(l)&&(t.call(e,l,e[l],a||l),"Object"!==n.util.type(e[l])||r[n.util.objId(e[l])]?"Array"!==n.util.type(e[l])||r[n.util.objId(e[l])]||(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,l,r)):(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,null,r)))}},plugins:{},highlightAll:function(e,t){var a={callback:t,selector:'code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'};n.hooks.run("before-highlightall",a);for(var r,l=a.elements||document.querySelectorAll(a.selector),i=0;r=l[i++];)n.highlightElement(r,e===!0,a.callback)},highlightElement:function(t,a,r){for(var l,i,o=t;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=n.languages[l]),t.className=t.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=t.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=t.textContent,u={element:t,language:l,grammar:i,code:s};if(!s||!i)return n.hooks.run("complete",u),void 0;if(n.hooks.run("before-highlight",u),a&&_self.Worker){var c=new Worker(n.filename);c.onmessage=function(e){u.highlightedCode=e.data,n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},c.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=n.highlight(u.code,u.grammar,u.language),n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(t),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},highlight:function(e,t,r){var l=n.tokenize(e,t);return a.stringify(n.util.encode(l),r)},tokenize:function(e,t){var a=n.Token,r=[e],l=t.rest;if(l){for(var i in l)t[i]=l[i];delete t.rest}e:for(var i in t)if(t.hasOwnProperty(i)&&t[i]){var o=t[i];o="Array"===n.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],c=u.inside,g=!!u.lookbehind,h=!!u.greedy,f=0,d=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var m=r[p];if(r.length>e.length)break e;if(!(m instanceof a)){u.lastIndex=0;var y=u.exec(m),v=1;if(!y&&h&&p!=r.length-1){var b=r[p+1].matchedStr||r[p+1],k=m+b;if(p<r.length-2&&(k+=r[p+2].matchedStr||r[p+2]),u.lastIndex=0,y=u.exec(k),!y)continue;var w=y.index+(g?y[1].length:0);if(w>=m.length)continue;var _=y.index+y[0].length,P=m.length+b.length;if(v=3,P>=_){if(r[p+1].greedy)continue;v=2,k=k.slice(0,P)}m=k}if(y){g&&(f=y[1].length);var w=y.index+f,y=y[0].slice(f),_=w+y.length,S=m.slice(0,w),O=m.slice(_),j=[p,v];S&&j.push(S);var A=new a(i,c?n.tokenize(y,c):y,d,y,h);j.push(A),O&&j.push(O),Array.prototype.splice.apply(r,j)}}}}}return r},hooks:{all:{},add:function(e,t){var a=n.hooks.all;a[e]=a[e]||[],a[e].push(t)},run:function(e,t){var a=n.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(t)}}},a=n.Token=function(e,t,n,a,r){this.type=e,this.content=t,this.alias=n,this.matchedStr=a||null,this.greedy=!!r};if(a.stringify=function(e,t,r){if("string"==typeof e)return e;if("Array"===n.util.type(e))return e.map(function(n){return a.stringify(n,t,e)}).join("");var l={type:e.type,content:a.stringify(e.content,t,r),tag:"span",classes:["token",e.type],attributes:{},language:t,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===n.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}n.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var t=JSON.parse(e.data),a=t.language,r=t.code,l=t.immediateClose;_self.postMessage(n.highlight(r,n.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var r=document.currentScript||[].slice.call(document.getElementsByTagName("script")).pop();return r&&(n.filename=r.src,document.addEventListener&&!r.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",n.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
+</script>
+
+<script type="text/javascript">
+!function(e){var t={variable:[{pattern:/\$?\(\([\w\W]+?\)\)/,inside:{variable:[{pattern:/(^\$\(\([\w\W]+)\)\)/,lookbehind:!0},/^\$\(\(/],number:/\b-?(?:0x[\dA-Fa-f]+|\d*\.?\d+(?:[Ee]-?\d+)?)\b/,operator:/--?|-=|\+\+?|\+=|!=?|~|\*\*?|\*=|\/=?|%=?|<<=?|>>=?|<=?|>=?|==?|&&?|&=|\^=?|\|\|?|\|=|\?|:/,punctuation:/\(\(?|\)\)?|,|;/}},{pattern:/\$\([^)]+\)|`[^`]+`/,inside:{variable:/^\$\(|^`|\)$|`$/}},/\$(?:[a-z0-9_#\?\*!@]+|\{[^}]+\})/i]};e.languages.bash={shebang:{pattern:/^#!\s*\/bin\/bash|^#!\s*\/bin\/sh/,alias:"important"},comment:{pattern:/(^|[^"{\\])#.*/,lookbehind:!0},string:[{pattern:/((?:^|[^<])<<\s*)(?:"|')?(\w+?)(?:"|')?\s*\r?\n(?:[\s\S])*?\r?\n\2/g,lookbehind:!0,inside:t},{pattern:/(["'])(?:\\\\|\\?[^\\])*?\1/g,inside:t}],variable:t.variable,"function":{pattern:/(^|\s|;|\||&)(?:alias|apropos|apt-get|aptitude|aspell|awk|basename|bash|bc|bg|builtin|bzip2|cal|cat|cd|cfdisk|chgrp|chmod|chown|chroot|chkconfig|cksum|clear|cmp|comm|command|cp|cron|crontab|csplit|cut|date|dc|dd|ddrescue|df|diff|diff3|dig|dir|dircolors|dirname|dirs|dmesg|du|egrep|eject|enable|env|ethtool|eval|exec|expand|expect|export|expr|fdformat|fdisk|fg|fgrep|file|find|fmt|fold|format|free|fsck|ftp|fuser|gawk|getopts|git|grep|groupadd|groupdel|groupmod|groups|gzip|hash|head|help|hg|history|hostname|htop|iconv|id|ifconfig|ifdown|ifup|import|install|jobs|join|kill|killall|less|link|ln|locate|logname|logout|look|lpc|lpr|lprint|lprintd|lprintq|lprm|ls|lsof|make|man|mkdir|mkfifo|mkisofs|mknod|more|most|mount|mtools|mtr|mv|mmv|nano|netstat|nice|nl|nohup|notify-send|nslookup|open|op|passwd|paste|pathchk|ping|pkill|popd|pr|printcap|printenv|printf|ps|pushd|pv|pwd|quota|quotacheck|quotactl|ram|rar|rcp|read|readarray|readonly|reboot|rename|renice|remsync|rev|rm|rmdir|rsync|screen|scp|sdiff|sed|seq|service|sftp|shift|shopt|shutdown|sleep|slocate|sort|source|split|ssh|stat|strace|su|sudo|sum|suspend|sync|tail|tar|tee|test|time|timeout|times|touch|top|traceroute|trap|tr|tsort|tty|type|ulimit|umask|umount|unalias|uname|unexpand|uniq|units|unrar|unshar|uptime|useradd|userdel|usermod|users|uuencode|uudecode|v|vdir|vi|vmstat|wait|watch|wc|wget|whereis|which|who|whoami|write|xargs|xdg-open|yes|zip)(?=$|\s|;|\||&)/,lookbehind:!0},keyword:{pattern:/(^|\s|;|\||&)(?:let|:|\.|if|then|else|elif|fi|for|break|continue|while|in|case|function|select|do|done|until|echo|exit|return|set|declare)(?=$|\s|;|\||&)/,lookbehind:!0},"boolean":{pattern:/(^|\s|;|\||&)(?:true|false)(?=$|\s|;|\||&)/,lookbehind:!0},operator:/&&?|\|\|?|==?|!=?|<<<?|>>|<=?|>=?|=~/,punctuation:/\$?\(\(?|\)\)?|\.\.|[{}[\];]/};var a=t.variable[1].inside;a["function"]=e.languages.bash["function"],a.keyword=e.languages.bash.keyword,a.boolean=e.languages.bash.boolean,a.operator=e.languages.bash.operator,a.punctuation=e.languages.bash.punctuation}(Prism);
+</script>
+
+
+</body>
+
+</html>
