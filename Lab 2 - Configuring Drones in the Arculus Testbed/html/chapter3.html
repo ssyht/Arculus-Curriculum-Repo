@@ -485,13 +485,13 @@ pre[class*="language-"] {
 <li>From the left sidebar, click Add Nodes.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_add_node_left.png" width="60%" alt="ch2_add_node_left"></p> 
+<p align = "center"><img src="../img/ch2_add_node_left.png" width="60%" alt="ch2_add_node_left"></p> 
 
 <ul>
   <li>You’ll see a simple form where you can enter the name of the new device you want to add to the cluster.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_addnode_page.png" width="60%" alt="ch2_addnode_page"></p> 
+<p align = "center"><img src="../img/ch2_addnode_page.png" width="60%" alt="ch2_addnode_page"></p> 
 
 <h3 id="toc_4">2.2.1 Generate the Join Script</h3>
 
@@ -502,7 +502,7 @@ pre[class*="language-"] {
   <li>Click Copy to Clipboard to copy the script.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_dronenaming.png" width="60%" alt="ch2_dronenaming"></p> 
+<p align = "center"><img src="../img/ch2_dronenaming.png" width="60%" alt="ch2_dronenaming"></p> 
 
 <h3 id="toc_4">2.2.2 Launch an EC2 instance</h3>
 
@@ -511,69 +511,69 @@ pre[class*="language-"] {
   <li>Make sure to select the US East (N. Virginia) region in the top-right part of your screen.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch.2_AWS_region.png" width="60%" alt="ch.2_AWS_region"></p> 
+<p align = "center"><img src="../img/ch.2_AWS_region.png" width="60%" alt="ch.2_AWS_region"></p> 
 
 <ul>
   <li>On the top left corner, search "EC2" and click on the service.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_EC2_search.png" width="60%" alt="ch2_EC2_search"></p> 
+<p align = "center"><img src="../img/ch2_EC2_search.png" width="60%" alt="ch2_EC2_search"></p> 
 
 <ul>
   <li>On the right side of the page, <b>click "Instances"</b></li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_instances_tab.png" width="60%" alt="ch2_instances_tab"></p> 
+<p align = "center"><img src="../img/ch2_instances_tab.png" width="60%" alt="ch2_instances_tab"></p> 
 
 <ul>
   <li>On the top-right corner, click <b>"Launch Instance"</b>.</li>
 </ul>
 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_launch-ec2.png" width="60%" alt="ch2_launch-ec2"></p> 
+<p align = "center"><img src="../img/ch2_launch-ec2.png" width="60%" alt="ch2_launch-ec2"></p> 
 
 <ul>
   <li>Make sure to <b>launch 3 EC2 instances</b>. These three instances are your drones for this module.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_3_instances.png" width="60%" alt="ch2_3_instances"></p> 
+<p align = "center"><img src="../img/ch2_3_instances.png" width="60%" alt="ch2_3_instances"></p> 
 
 <ul>
   <li>Give your instances a name. For example, in the picture below, "drone1". In the three instances that are launched, we will be changing the names of the other two later in the exercises.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_instance_naming.png" width="60%" alt="ch2_instance_naming"></p> 
+<p align = "center"><img src="../img/ch2_instance_naming.png" width="60%" alt="ch2_instance_naming"></p> 
 
 <ul>
   <li>Select <b>Ubuntu 24.04 LTS</b> as the instance's operating system.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_instance_os.png" width="60%" alt="ch2_instance_os"></p> 
+<p align = "center"><img src="../img/ch2_instance_os.png" width="60%" alt="ch2_instance_os"></p> 
 
 <ul>
   <li>The instance type we will be using for this module is t2.medium.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_instance_t2.png" width="60%" alt="ch2_instance_t2"></p> 
+<p align = "center"><img src="../img/ch2_instance_t2.png" width="60%" alt="ch2_instance_t2"></p> 
 
 <ul>
   <li>Use the same key that was created when provisioning resources using Terraform for the Arculus portal. If not created, you can create new key pair.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_key.png" width="60%" alt="ch2_key"></p> 
+<p align = "center"><img src="../img/ch2_key.png" width="60%" alt="ch2_key"></p> 
 
 <ul>
   <li>Select the existing security group option. Within the drop-down menu, search for the arculus security group that was created when provisioning resources for the Arculus portal using Terraform.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_existing_sg.png" width="60%" alt="ch2_existing_sg"></p> 
+<p align = "center"><img src="../img/ch2_existing_sg.png" width="60%" alt="ch2_existing_sg"></p> 
 
 
 <ul>
   <li>Click <b>"Launch"</b></li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_launch.png" width="60%" alt="ch2_launch"></p> 
+<p align = "center"><img src="../img/ch2_launch.png" width="60%" alt="ch2_launch"></p> 
 
 
 <h3 id="toc_4">2.2.3 Rename the launched instances</h3>
@@ -582,13 +582,13 @@ pre[class*="language-"] {
   <li>In the search bar, search for <b>drone1</b> and you will see three of your launched instances.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_t1.png" width="60%" alt="ch2_t1"></p> 
+<p align = "center"><img src="../img/ch2_t1.png" width="60%" alt="ch2_t1"></p> 
 
 <ul>
   <li>Rename two of those launched instance. For example, in the picture below, change the names to <b>drone2</b> and <b>drone3</b></li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_t2.png" width="60%" alt="ch2_t2"></p> 
+<p align = "center"><img src="../img/ch2_t2.png" width="60%" alt="ch2_t2"></p> 
 
 <h3 id="toc_4">2.2.4 Preparing the instance</h3>
 
@@ -596,34 +596,34 @@ pre[class*="language-"] {
   <li>Connect the <b>drone1</b> instance.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_d1_connect.png" width="60%" alt="ch2_d1_connect"></p> 
+<p align = "center"><img src="../img/ch2_d1_connect.png" width="60%" alt="ch2_d1_connect"></p> 
 
 <ul>
   <li>Paste the <b>Join Script</b> that was copied from the portal into the instance.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/cli-script.png" width="60%" alt="cli-script"></p> 
+<p align = "center"><img src="../img/cli-script.png" width="60%" alt="cli-script"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/script-approval-wait.png" width="60%" alt="script-approval-wait"></p> 
+<p align = "center"><img src="../img/script-approval-wait.png" width="60%" alt="script-approval-wait"></p> 
 
 
 <ul>
   <li>Upon completion of the command run, navigate back to the Arculus portal and click on <b>Manage Edge Devices</b> in the left-side of the page.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_nav_mgdev.png" width="60%" alt="ch2_nav_mgdev"></p> 
+<p align = "center"><img src="../img/ch2_nav_mgdev.png" width="60%" alt="ch2_nav_mgdev"></p> 
 
 <ul>
   <li>You should be able to see the surveillance drone in the cluster.</li>
 </ul>
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ip-node.png" width="60%" alt="ip-node"></p> 
+<p align = "center"><img src="../img/ip-node.png" width="60%" alt="ip-node"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/request-info.png" width="60%" alt="request-info"></p> 
+<p align = "center"><img src="../img/request-info.png" width="60%" alt="request-info"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/msg-rec.png" width="60%" alt="msg-rec"></p> 
+<p align = "center"><img src="../img/msg-rec.png" width="60%" alt="msg-rec"></p> 
 
-<p align = "center"><img src="/MizzouCloudDevOps/img/ch2_dev_cluster.png" width="60%" alt="ch2_dev_cluster"></p> 
+<p align = "center"><img src="../img/ch2_dev_cluster.png" width="60%" alt="ch2_dev_cluster"></p> 
 
 
 <h2 id="toc_4">2.3 As a Result</h3>
@@ -644,4 +644,5 @@ var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScop
 </script>
 
 </body>
+
 </html>
