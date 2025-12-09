@@ -1,0 +1,279 @@
+# Chapter 4 - Hello World (Portal Setup)
+
+## 4.1 Overview
+
+In cloud security, guardrails are predefined, automated controls (e.g., security groups, IAM boundaries, routing rules) that prevent unsafe configurations and enforce desired ones. Guardrails don’t block work; they shape it safely by default and make deviations explicit and reviewable.
+
+This chapter demonstrates least-privilege network access for a simple web service. A new Ubuntu instance is launched from a baked AMI that already contains an nginx-hosted static page on TCP/80. An inbound rule is opened briefly to the world for quick verification, then tightened to a single /32 address. 
+
+Terraform codifies the controls (VPC, routing, SG, instance, outputs), and an optional no-ingress path using SSM port-forwarding is outlined for stricter Zero-Trust deployments.
+
+## 4.2 CloudShell Setup (same pattern as Chapter 2)
+
+**What this does**: Installs Terraform to /tmp, uses CloudShell role creds, stores TF state/plugins in /tmp, and prepares the ch3 working directory.
+
+```bash
+export AWS_REGION=${AWS_REGION:-us-east-1}
+
+unset AWS_PROFILE AWS_SDK_LOAD_CONFIG AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+
+TF_VERSION="1.9.5"
+ARCH=$(uname -m); case "$ARCH" in x86_64) TF_ARCH="amd64" ;; aarch64) TF_ARCH="arm64" ;; *) echo "Unsupported arch: $ARCH"; exit 1 ;; esac
+mkdir -p /tmp/bin /tmp/arculus/ch4
+curl -fsSLo /tmp/terraform.zip "https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_${TF_ARCH}.zip"
+unzip -o /tmp/terraform.zip -d /tmp/bin >/dev/null
+export PATH="/tmp/bin:$PATH"
+terraform -version
+
+export TF_DATA_DIR=/tmp/.tfdata
+export TF_PLUGIN_CACHE_DIR=/tmp/.tfplugins
+mkdir -p "$TF_PLUGIN_CACHE_DIR"
+
+# Work directory
+cd /tmp/arculus/ch4
+```
+
+## 4.3 Write Main.tf 
+
+This creates a tiny VPC, public subnet, IGW + route, a unique SG that allows only app_port from allow_cidr, then boots Ubuntu and installs Grafana via user_data. An HTTP URL is emitted.
+
+```bash
+cat > main.tf <<'HCL'
+############################################################
+# Chapter 4 — Static Web (AMI baked with nginx + your page)
+# Region: us-east-1 | AMI: ami-0da4418d8d1b56a0c
+############################################################
+
+terraform {
+  required_version = ">= 1.6.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+#########################
+# Variables
+#########################
+variable "region" {
+  type    = string
+  default = "us-east-1"
+}
+
+variable "project" {                       
+  type    = string
+  default = "terraform-ch4-web"          ###-------->>>>> NOTE: Change the name of the default to your unique name. 
+}
+
+variable "availability_zone" {
+  type    = string
+  default = "us-east-1a"
+}
+
+variable "instance_type" {
+  type    = string
+  default = "t3.micro"
+}
+
+# Start open to verify; then re-apply with your /32 to lock down.
+# Example: terraform apply -auto-approve -var="allow_cidr=1.2.3.4/32"
+variable "allow_cidr" {
+  type    = string
+  default = "0.0.0.0/0"
+}
+
+# Optional SSH (off by default). Prefer SSM in class.
+variable "enable_ssh" {
+  type    = bool
+  default = false
+}
+
+variable "ssh_cidr" {
+  type    = string
+  default = "127.0.0.1/32" # only used if enable_ssh = true
+}
+
+#########################
+# Provider
+#########################
+provider "aws" {
+  region = var.region
+}
+
+#########################
+# Locals
+#########################
+locals {
+  web_ami_id = "ami-0da4418d8d1b56a0c"
+
+  # Keep nginx up on boot (AMI already has your site)
+  user_data = <<-BASH
+    #!/bin/bash
+    set -euo pipefail
+    if command -v systemctl >/dev/null 2>&1; then
+      systemctl enable nginx || true
+      systemctl restart nginx || true
+    fi
+  BASH
+}
+
+#########################
+# Networking (minimal public VPC)
+#########################
+resource "aws_vpc" "this" {
+  cidr_block           = "10.44.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  tags = {
+    Name = "${var.project}-vpc"
+  }
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.this.id
+  tags = {
+    Name = "${var.project}-igw"
+  }
+}
+
+resource "aws_subnet" "public_a" {
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = "10.44.1.0/24"
+  availability_zone       = var.availability_zone
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "${var.project}-public-a"
+  }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.this.id
+  tags = {
+    Name = "${var.project}-rt"
+  }
+}
+
+resource "aws_route" "igw_default" {
+  route_table_id         = aws_route_table.public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.igw.id
+}
+
+resource "aws_route_table_association" "a" {
+  subnet_id      = aws_subnet.public_a.id
+  route_table_id = aws_route_table.public.id
+}
+
+#########################
+# Security Group — HTTP :80 from allow_cidr (+ optional SSH)
+#########################
+resource "aws_security_group" "web" {
+  name_prefix = "${var.project}-sg-"
+  description = "HTTP 80 from allow_cidr; optional SSH; all egress"
+  vpc_id      = aws_vpc.this.id
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = [var.allow_cidr]
+  }
+
+  dynamic "ingress" {
+    for_each = var.enable_ssh ? [1] : []
+    content {
+      description = "SSH (optional)"
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = [var.ssh_cidr]
+    }
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.project}-web-sg"
+  }
+}
+
+#########################
+# EC2 — launch from your baked AMI
+#########################
+resource "aws_instance" "web" {
+  ami                         = local.web_ami_id
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public_a.id
+  vpc_security_group_ids      = [aws_security_group.web.id]
+  associate_public_ip_address = true
+  user_data                   = local.user_data
+
+  tags = {
+    Name    = "${var.project}-vm"
+    Project = var.project
+    Role    = "chapter4-web"
+  }
+}
+
+#########################
+# Outputs
+#########################
+output "chapter4_url" {
+  value = "http://${aws_instance.web.public_ip}"
+}
+
+output "public_ip" {
+  value = aws_instance.web.public_ip
+}
+
+output "security_group_id" {
+  value = aws_security_group.web.id
+}
+
+output "note_relock_http" {
+  value = "After verifying, re-apply with -var=allow_cidr=YOUR.IP/32 to lock HTTP to your /32."
+}
+
+HCL
+
+```
+
+## 4.4 Init & Apply
+```bash
+terraform init
+terraform fmt
+terraform validate
+terraform apply -auto-approve
+```
+<p align="center"> <img src="../img/ch3_terraform_init_success.png" width="500px"></p>
+<p align="center"> <img src="../img/ch4_apply_output.png" width="500px"></p>
+
+## 4.5 Verifying the Service
+```bash
+terraform output
+```
+<p align="center"> <img src="../img/ch4_2verify_output.png" width="800px"></p>
+
+* Once you've entered the link based on the output, you will arrive in the Terraform UI (Hello World Page).
+
+<p align="center"> <img src="../img/ch4_portal_ui.png" width="900px"></p>
+
+## 4.6 Cleanup
+```bash
+terraform destroy -auto-approve
+```
+<p align="center"> <img src="../img/ch4_destroy_success.png" width="700px"></p>
+
+## 4.7 As a Result:
+
+This chapter proved network guardrails as policy-as-code using a baked AMI + nginx static site: we exposed HTTP:80 to verify the page, then tightened ingress to a single /32, reducing exposure while preserving functionality. 
+
+The controls were codified entirely in Terraform (VPC, routing, security group, instance, outputs), giving a repeatable pattern to expose → verify → tighten. We also introduced a no-ingress path via SSM port-forwarding for stricter Zero-Trust deployments. Students finish with a reproducible web demo they can launch, verify, lock down, and destroy cleanly before moving on.
