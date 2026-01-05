@@ -68,3 +68,7 @@ In this step, you will execute the mission that was previously created and valid
 * Upon the results of the activity log, the mission will come to a complete.
 
 <p align="center"> <img src="../img/ch2_mission_complete.png" width="900px"></p>
+
+## 2.4 As a Result
+
+In this chapter, you executed the Denial of Service simulation and observed its impact during an active mission. By running the mission and introducing a DoS condition, you were able to monitor how system behavior changed under abnormal traffic and how mission execution was affected in real time. This hands-on demonstration highlights the importance of availability and controlled execution in mission-oriented systems and prepares you for later modules that explore detection, mitigation, and resilience strategies.
