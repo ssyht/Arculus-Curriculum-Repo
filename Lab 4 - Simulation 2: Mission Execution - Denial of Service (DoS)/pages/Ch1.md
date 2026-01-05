@@ -18,7 +18,7 @@ By the end of this lab, you will gain practical experience in identifying DoS-in
 
 ## 1.3 References to Guide Lab Work
 
-**Please use the resources below for background understanding related to this lab:**
+**Please use the links below to learn the related information for this lab.**
 
 * Introductory material on Denial of Service (DoS) attacks
 
