@@ -473,26 +473,21 @@ pre[class*="language-"] {
 
 <h2 id="toc_2">1.1 Purpose of the lab.</h2>
 
-<p>In this module, you will learn how to plan, configure, and execute secure drone missions on the Arculus Zero-Trust edge-security testbed. Building on the node cluster you created and configured in the previous module, this lab focuses on how Arculus enforces mission-level policies, validates device capabilities, and securely orchestrates drone behavior during mission execution.</p>
+<p>In this module, you will learn how to observe and analyze the impact of a Denial of Service (DoS) attack within a simulated system environment. Building on the pre-configured simulation testbed, this lab focuses on understanding how excessive or abnormal traffic affects system availability and responsiveness during live operation.</p>
 
-<p>You will use the Mission Planning Dashboard to select mission types, assign drones to specific operational roles, set criticality levels, and choose mission destinations using the interactive map interface. Arculus automatically checks that each assigned drone has the required capabilities and blocks unsafe or incomplete mission plans—demonstrating how Zero-Trust principles prevent unauthorized operations before they begin.</p>
+<p>This lab is designed to provide hands-on exposure to a DoS scenario by allowing you to execute a controlled simulation and monitor system behavior before, during, and after the attack. Rather than implementing defensive mechanisms, the emphasis is on recognizing system stress, performance degradation, and availability failures caused by sustained request overload.</p>
 
 <p>Once a mission is created, you will generate and analyze encrypted mission manifests and observe how Arculus verifies integrity and rejects modified or tampered configurations. You will then execute the mission and monitor real-time telemetry, logs, and drone movement. During this phase, Arculus dynamically creates and removes network policies using Task-Based Access Control (TBAC), ensuring that drones communicate only when necessary for their assigned tasks.</p>
 
-<p>By the end of this module, you will have completed a full mission lifecycle—from planning and validation to execution and adversarial testing—gaining practical experience in how Zero-Trust security governs autonomous drone operations.</p>
+<p>By the end of this lab, you will gain practical experience in identifying DoS-induced service disruption and understanding why availability is a critical concern in cloud, edge, and mission-oriented systems.</p>
 
 <h2 id="toc_3">1.2 Prerequisites.</h2>
 
 <p>To follow along and get the most out of this module, you should:</p>
 <ul>
-  <li>Have successfully completed Configuring Node Clusters on the Arculus Testbed module</li>
-  <li>Have a fully functioning Arculus Portal with all required drones enrolled and configured (controller, surveillance drone, supply drone, relay drone).</li>
-  <li>Understand how to navigate the Arculus UI (devices, mission planning, mission execution dashboards).</li>
-  <li>Be familiar with EC2 instances and basic AWS concepts (public/private IPs, SSH).</li>
-  <li>Be comfortable interpreting logs and device telemetry during mission execution.</li>
-  <li>Have general knowledge of Zero-Trust principles (identity, least privilege, policy enforcement).</li>\
-  <li>Understand basic networking concepts (ingress/egress, CIDR, communication loss scenarios).</li>
-  <li>Have a modern web browser capable of running Arculus’ interactive mission dashboards.</li>
+  <li>Have access to the provided simulation environment</li>
+  <li>Be familiar with using a terminal or command-line interface</li>
+  <li>Understand basic concepts of system services and request-response behavior</li>
 </ul>
 
 
@@ -502,82 +497,31 @@ pre[class*="language-"] {
 
 <ul>
 <li> Arculus GitHub Repository – <a href="https://github.com/arculus-zt/arculus-sw/tree/master" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master</a></li>
-<li> AWS K3s – <a href="https://docs.k3s.io/" target="_blank">https://docs.k3s.io/</a></li>
-<li> Arculus GitHub Repository – <a href="https://github.com/arculus-zt/arculus-sw/tree/master" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master</a></li>
 <li> Arculus Documentation – <a href="https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs</a></li>
+<li> Simulation Walkthrough: Denial of Service (DoS) – <a href="https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQD_sNBAqRSCR6DmOCcVhGuZAan-PHZpl6rBye0nJXiGJd8?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=yUFXtq" target="_blank">https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQD_sNBAqRSCR6DmOCcVhGuZAan-PHZpl6rBye0nJXiGJd8?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=yUFXtq</a></li>
 </ul>
 
-<p>For this lab, we assume that you already have some knowledge/experience with using AWS platform. Here are some references for these prerequisites:</p>
 
-<ul>
-
-<li> Amazon Web Services – <a href="https://aws.amazon.com/" target="_blank">https://aws.amazon.com/</a></li>
-
-
-</ul>
-
-<h2 id="toc_4">1.4 Overview.</h2>
-
-<p>In this lab, we’ll use the Arculus Portal to configure, secure, and execute autonomous drone missions on your already-deployed Arculus testbed. You will learn how to onboard new drone devices (EC2 instances), assign trusted roles, validate mission capabilities, generate encrypted mission manifests, and run full mission simulations — all while observing how Arculus enforces Zero-Trust in real time.</p>
-
-<p>Drone nodes are lightweight Linux EC2 instances that join the Arculus cluster and take on specific roles such as Surveillance Drone, Supply Drone, Relay Drone, or Mission Controller. Each drone must be enrolled, approved, and assigned capabilities before it can participate in a mission. Arculus automatically validates whether a device has the privileges needed to execute its tasks.</p>
-
-<p>Arculus provides an interactive Mission Planning Dashboard where you can select devices, set mission criticality, choose map destinations, and download encrypted mission configuration files. During execution, Arculus activates temporary network-access policies, streams live telemetry, and enforces strict task-based restrictions to ensure that each drone performs only what it is authorized to do.</p>
-
-<p><b>Why Arculus for this module?</b></p>
-
-<ul>
-  <li><b>Zero-Trust Simulation:</b> Every drone must authenticate, be approved, and possess the correct privileges before the mission can begin.</li>
-  <li><b>Dynamic Policies:</b> Arculus creates and removes network policies automatically during mission execution.</li>
-  <li><b>Hands-on Device Security:</b> Students learn how enrollment, attestation, capability validation, and mission manifest verification work in practice.</li>
-  <li><b>Safe Experimentation:</b> Live mission execution includes built-in DDIL simulations (GPS spoofing, comms loss, battery constraints, etc.) without risking real hardware..</li>
-</ul>
-
-<h2 id="toc_9">1.5 Goals/Outcomes.</h2>
+<h2 id="toc_9">1.4 Goals/Outcomes.</h2>
 
 <p>By the end of this lab module, you will be able to:</p>
 
-<p><b>(i) Understand the Mission Planning Workflow</b></p>
+<p><b>(i) Understand DoS Impact on System Availability</b></p>
 <ul>
-  <li>Describe how Arculus validates mission parameters before execution.</li>
-  <li>Explain how device roles, mission criticality, and capability requirements affect mission creation.</li>
-  <li>Understand why a destination must be selected on the map and how Arculus handles missing or invalid configurations.</li>
+  <li>Identify how abnormal traffic patterns affect system performance.</li>
+  <li>Recognize symptoms of service degradation and reduced responsiveness.</li>
 </ul>
 
-<p><b>(ii) Create Secure Drone Missions</b></p>
+<p><b>(ii) Execute a DoS Simulation Scenario</b></p>
 <ul>
-  <li>Use the Mission Planning Dashboard to assign the controller, surveillance drone, supply drone, and relay drone.</li>
-  <li>Tune mission attributes such as criticality, logistics importance, and life-threat level.</li>
-  <li>Configure supervisors and viewers for mission oversight.</li>
-  <li>Validate that each device meets the minimum capability requirements before mission creation.</li>
+  <li>Run a pre-configured Denial of Service simulation.</li>
+  <li>Observe system behavior under normal and attack conditions</li>
 </ul>
 
-<p><b>(iii) Generate and Validate Mission Manifests</b></p>
+<p><b>(iii) Analyze System Behavior During Attack</b></p>
 <ul>
-  <li>Download encrypted mission manifests (.mconf) for repeatable deployments.</li>
-  <li>Understand how Arculus protects manifests against tampering and corruption.</li>
-  <li>Test what happens when a manifest is modified and learn how Arculus detects invalid files.</li>
-</ul>
-
-<p><b>(iv) Execute Missions and Monitor Live Operations</b></p>
-<ul>
-  <li>Execute missions directly from the Arculus UI using the Execute button or by uploading a valid manifest.</li>
-  <li>Use the Mission Execution Dashboard to monitor telemetry, drone positions, live logs, and task progression.</li>
-  <li>Observe how drones communicate during mission phases and how Arculus tracks mission health.</li>
-</ul>
-
-<p><b>(v) Observe Zero-Trust Enforcement with TBAC</b></p>
-<ul>
-  <li>Understand how Task-Based Access Control (TBAC) dynamically creates network policies only when needed.</li>
-  <li>View network policy changes in real time during mission execution.</li>
-  <li>Verify that all policies are automatically removed after mission completion.</li>
-</ul>
-
-<p><b>(vi) Simulate Adversarial and DDIL Conditions</b></p>
-<ul>
-  <li>Use the mission simulation controls to introduce faults.</li>
-  <li>Analyze how Arculus responds to degraded mission conditions while maintaining Zero-Trust enforcement.</li>
-  <li>Understand how Arculus integrates identity, capabilities, manifests, and policies into a cohesive secure mission workflow.</li>
+  <li>Compare baseline system behavior with attack-induced behavior</li>
+  <li>Understand why availability failures occur under sustained load</li>
 </ul>
 
 
