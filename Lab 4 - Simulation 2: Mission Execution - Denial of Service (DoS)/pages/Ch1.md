@@ -21,7 +21,7 @@ By the end of this lab, you will gain practical experience in identifying DoS-in
 **Please use the links below to learn the related information for this lab.**
 
 * Introductory material on Denial of Service (DoS) attacks
-* <a href = "https://github.com/arculus-zt/arculus-sw/tree/master">*Arculus GitHub Repository*</a> - Official docs and tutorials to learn Infrastructure as Code with Terraform
+* <a href = "https://github.com/arculus-zt/arculus-sw/tree/master"></a> - Arculus GitHub Repository
 
 * Documentation provided with the simulation environment
 
