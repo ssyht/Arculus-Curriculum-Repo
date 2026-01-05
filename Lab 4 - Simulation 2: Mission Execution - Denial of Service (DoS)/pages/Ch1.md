@@ -20,11 +20,12 @@ By the end of this lab, you will gain practical experience in identifying DoS-in
 
 **Please use the links below to learn the related information for this lab.**
 
-* <a href = "https://github.com/arculus-zt/arculus-sw/tree/master"> Arculus GitHub Repository</a> - This repository contains all files related to the simulation environment.
+* <a href = "https://github.com/arculus-zt/arculus-sw/tree/master"> Arculus GitHub Repository</a>
 
-* Documentation provided with the simulation environment
+* <a href = "https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs"> Arculus Documentation</a>
 
-* Course reference material on system availability and performance
+* <a href = "https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQD_sNBAqRSCR6DmOCcVhGuZAan-PHZpl6rBye0nJXiGJd8?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=yUFXtq"> Walkthrough Video - Denial of Service (DoS)</a>
+
 
 ## 1.4 Goals/Outcomes
 
