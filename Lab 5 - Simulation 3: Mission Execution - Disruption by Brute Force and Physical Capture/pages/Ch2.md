@@ -51,9 +51,35 @@ In this step, you will execute the mission that was previously created and valid
 
 <p align="center"> <img src="../img/ch2_sim2.png" width="900px"></p>
 
-* To initiate the Denial of Service scenario, navigate to the simulation controls at the top of the Mission Execution Dashboard. From the available simulation options, select **Simulate Denial of Service**. This action introduces a DoS condition into the active mission environment.
+* To initiate the Brute Force scenario, navigate to the simulation controls at the top of the Mission Execution Dashboard. From the available simulation options, select **Simulate Brute Force SSH**. This action introduces a Brute Force condition into the active mission environment.
 
-<p align="center"> <img src="../img/ch2_click_sim_DoS.png" width="900px"></p> 
+<p align="center"> <img src="../img/sim3-brute_force.png" width="900px"></p> 
+
+* As the simulation runs, you can view the activity logs.
+
+<p align="center"> <img src="../img/sim3_act_logs.png" width="900px"></p> 
+
+* Next, let's initiate the physical capture scenario. From the available simulation options, select **Simulate Physical Capture**.
+
+<p align="center"> <img src="../img/sim3_physical_cap.png" width="900px"></p> 
+
+* Now, view the logs and see the reading accordingly as the simulation runs.
+
+<p align="center"> <img src="../img/physical_cap_logs.png" width="900px"></p> 
+
+* Upon reading and understanding the logs, click on **Abort Mission** which is available in the lower right corner.
+
+<p align="center"> <img src="../img/mission_abort.png" width="900px"></p> 
+
+* Navigate back to the Mission Execution dashboard to see the status of the mission.
+
+<p align="center"> <img src="../img/end_result.png" width="900px"></p> 
+
+
+
+
+
+
 
 
 
