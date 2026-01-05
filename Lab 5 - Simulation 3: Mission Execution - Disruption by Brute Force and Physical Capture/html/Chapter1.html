@@ -473,21 +473,21 @@ pre[class*="language-"] {
 
 <h2 id="toc_2">1.1 Purpose of the lab.</h2>
 
-<p>In this module, you will learn how to observe and analyze the impact of a Denial of Service (DoS) attack within a simulated system environment. Building on the pre-configured simulation testbed, this lab focuses on understanding how excessive or abnormal traffic affects system availability and responsiveness during live operation.</p>
+<p>In this module, you will learn how mission execution can be disrupted through Brute Force access attempts and Physical Capture within a simulated operational environment. Building on the pre-configured mission execution framework, this lab focuses on observing how the system responds to adversarial actions targeting authentication mechanisms and physical assets during an active mission.</p>
 
-<p>This lab is designed to provide hands-on exposure to a DoS scenario by allowing you to execute a controlled simulation and monitor system behavior before, during, and after the attack. Rather than implementing defensive mechanisms, the emphasis is on recognizing system stress, performance degradation, and availability failures caused by sustained request overload.</p>
+<p>This lab provides hands-on exposure to two distinct disruption techniques by allowing you to execute a mission and introduce controlled adversarial conditions. The emphasis is on understanding system behavior when faced with unauthorized access attempts and physical compromise of mission components.</p>
 
 <p>Once a mission is created, you will generate and analyze encrypted mission manifests and observe how Arculus verifies integrity and rejects modified or tampered configurations. You will then execute the mission and monitor real-time telemetry, logs, and drone movement. During this phase, Arculus dynamically creates and removes network policies using Task-Based Access Control (TBAC), ensuring that drones communicate only when necessary for their assigned tasks.</p>
 
-<p>By the end of this lab, you will gain practical experience in identifying DoS-induced service disruption and understanding why availability is a critical concern in cloud, edge, and mission-oriented systems.</p>
+<p>By the end of this lab, you will gain practical insight into how mission continuity and control can be affected by brute force attacks and physical capture events in mission-oriented systems.</p>
 
 <h2 id="toc_3">1.2 Prerequisites.</h2>
 
 <p>To follow along and get the most out of this module, you should:</p>
 <ul>
   <li>Have access to the provided simulation environment</li>
-  <li>Be familiar with using a terminal or command-line interface</li>
-  <li>Understand basic concepts of system services and request-response behavior</li>
+  <li>Be familiar with navigating the Mission Execution Dashboard</li>
+  <li>Understand basic mission execution flow and system monitoring</li>
 </ul>
 
 
@@ -498,7 +498,7 @@ pre[class*="language-"] {
 <ul>
 <li> Arculus GitHub Repository – <a href="https://github.com/arculus-zt/arculus-sw/tree/master" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master</a></li>
 <li> Arculus Documentation – <a href="https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs</a></li>
-<li> Simulation Walkthrough: Denial of Service (DoS) – <a href="https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQD_sNBAqRSCR6DmOCcVhGuZAan-PHZpl6rBye0nJXiGJd8?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=yUFXtq" target="_blank">https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQD_sNBAqRSCR6DmOCcVhGuZAan-PHZpl6rBye0nJXiGJd8?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=yUFXtq</a></li>
+<li> Simulation Walkthrough: Denial of Service (DoS) – <a href="https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQB3Ii4UIVO8SYh5K7jvd2D0AbBpd5T1yKepnx0JquT_89E?e=l0wxAM&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D" target="_blank">https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQB3Ii4UIVO8SYh5K7jvd2D0AbBpd5T1yKepnx0JquT_89E?e=l0wxAM&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D</a></li>
 </ul>
 
 
@@ -506,22 +506,22 @@ pre[class*="language-"] {
 
 <p>By the end of this lab module, you will be able to:</p>
 
-<p><b>(i) Understand DoS Impact on System Availability</b></p>
+<p><b>(i) Understand Distruption Scenarios</b></p>
 <ul>
-  <li>Identify how abnormal traffic patterns affect system performance.</li>
-  <li>Recognize symptoms of service degradation and reduced responsiveness.</li>
+  <li>Identify how brute force access attempts impact mission execution</li>
+  <li>Recognize the effects of physical capture on mission components</li>
 </ul>
 
-<p><b>(ii) Execute a DoS Simulation Scenario</b></p>
+<p><b>(ii) Execute Disruption Simulations</b></p>
 <ul>
-  <li>Run a pre-configured Denial of Service simulation.</li>
-  <li>Observe system behavior under normal and attack conditions</li>
+  <li>Run a mission and introduce brute force attack conditions</li>
+  <li>Simulate physical capture during an active mission</li>
 </ul>
 
-<p><b>(iii) Analyze System Behavior During Attack</b></p>
+<p><b>(iii) Observe System Behavior</b></p>
 <ul>
-  <li>Compare baseline system behavior with attack-induced behavior</li>
-  <li>Understand why availability failures occur under sustained load</li>
+  <li>Monitor system responses during disruption events</li>
+  <li>Analyze activity logs and mission behavior under attack</li>
 </ul>
 
 
