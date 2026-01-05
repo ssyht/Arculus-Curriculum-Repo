@@ -24,4 +24,4 @@ At this stage, the system should be stable and responsive.
 
 * Click on to Planning Mission Dashboard
 
-<p align="center"> <img src="../img/ch2_planning_dashboard.png" width="900px"></p>
+<p align="center"> <img src="../img/ch2_planning_dashboard copy.png" width="900px"></p>
