@@ -43,3 +43,15 @@ At this stage, the system should be stable and responsive.
 * Running the simulation
 
 <p align="center"> <img src="../img/ch2_sim2.png" width="900px"></p>
+
+* Above, navigate and click **Simulate Denial of Service.**
+
+<p align="center"> <img src="../img/ch2_click_sim_DoS.png" width="900px"></p> 
+
+* On the right side, view the activity log as the simulation runs.
+
+<p align="center"> <img src="../img/ch2_act_logs.png" width="900px"></p>
+
+* Upon the results of the activity log, the mission will come to a complete.
+
+<p align="center"> <img src="../img/ch2_mission_complete.png" width="900px"></p>
