@@ -61,11 +61,12 @@ In this step, you will execute the mission that was previously created and valid
 
 <p align="center"> <img src="../img/sim3_act_logs.png" width="900px"></p> 
 
-* Next, let's initiate the physical capture scenario. From the available simulation options, select **Simulate Physical Capture**.
+* After observing the effects of the brute force access attempt, the next step is to simulate a physical capture event. With the mission still running, navigate to the simulation controls at the top of the Mission Execution Dashboard and select **Simulate Physical Capture**.
 
 <p align="center"> <img src="../img/sim3_physical_cap.png" width="900px"></p> 
 
-* Now, view the logs and see the reading accordingly as the simulation runs.
+* This action introduces a physical compromise scenario into the active mission environment. The simulation represents a situation where a mission asset is physically intercepted or disabled during operation.
+* On the right-hand side of the dashboard, review the Activity Log as new entries appear. The activity log records detection of the physical capture condition and documents the system’s response. Log messages indicate that mission execution has been disrupted and that protective actions are being taken to safeguard sensitive data.
 
 <p align="center"> <img src="../img/physical_cap_logs.png" width="900px"></p> 
 
