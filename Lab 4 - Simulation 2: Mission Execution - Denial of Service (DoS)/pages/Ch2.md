@@ -26,5 +26,8 @@ At this stage, the system should be stable and responsive.
 
 <p align="center"> <img src="../img/ch2_planning_dashboard copy.png" width="900px"></p>
 
+* Select the previously used **Manifest File.***
+
+<p align="center"> <img src="../img/ch2_select_manifest_file.png" width="900px"></p>
 
 <p align="center"> <img src="../img/ch2_select_manifest_file.png" width="900px"></p>
