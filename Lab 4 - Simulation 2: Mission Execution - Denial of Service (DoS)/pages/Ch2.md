@@ -39,3 +39,7 @@ At this stage, the system should be stable and responsive.
 * Click on **Mission Execution Dashboard** for the simulation
 
 <p align="center"> <img src="../img/ch2_mission_execution_sim.png" width="900px"></p>
+
+* Running the simulation
+
+<p align="center"> <img src="../img/ch2_sim2.png" width="900px"></p>
