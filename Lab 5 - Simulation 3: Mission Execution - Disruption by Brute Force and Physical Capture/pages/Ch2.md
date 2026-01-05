@@ -51,11 +51,13 @@ In this step, you will execute the mission that was previously created and valid
 
 <p align="center"> <img src="../img/ch2_sim2.png" width="900px"></p>
 
-* To initiate the Brute Force scenario, navigate to the simulation controls at the top of the Mission Execution Dashboard. From the available simulation options, select **Simulate Brute Force SSH**. This action introduces a Brute Force condition into the active mission environment.
+* To initiate the brute force disruption scenario, navigate to the simulation controls located at the top of the Mission Execution Dashboard. From the available simulation options, select Simulate Brute Force SSH. This action introduces a brute force access attempt into the active mission environment.
 
 <p align="center"> <img src="../img/sim3-brute_force.png" width="900px"></p> 
 
-* As the simulation runs, you can view the activity logs.
+* Once enabled, the system begins generating repeated unauthorized SSH connection attempts targeting mission components. These attempts simulate an adversary trying to gain access through credential guessing or repeated authentication failures while the mission is actively running.
+
+* As the simulation progresses, monitor the Activity Log displayed on the right side of the dashboard. The activity log records real-time system events related to authentication failures and security enforcement actions. Log messages indicate detection of unauthorized SSH attempts and reflect how the system responds under these conditions.
 
 <p align="center"> <img src="../img/sim3_act_logs.png" width="900px"></p> 
 
