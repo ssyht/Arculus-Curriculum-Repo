@@ -59,9 +59,9 @@ In this step, you will execute the mission that was previously created and valid
 * On the right side, view the activity log as the simulation runs.
 * After triggering the Denial of Service simulation, monitor the system behavior closely.
 * As the DoS condition is applied:
-  (i) The system begins experiencing abnormal traffic patterns.
+  *(i) The system begins experiencing abnormal traffic patterns.
   (ii) Mission components may exhibit delayed or altered behavior.
-  (iii) System responses reflect stress caused by excessive request volume.
+  (iii) System responses reflect stress caused by excessive request volume.*
 
 <p align="center"> <img src="../img/ch2_act_logs.png" width="900px"></p>
 
