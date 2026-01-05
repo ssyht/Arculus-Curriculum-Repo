@@ -35,3 +35,7 @@ At this stage, the system should be stable and responsive.
 * Upon uploading the file, click **Execute Mission**
 
 <p align="center"> <img src="../img/ch2_click_execute_mission.png" width="900px"></p>
+
+* Click on **Mission Execution Dashboard** for the simulation
+
+<p align="center"> <img src="../img/ch2_mission_execution_sim.png" width="900px"></p>
