@@ -18,11 +18,15 @@ At this stage, the system should be stable and responsive.
 
 ## 2.3 Mission Execution
 
-* Navigate to the **Mission Executions** within the portal.
+In this step, you will execute the mission that was previously created and validated. Mission execution is performed through the Mission Execution Dashboard, which allows you to launch, monitor, and observe mission behavior during runtime.
+
+* Begin by navigating to the Mission Executions section within the Arculus portal. This section provides a centralized view of all missions available for execution, along with their current status and metadata.
+* Once inside the Mission Execution Dashboard, you will see a list of missions that have already been created. Each mission entry includes details such as the mission location, mission type, creator, duration, and execution status.
 
 <p align="center"> <img src="../img/ch2_img.png" width="900px"></p>
 
 * Click on to **Planning Mission Dashboard.**
+* To initiate mission execution, select the option to Execute using Mission Manifest File. This action instructs the system to load the validated mission manifest and begin executing the mission according to the defined parameters and constraints.
 
 <p align="center"> <img src="../img/ch2_planning_dashboard copy.png" width="900px"></p>
 
@@ -33,6 +37,7 @@ At this stage, the system should be stable and responsive.
 <p align="center"> <img src="../img/ch2_manifest_file.png" width="900px"></p>
 
 * Upon uploading the file, click **Execute Mission**
+* After selecting the mission for execution, the system transitions the mission from a configured state into an active runtime state. During this phase, Arculus enforces mission-level policies and ensures that only authorized components participate in execution.
 
 <p align="center"> <img src="../img/ch2_click_execute_mission.png" width="900px"></p>
 
