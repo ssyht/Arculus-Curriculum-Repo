@@ -78,6 +78,9 @@ In this step, you will execute the mission that was previously created and valid
 
 <p align="center"> <img src="../img/end_result.png" width="900px"></p> 
 
+## As a Result
+
+In this chapter, you executed a mission and introduced disruption scenarios through brute force access attempts and physical capture. By observing activity logs and system behavior, you saw how the mission responded to unauthorized access and physical compromise during live execution. The mission was ultimately aborted in safe mode, demonstrating how the system prioritizes data protection and controlled shutdown when mission integrity is at risk. This scenario highlights the importance of security-aware execution and safe termination in adversarial mission environments.
 
 
 
