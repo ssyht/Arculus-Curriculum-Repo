@@ -1,4 +1,4 @@
-# Chapter 2 - Simulation Demo
+# Chapter 2 - Mission Execution
 
 ## 2.1 Overview
 
@@ -12,11 +12,11 @@ Before starting the simulation, ensure that:
 
 * The simulation environment is running and accessible
 * All required services are in a normal operational state
-* You have access to the terminal or console used to run the simulation
+* The previously downloaded manifest file still exist to use for this lab
 
 At this stage, the system should be stable and responsive.
 
-## 2.3 Observing Baseline System Behavior
+## 2.3 Mission Execution
 
-Prior to initiating the attack scenario, observe the system under normal conditions.
+* Navigate to the
 
