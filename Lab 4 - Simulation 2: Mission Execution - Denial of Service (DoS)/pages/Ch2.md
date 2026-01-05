@@ -18,5 +18,6 @@ At this stage, the system should be stable and responsive.
 
 ## 2.3 Mission Execution
 
-* Navigate to the
+* Navigate to the mission execution dashboard within the portal.
 
+<p align="center"> <img src="../img/ch2_img.png" width="900px"></p>
