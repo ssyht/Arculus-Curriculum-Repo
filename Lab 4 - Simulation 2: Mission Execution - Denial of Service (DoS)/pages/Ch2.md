@@ -41,7 +41,8 @@ In this step, you will execute the mission that was previously created and valid
 
 <p align="center"> <img src="../img/ch2_click_execute_mission.png" width="900px"></p>
 
-* Click on **Mission Execution Dashboard** for the simulation
+* After initiating the mission, navigate to the **Mission Execution Dashboard** to observe the live simulation.
+* The Mission Execution Dashboard provides a real-time visualization of the mission environment, including drone positions, movement, and operational context. The interface allows you to monitor mission progress as it unfolds and observe how the system responds during execution.
 
 <p align="center"> <img src="../img/ch2_mission_execution_sim.png" width="900px"></p>
 
