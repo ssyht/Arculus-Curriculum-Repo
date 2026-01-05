@@ -18,10 +18,12 @@ At this stage, the system should be stable and responsive.
 
 ## 2.3 Mission Execution
 
-* Navigate to the **Mission Execution Dashboard** within the portal.
+* Navigate to the **Mission Executions** within the portal.
 
 <p align="center"> <img src="../img/ch2_img.png" width="900px"></p>
 
 * Click on to **Planning Mission Dashboard.**
 
 <p align="center"> <img src="../img/ch2_planning_dashboard copy.png" width="900px"></p>
+
+
