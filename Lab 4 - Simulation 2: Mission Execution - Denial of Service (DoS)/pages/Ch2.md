@@ -46,15 +46,22 @@ In this step, you will execute the mission that was previously created and valid
 
 <p align="center"> <img src="../img/ch2_mission_execution_sim.png" width="900px"></p>
 
-* Running the simulation
+* **Running the simulation**
+* Once the mission is actively running in the Mission Execution Dashboard, the simulation environment becomes fully interactive. At this stage, all mission entities are visible on the map, and the system is operating under normal mission conditions.
+* Before introducing any disruptions, observe the baseline behavior of the mission. Confirm that drones are following their assigned paths and that mission progress appears stable.
 
 <p align="center"> <img src="../img/ch2_sim2.png" width="900px"></p>
 
-* Above, navigate and click **Simulate Denial of Service.**
+* To initiate the Denial of Service scenario, navigate to the simulation controls at the top of the Mission Execution Dashboard. From the available simulation options, select **Simulate Denial of Service**. This action introduces a DoS condition into the active mission environment.
 
 <p align="center"> <img src="../img/ch2_click_sim_DoS.png" width="900px"></p> 
 
 * On the right side, view the activity log as the simulation runs.
+* After triggering the Denial of Service simulation, monitor the system behavior closely.
+* As the DoS condition is applied:
+  (i) The system begins experiencing abnormal traffic patterns.
+  (ii) Mission components may exhibit delayed or altered behavior.
+  (iii) System responses reflect stress caused by excessive request volume.
 
 <p align="center"> <img src="../img/ch2_act_logs.png" width="900px"></p>
 
