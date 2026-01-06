@@ -8,3 +8,9 @@ The objective of this chapter is to observe how the system behaves when connecti
 
 ## 2.2 Preparing the Environment
 
+Before starting the simulation, ensure that:
+
+* The simulation environment is running and accessible
+* The mission is visible within the Mission Execution Dashboard
+* All mission components are operating normally
+
