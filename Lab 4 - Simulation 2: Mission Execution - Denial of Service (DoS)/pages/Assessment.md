@@ -12,7 +12,7 @@ C. To reconfigure mission roles dynamically
 
 D. To simulate physical capture of mission assets
 
-**Correct Answer: To observe how system availability and responsiveness are affected**
+**Correct Answer:** To observe how system availability and responsiveness are affected
 
 ## Question 2
 
@@ -26,7 +26,7 @@ C. Encryption keys used in mission execution
 
 D. Network firewall rule configurations
 
-**Correct Answer: Normal system responsiveness and service behavior**
+**Correct Answer:** Normal system responsiveness and service behavior
 
 ## Question 3
 
@@ -40,7 +40,7 @@ C. Selecting Simulate Denial of Service from the simulation controls
 
 D. Navigating to the Mission Planning Dashboard
 
-**Correct Answer: Selecting Simulate Denial of Service from the simulation controls**
+**Correct Answer:** Selecting Simulate Denial of Service from the simulation controls
 
 ## Question 4
 
@@ -54,7 +54,7 @@ C. User Management Panel
 
 D. Node Configuration View
 
-**Correct Answer: Activity Log**
+**Correct Answer:** Activity Log
 
 ## Question 5
 
@@ -68,4 +68,4 @@ C. Degraded responsiveness due to excessive traffic
 
 D. Immediate shutdown of all mission components
 
-**Correct Answer: Degraded responsiveness due to excessive traffic**
+**Correct Answer:** Degraded responsiveness due to excessive traffic
