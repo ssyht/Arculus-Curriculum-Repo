@@ -24,3 +24,13 @@ The objective of this chapter is to observe how the system behaves when connecti
 
 ## 2.3 Mission Execution
 
+In this step, you will execute the mission that was previously created and validated. Mission execution is performed through the Mission Execution Dashboard, which allows you to launch, monitor, and observe mission behavior during runtime.
+
+* After initiating the mission, navigate to the **Mission Execution Dashboard** to observe the live simulation.
+* The Mission Execution Dashboard provides a real-time visualization of the mission environment, including drone positions, movement, and operational context. The interface allows you to monitor mission progress as it unfolds and observe how the system responds during execution.
+
+<p align="center"> <img src="../img/ch2_mission_execution_sim.png" width="900px"></p>
+
+* **Running the simulation**
+* Once the mission is actively running in the Mission Execution Dashboard, the simulation environment becomes fully interactive. At this stage, all mission entities are visible on the map, and the system is operating under normal mission conditions.
+* Before introducing any disruptions, observe the baseline behavior of the mission. Confirm that drones are following their assigned paths and that mission progress appears stable.
