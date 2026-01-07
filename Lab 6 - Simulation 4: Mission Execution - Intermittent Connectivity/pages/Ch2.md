@@ -22,3 +22,5 @@ The objective of this chapter is to observe how the system behaves when connecti
 
 * Once the location is set, click on the "Create Mission" button to create the mission. Next we will execute the mission and perform some actions to simulate the Low battery capacity scenario.
 
+## 2.3 Mission Execution
+
