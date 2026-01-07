@@ -6,39 +6,25 @@ This chapter walks through the execution of Simulation Scenario 2: Disruption by
 
 The objective of this chapter is to observe how the system behaves when mission execution is disrupted through unauthorized access attempts and physical compromise. No configuration changes or defensive actions are required.
 
-## 2.2 Preparing the Environment
+## 2.2 Mission Planning
 
-Before starting the simulation, ensure that:
-* The simulation environment is running and accessible
-* The mission is visible within the Mission Execution Dashboard
-* All mission components are operating normally
+* The Mission Planning Dashboard allows for configuring drone missions by specifying which devices to use, what the context (criticality) of the mission is, who the supervisors and viewers of the mission are, and logistics information. Let us first pick the mission type by navigating to the Mission Planning page as shown in the image below and selecting "Stealthy Reconnaissance and Resupply" mission type to begin configuring the mission.
 
-At this stage, the system should be stable and ready for execution.
+<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+
+* From the page as shown below, select the appropriate drone you will be using for various tasks such as surveillance, supply, etc. Also select the criticality. For this exercise, you can choose any settings or leave them as default.
+
+<p align="center"> <img src="../img/ch2_2.2_2.png" width="900px"></p>
+
+* Scroll down from the page to view the map. You will use your mouse to pin a supply destination to deliver the supplies. As it shows in the image below, you will see a pinned destination (encircled in image.)
+
+<p align="center"> <img src="../img/ch2_2.2_3.png" width="900px"></p>
+
+* Once the location is set, click on the "Create Mission" button to create the mission. Next we will execute the mission and perform some actions to simulate the Low battery capacity scenario.
 
 ## 2.3 Mission Execution
 
 In this step, you will execute the mission that was previously created and validated. Mission execution is performed through the Mission Execution Dashboard, which allows you to launch, monitor, and observe mission behavior during runtime.
-
-* Begin by navigating to the Mission Executions section within the Arculus portal. This section provides a centralized view of all missions available for execution, along with their current status and metadata.
-* Once inside the Mission Execution Dashboard, you will see a list of missions that have already been created. Each mission entry includes details such as the mission location, mission type, creator, duration, and execution status.
-
-<p align="center"> <img src="../img/ch2_img.png" width="900px"></p>
-
-* Click on to **Planning Mission Dashboard.**
-* To initiate mission execution, select the option to Execute using Mission Manifest File. This action instructs the system to load the validated mission manifest and begin executing the mission according to the defined parameters and constraints.
-
-<p align="center"> <img src="../img/ch2_planning_dashboard copy.png" width="900px"></p>
-
-* Select the previously used **Manifest File.**
-
-<p align="center"> <img src="../img/ch2_select_manifest_file.png" width="900px"></p>
-
-<p align="center"> <img src="../img/ch2_manifest_file.png" width="900px"></p>
-
-* Upon uploading the file, click **Execute Mission**
-* After selecting the mission for execution, the system transitions the mission from a configured state into an active runtime state. During this phase, Arculus enforces mission-level policies and ensures that only authorized components participate in execution.
-
-<p align="center"> <img src="../img/ch2_click_execute_mission.png" width="900px"></p>
 
 * After initiating the mission, navigate to the **Mission Execution Dashboard** to observe the live simulation.
 * The Mission Execution Dashboard provides a real-time visualization of the mission environment, including drone positions, movement, and operational context. The interface allows you to monitor mission progress as it unfolds and observe how the system responds during execution.
