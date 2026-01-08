@@ -5,7 +5,7 @@
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Chapter 2</title>
+<title>Chapter 1</title>
 
 
 <style type="text/css">
@@ -471,72 +471,57 @@ pre[class*="language-"] {
 
 <body>
 
-<h2 id="toc_2">2.1 Overview</h2>
+<h2 id="toc_2">1.1 Purpose of the lab.</h2>
 
-<p>This chapter walks through the complete execution of Simulation Scenario 1: Denial of Service (DoS). In this demo, you will run a pre-configured simulation and observe how the system behaves under normal conditions and how that behavior changes when a DoS-style attack is introduced.</p>
+<p>In this module, you will learn how intermittent network connectivity affects mission execution during live operations. Building on the mission execution framework used in previous scenarios, this lab focuses on observing how temporary communication disruptions impact system behavior, mission progress, and operational awareness.</p>
 
-<p>The objective of this chapter is to execute the simulation end-to-end and observe the impact on system availability and responsiveness. No configuration changes or defensive actions are required.</p>
+<p>This lab provides hands-on exposure to intermittent connectivity conditions by allowing you to execute a mission and introduce controlled communication disruptions. The emphasis is on understanding how mission components behave when connectivity is unstable or partially unavailable, rather than implementing recovery or mitigation mechanisms.</p>
 
+<p>By the end of this lab, you will gain practical insight into how intermittent connectivity influences mission reliability and execution in distributed and mission-oriented systems.</p>
 
-<h2 id="toc_3">2.2 Mission Planning</h2>
+<h2 id="toc_3">1.2 Prerequisites.</h2>
 
+<p>To follow along and get the most out of this module, you should:</p>
 <ul>
-	<li>The Mission Planning Dashboard allows for configuring drone missions by specifying which devices to use, what the context (criticality) of the mission is, who the supervisors and viewers of the mission are, and logistics information. Let us first pick the mission type by navigating to the Mission Planning page as shown in the image below and selecting "Stealthy Reconnaissance and Resupply" mission type to begin configuring the mission.</li>
+  <li>Introductory material on network connectivity and reliability</li>
+  <li>Documentation related to mission execution and communication dependencies</li>
+  <li>Understand basic concepts of system services and request-response behavior</li>
 </ul>
 
-<p align = "center"><img src="../img/ch2_2.2_1.png" width="65%" alt="ch2_2.2_1"></p> 
+
+
+<h2 id="toc_3">1.3 References to guide lab work.</h2>
+<p>Please use the links below to learn the related information for this lab.</p>
 
 <ul>
-	<li>From the page as shown below, select the appropriate drone you will be using for various tasks such as surveillance, supply, etc. Also select the criticality. For this exercise, you can choose any settings or leave them as default.</li>
+<li> Arculus GitHub Repository – <a href="https://github.com/arculus-zt/arculus-sw/tree/master" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master</a></li>
+<li> Arculus Documentation – <a href="https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs</a></li>
+<li> Simulation Walkthrough: Intermittent Connectivity – <a href="https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQDhSG3rBvDqRYCAtsWTlmTNAWZ5fglPevonEDR931sXyrA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=zGyibW" target="_blank">https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQDhSG3rBvDqRYCAtsWTlmTNAWZ5fglPevonEDR931sXyrA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=zGyibW</a></li>
 </ul>
-	
-<p align = "center"><img src="../img/ch2_2.2_2.png" width="65%" alt="ch2_2.2_2"></p> 
+
+
+<h2 id="toc_9">1.4 Goals/Outcomes.</h2>
+
+<p>By the end of this lab module, you will be able to:</p>
+
+<p><b>(i) Understand Connectivity Disruption Scenarios</b></p>
 <ul>
-	<li>Scroll down from the page to view the map. You will use your mouse to pin a supply destination to deliver the supplies. As it shows in the image below, you will see a pinned destination (encircled in image.)</li>
+  <li>Identify how intermittent connectivity affects mission execution.</li>
+  <li>Recognize symptoms of partial or unstable communication</li>
 </ul>
-	
-<p align = "center"><img src="../img/ch2_2.2_3.png" width="65%" alt="ch2_2.2_3"></p> 
 
+<p><b>(ii) Execute Connectivity Disruption Simulations</b></p>
 <ul>
-	<li>Once the location is set, click on the "Create Mission" button to create the mission. Next we will execute the mission and perform some actions to simulate the Low battery capacity scenario.</li>
+  <li>Run a mission under normal connectivity conditions.</li>
+  <li>Introduce intermittent connectivity during active execution</li>
 </ul>
-  
-<h2 id="toc_3">2.3 Mission Execution</h2>
 
-<p>In this step, you will execute the mission that was previously created and validated. Mission execution is performed through the Mission Execution Dashboard, which allows you to launch, monitor, and observe mission behavior during runtime.</p>
-
-<h3 id="toc_3">2.3.1 Running the Simulation</h3>
-
+<p><b>(iii) Observe System Behavior</b></p>
 <ul>
-	<li>Once the mission is actively running in the Mission Execution Dashboard, the simulation environment becomes fully interactive. At this stage, all mission entities are visible on the map, and the system is operating under normal mission conditions.</li>
-	<li>Before introducing any disruptions, observe the baseline behavior of the mission. Confirm that drones are following their assigned paths and that mission progress appears stable.</li>
+  <li>Monitor mission behavior during connectivity disruptions</li>
+  <li>Analyze activity logs related to communication loss and recovery</li>
 </ul>
 
-<p align = "center"><img src="../img/ch2_sim2.png" width="65%" alt="ch2_sim2"></p> 
-
-<ul>
-	<li>To initiate the Denial of Service scenario, navigate to the simulation controls at the top of the Mission Execution Dashboard. From the available simulation options, select **Simulate Denial of Service**. This action introduces a DoS condition into the active mission environment.</li>
-</ul>
-
-<p align = "center"><img src="../img/ch2_click_sim_DoS.png" width="65%" alt="ch2_click_sim_DoS"></p> 
-
-<ul>
-	<li>On the right side, view the activity log as the simulation runs.</li>
-	<li>After triggering the Denial of Service simulation, monitor the system behavior closely.</li>
-	<li>As the DoS condition is applied: <i>(i) The system begins experiencing abnormal traffic patterns. (ii) Mission components may exhibit delayed or altered behavior. (iii) System responses reflect stress caused by excessive request volume.</i></li>
-</ul>
-	
-<p align = "center"><img src="../img/ch2_act_logs.png" width="65%" alt="ch2_act_logs"></p> 
-
-<ul>
-	<li>Upon the results of the activity log, the mission will come to a complete.</li>
-</ul>
-
-<p align = "center"><img src="../img/ch2_mission_complete.png" width="65%" alt="ch2_mission_complete"></p> 
-
-
-<h2 id="toc_3">2.4 As a Result</h2>
-<p>In this chapter, you executed the Denial of Service simulation and observed its impact during an active mission. By running the mission and introducing a DoS condition, you were able to monitor how system behavior changed under abnormal traffic and how mission execution was affected in real time. This hands-on demonstration highlights the importance of availability and controlled execution in mission-oriented systems and prepares you for later modules that explore detection, mitigation, and resilience strategies.</p>
 
 
 <script type="text/javascript">
