@@ -31,6 +31,53 @@ In this step, you will execute the mission that was previously created and valid
 
 <p align="center"> <img src="../img/ch2_mission_execution_sim.png" width="900px"></p>
 
-* **Running the simulation**
+### 2.3.1 Running the simulation
+
 * Once the mission is actively running in the Mission Execution Dashboard, the simulation environment becomes fully interactive. At this stage, all mission entities are visible on the map, and the system is operating under normal mission conditions.
 * Before introducing any disruptions, observe the baseline behavior of the mission. Confirm that drones are following their assigned paths and that mission progress appears stable.
+
+<p align="center"> <img src="../img/ch2_sim2.png" width="900px"></p>
+
+* On the top left, click on **Simulate Communication Loss** 
+
+<p align="center"> <img src="../img/IC_Simulate_Com_1.png" width="900px"></p>
+
+* As the mission executes, observe the simulation as communication between the ground station and the surveillance drone becomes unavailable. This represents an intermittent connectivity condition where direct communication cannot be maintained.
+* When the communication loss is detected, the system automatically deploys the **communication relay** drone. The relay drone acts as an intermediary bridge, restoring communication between the surveillance drone and the ground station.
+
+<p align="center"> <img src="../img/IC_Com_Relay_2.png" width="900px"></p>
+
+* Based on the drone simulation, it will come back as the relay drone stands as a bridge.
+
+<p align="center"> <img src="../img/IC_drone_comeback_3.png" width="900px"></p>
+
+* Next, from the simulation controls located at the top of the Mission Execution Dashboard, select **Simulate GPS Spoofing**
+* This action introduces a GPS spoofing condition while the mission is still running under intermittent connectivity. The simulation represents an adversarial attempt to manipulate or distort the location data received by the surveillance drone.
+
+<p align="center"> <img src="../img/IC_gps_spoof_4.png" width="900px"></p>
+
+* As the simulation continues, closely monitor the Activity Log on the right-hand side of the dashboard.
+* These log entries provide visibility into how the system identifies connectivity disruptions and responds to abnormal navigation data during mission execution.
+
+<p align="center"> <img src="../img/IC_activity_log_5.png" width="400px"></p>
+
+* As GPS spoofing is introduced, observe the behavior of the surveillance drone on the mission map.
+* You will notice that the surveillance drone changes its trajectory in response to the detected GPS anomaly. This behavior indicates that the system has identified unreliable location data and has taken corrective action by adjusting movement to follow a predefined or safer flight path.
+
+<p align="center"> <img src="../img/IC_6.png" width="900px"></p>
+
+
+<p align="center"> <img src="../img/IC_7.png" width="900px"></p>
+
+* Despite intermittent communication loss and navigation interference, the mission continues executing under predefined constraints. Observe how the system maintains operational progress by relying on autonomous decision-making and fallback behaviors.
+
+<p align="center"> <img src="../img/IC_8.png" width="900px"></p>
+
+* The surveillance and supply drones continue executing their assigned roles while adapting to degraded communication conditions. This phase highlights how mission execution does not immediately halt when connectivity becomes unreliable.
+
+<p align="center"> <img src="../img/IC_9.png" width="900px"></p>
+
+* As the mission reaches completion, observe the final system notification indicating successful mission execution.
+* The Mission Accomplished message confirms that supplies have been delivered despite intermittent connectivity and navigation disruptions. This outcome demonstrates the system’s ability to complete mission objectives under degraded network conditions.
+
+<p align="center"> <img src="../img/IC_10.png" width="900px"></p>
