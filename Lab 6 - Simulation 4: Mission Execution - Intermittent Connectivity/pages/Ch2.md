@@ -81,3 +81,7 @@ In this step, you will execute the mission that was previously created and valid
 * The Mission Accomplished message confirms that supplies have been delivered despite intermittent connectivity and navigation disruptions. This outcome demonstrates the system’s ability to complete mission objectives under degraded network conditions.
 
 <p align="center"> <img src="../img/IC_10.png" width="900px"></p>
+
+## 2.4 As a Result
+
+As a result of this simulation, you observed how mission execution adapts to intermittent connectivity and navigation disruptions during live operations. The system detected communication loss, automatically deployed a relay drone to restore connectivity, and adjusted mission behavior when GPS spoofing was identified. Despite degraded network conditions and unreliable navigation signals, the mission continued executing under predefined constraints and successfully completed its objective. This scenario demonstrates how autonomous decision-making and adaptive communication mechanisms enable mission continuity in environments with unstable connectivity.
