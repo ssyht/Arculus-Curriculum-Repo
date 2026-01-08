@@ -478,16 +478,28 @@ pre[class*="language-"] {
 <p>The objective of this chapter is to execute the simulation end-to-end and observe the impact on system availability and responsiveness. No configuration changes or defensive actions are required.</p>
 
 
-  <h2 id="toc_3">2.2 Preparing the Environment</h2>
+<h2 id="toc_3">2.2 Mission Planning</h2>
 
-<p>Before starting the simulation, ensure that:</p>
 <ul>
-  <li>The simulation environment is running and accessible</li>
-  <li>All required services are in a normal operational state</li>
-  <li>The previously downloaded manifest file still exist to use for this lab</li>
+	<li>The Mission Planning Dashboard allows for configuring drone missions by specifying which devices to use, what the context (criticality) of the mission is, who the supervisors and viewers of the mission are, and logistics information. Let us first pick the mission type by navigating to the Mission Planning page as shown in the image below and selecting "Stealthy Reconnaissance and Resupply" mission type to begin configuring the mission.</li>
 </ul>
 
-<p>At this stage, the system should be stable and responsive.</p>
+<p align = "center"><img src="../img/ch2_2.2_1.png" width="65%" alt="ch2_2.2_1"></p> 
+
+<ul>
+	<li>From the page as shown below, select the appropriate drone you will be using for various tasks such as surveillance, supply, etc. Also select the criticality. For this exercise, you can choose any settings or leave them as default.</li>
+</ul>
+	
+<p align = "center"><img src="../img/ch2_2.2_2.png" width="65%" alt="ch2_2.2_2"></p> 
+<ul>
+	<li>Scroll down from the page to view the map. You will use your mouse to pin a supply destination to deliver the supplies. As it shows in the image below, you will see a pinned destination (encircled in image.)</li>
+</ul>
+	
+<p align = "center"><img src="../img/ch2_2.2_3.png" width="65%" alt="ch2_2.2_3"></p> 
+
+<ul>
+	<li>Once the location is set, click on the "Create Mission" button to create the mission. Next we will execute the mission and perform some actions to simulate the Low battery capacity scenario.</li>
+</ul>
   
 <h2 id="toc_3">2.3 Mission Execution</h2>
 
