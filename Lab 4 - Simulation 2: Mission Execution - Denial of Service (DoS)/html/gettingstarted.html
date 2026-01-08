@@ -3,7 +3,7 @@
 			<div class="col-md-6 " >
 					<h5 class="topic-heading">Purpose of the Lab</h5>
    					<p class="topic-details">
-				         Purpose of this lab is to broaden Infrastructure-as-Code (IaC) and Zero-Trust edge-computing skills by using Terraform to provision and configure resources for the Arculus platform. You will perform hands-on activities on Terraform fundamentals such as providers, variables, resources, security groups, user_data, and outputs, launch Ubuntu EC2 instances with strict SSM-only access, configure network guardrails, and deploy a sample web interface to learn how Terraform automates cloud resource creation. You will also prepare the environment for the Arculus testbed to understand how Zero-Trust, microsegmentation, and controlled service access operate in distributed edge systems.</p>
+				         The primary objective of this lab is to provide hands-on experience in understanding how Denial of Service (DoS) conditions impact mission execution and system availability during live operations. Students will observe how excessive or abnormal traffic affects system responsiveness and overall mission behavior within a simulated environment.</p>
 			</div>
 
         <div class="col-md-6 ">
@@ -11,13 +11,13 @@
             <h5 class="topic-heading">Goals/Outcomes</h5>
               <div class="topic-details">
                     <ul>
-                        <li>Get familiar with using Terraform to provision and manage cloud infrastructure on AWS.
+                        <li>Identify how Denial of Service conditions affect system availability and mission execution.
                         </li>
-                        <li>Go through the fundamentals of Terraform, e.g., providers, variables, resources, security groups, user_data, outputs, and state management.
+                        <li>Run a mission and introduce a Denial of Service scenario during active execution.
                         </li>
-                        <li>Deploy an example Ubuntu instance and configure strict SSM-only access to understand how secure, reproducible infrastructure can be created without manual setup.
+                        <li>Monitor mission responsiveness, system stress, and activity logs during abnormal traffic conditions.
                         </li>
-                        <li>Prepare and configure the environment required for the Arculus Zero-Trust platform to demonstrate how Terraform automates network guardrails, microsegmentation, and controlled service access across distributed systems.
+                        <li>Compare baseline system behavior with behavior observed during a DoS condition.
                         </li>
                     </ul>
               </div>
@@ -30,13 +30,9 @@
             <h5 class="topic-heading">Before you begin...Reference Links</h5>
                 <div class="topic-details ref-details">
                     <ul>
-                        <li><a href="https://developer.hashicorp.com/terraform" target="_blank" >
-                            <u style="color:#2196F3;">Terraform</u></a>
-                            <p>An Infrastructure-as-Code tool used to provision, configure, and manage cloud resources in a reproducible and automated way.</p>
-                        </li>
-                        <li><a href="https://aws.amazon.com/ec2/" target="_blank" >
-                            <u style="color:#2196F3;">AWS EC2</u></a>
-                            <p>A cloud compute service for launching virtual machines where we will deploy Ubuntu instances for the Arculus environment.</p>
+                        <li><a href="https://github.com/arculus-zt/arculus-sw/blob/master/Arculus_User_Manual.pdf" target="_blank" >
+                            <u style="color:#2196F3;">Mission Planning Documentation</u></a>
+                            <p>Reference for how drones, capabilities, and mission parameters interact within Arculus.</p>
                         </li>
                         <li><a href="https://github.com/arculus-zt/arculus-sw" target="_blank" >
                             <u style="color:#2196F3;">Arculus Platform</u></a>
