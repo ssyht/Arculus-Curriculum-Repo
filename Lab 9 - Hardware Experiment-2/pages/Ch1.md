@@ -24,6 +24,8 @@ By the end of this lab, you will gain practical experience in identifying replay
 
 ## 1.3 References to Guide Lab Work
 
+**Please use the links below to learn the related information for this lab:**
+
 * <a href = "https://github.com/arculus-zt/arculus-sw/tree/master"> Arculus GitHub Repository</a>
 
 * <a href = "https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs"> Arculus Documentation</a>
