@@ -36,3 +36,26 @@ A native Linux host is strongly recommended, as USB instability in virtual machi
 
 These references are provided for background understanding and are not required to complete the lab.
 
+## 1.5 Goals / Outcomes
+
+By the end of this lab module, you will be able to:
+
+**(i) Understand Secure Boot Concepts**
+
+Explain how secure boot establishes a hardware root of trust
+
+Identify the role of PKC, SBK, and optional UEFI Secure Boot keys
+
+Understand why fuse-based security is irreversible
+
+**(ii) Prepare a Secure Boot Environment**
+
+Identify required host and device prerequisites
+
+Understand the importance of testing signed flashing before fuse burning
+
+**(iii) Validate Secure Boot Enforcement**
+
+Recognize expected behavior of a securely fused device
+
+Understand how secure boot prevents unauthorized software execution
