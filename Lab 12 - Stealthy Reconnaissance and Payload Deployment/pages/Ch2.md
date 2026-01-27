@@ -28,7 +28,49 @@ By the end of this chapter, you will have a practical understanding of how missi
 
 * The GCS analyzes the incoming video feed to identify enemy aircraft and mark the target coordinates.
 
+## 2.4 Reconnaissance Completion and Payload Drone Deployment
 
+* After completing reconnaissance, the surveillance drone returns to the GCS.
+
+### 2.4.1 Following this, the GCS deploys the armed payload drone, which begins flying toward the identified target while maintaining communication with the GCS.
+
+* Monitor the mission map and activity log to confirm that the payload drone is progressing toward the target.
+
+## 2.4 Simulating RF Spectrum Scanner (Compromised Condition)
+
+### 2.4.1 While the payload drone is en route to the target, simulate the compromised scenario by clicking the Simulate RF Spectrum Scanner option on the Mission Execution Dashboard.
+
+* This action represents the presence of an enemy UAV defense or RF surveillance system within the target area. The system detects abnormal RF activity and identifies potential threats to the mission.
+
+<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+
+* Observe the Activity Log for messages indicating RF spectrum surveillance detection. These messages confirm that the environment has transitioned into a compromised operational state.
+
+## 2.5 Loss of Active Communication and Autonomous Mode
+
+### 2.5.1 As RF surveillance is detected, communication between the GCS and the payload drone is disrupted.
+
+* Observe that the payload drone enters an autonomous RL-guided mode, indicating that there is no longer active communication between the GCS and the drone. The drone continues execution based on pre-trained policies and mission constraints.
+
+* This behavior demonstrates how the system adapts when direct operator control is no longer available.
+
+## 2.6 Payload Deployment Under Compromised Conditions
+
+### 2.6.1 While operating autonomously, the payload drone proceeds toward the target location.
+
+<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+
+* Observe the mission map and activity log as the drone deploys the payload on the target without active GCS communication. This confirms that mission objectives can still be achieved under compromised conditions using autonomous decision-making.
+
+## 2.7 Mission Completion
+
+### 2.7.1 Once the payload is successfully deployed, the system displays a mission completion message indicating that the target has been destroyed.
+
+* Navigate back to the Mission Execution Dashboard to verify that the mission status reflects successful completion under compromised conditions.
+
+## 2.8 As a Result
+
+As a result of completing this chapter, you observed how a mission executes under compromised conditions where adversarial RF surveillance and communication loss occur. You saw how the system detects threats, transitions from GCS-controlled execution to autonomous RL-guided operation, and successfully completes mission objectives despite the absence of direct communication. This scenario highlights the system’s resilience and ability to operate securely in contested environments.
 
 
 
