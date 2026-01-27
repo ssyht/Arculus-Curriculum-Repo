@@ -34,22 +34,22 @@ To follow along and get the most out of this module, you should:
 
 ## 1.4 Goals/Outcomes
 
-**By the end of this lab module, you will be able to:**
+By the end of this lab module, you will be able to:
 
-(i) Understand Insecure Command Transmission
+**(i) Understand Insecure Command Transmission**
 
-Identify how plaintext navigation commands can be spoofed
+* Identify how plaintext navigation commands can be spoofed
 
-Recognize the risks of unauthenticated control messages
+* Recognize the risks of unauthenticated control messages
 
-(ii) Execute a Command Injection Simulation
+**(ii) Execute a Command Injection Simulation**
 
-Run a pre-configured UAV control simulation in AERPAW
+* Run a pre-configured UAV control simulation in AERPAW
 
-Observe drone behavior under normal and spoofed command conditions
+* Observe drone behavior under normal and spoofed command conditions
 
-(iii) Analyze the Effect of Cryptographic Protection
+**(iii) Analyze the Effect of Cryptographic Protection**
 
-Compare system behavior with and without encrypted commands
+* Compare system behavior with and without encrypted commands
 
-Understand how encryption and authentication prevent unauthorized control
+* Understand how encryption and authentication prevent unauthorized control
