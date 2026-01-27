@@ -45,3 +45,4 @@ Depending on the configuration, the drone either accepts or rejects replayed com
 ## 2.5 As a Result
 
 As a result of completing this chapter, you observed how replay attacks exploit the absence of freshness checks in encrypted communication. You were able to view that when replay protection is disabled, previously captured encrypted commands can be reused and accepted by the drone, leading to unintended behavior. When replay protection mechanisms are enabled, the same commands are correctly rejected, preserving mission integrity. Through this experiment, you gained practical insight into why secure systems must verify not only who sent a command, but also when it was sent.
+
