@@ -38,12 +38,11 @@ By the end of this chapter, you will have a practical understanding of how missi
 
 ### 2.4.2 Common Execution Path Before Compromise
 
-Up to this point, the mission execution flow is identical for both normal and compromised scenarios.
+* Up to this point, the mission execution flow is identical for both normal and compromised scenarios.
 
-During this phase, the system operates under full Ground Control Station (GCS) supervision with continuous communication between the GCS and deployed drones. All reconnaissance and payload preparation steps are completed without adversarial interference.
+* During this phase, the system operates under full Ground Control Station (GCS) supervision with continuous communication between the GCS and deployed drones. All reconnaissance and payload preparation steps are completed without adversarial interference.
 
-The mission behavior diverges only when adversarial conditions are introduced in the next step.
-
+* The mission behavior diverges only when adversarial conditions are introduced in the next step.
 
 ## 2.5 Simulating RF Spectrum Scanner (Compromised Condition)
 
