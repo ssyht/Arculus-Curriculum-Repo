@@ -76,9 +76,29 @@ At this point, the BSP and root filesystem are fully assembled.
 
 ```bash
 cd ~/nvidia/Linux_for_Tegra/source
-sudo ./source_sync.sh -t r36.4.3
+sudo ./source_sync.sh
 ```
 
+When prompted each time in line 13-14, `Please enter a tag to sync /home/vboxuser/nvidia/Linux_for_Tegra/source/kernel/kernel-jammy-src source to 
+(enter nothing to skip):` enter **jetson_36.4**.
+
+Example:
+```bash
+vboxuser@nvFlasher2:~/nvidia/Linux_for_Tegra/source$ sudo ./source_sync.sh
+Downloading default kernel/kernel-jammy-src source...
+Cloning into '/home/vboxuser/nvidia/Linux_for_Tegra/source/kernel/kernel-jammy-src'...
+remote: Enumerating objects: 8617907, done.
+remote: Counting objects: 100% (8617907/8617907), done.
+remote: Compressing objects: 100% (1256155/1256155), done.
+Receiving objects: 100% (8617907/8617907), 1.88 GiB | 31.61 MiB/s, done.
+remote: Total 8617907 (delta 7322146), reused 8605619 (delta 7309884), pack-reused 0 (from 0)
+Resolving deltas: 100% (7322146/7322146), done.
+Checking objects: 100% (33554432/33554432), done.
+The default kernel/kernel-jammy-src source is downloaded in: /home/vboxuser/nvidia/Linux_for_Tegra/source/kernel/kernel-jammy-src
+Please enter a tag to sync /home/vboxuser/nvidia/Linux_for_Tegra/source/kernel/kernel-jammy-src source to
+(enter nothing to skip): jetson_36.4
+Syncing up with tag jetson_36.4...
+```
 After sync, confirm OP-TEE shows up:
 ```bash
 find . -maxdepth 4 -iname "*optee*" | head -n 50
