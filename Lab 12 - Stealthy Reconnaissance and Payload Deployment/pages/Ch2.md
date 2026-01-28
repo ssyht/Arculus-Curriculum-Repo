@@ -10,7 +10,7 @@ By the end of this chapter, you will have a practical understanding of how missi
 
 ## 2.2 Launching the Mission
 
-### 2.2.1 Navigate to the Mission Execution Dashboard within the Arculus Ground Control Client. Locate the mission titled Stealthy Reconnaissance and Payload Deployment and start execution using the Execute Mission option. 
+### 2.2.1 Navigate to the Mission Execution Dashboard within the Arculus Ground Control Client. Locate the mission titled Stealthy Reconnaissance and Payload Employment and start execution using the Execute Mission option. 
 
 * Once execution begins, the mission transitions into an active runtime state and the mission map becomes visible.
 

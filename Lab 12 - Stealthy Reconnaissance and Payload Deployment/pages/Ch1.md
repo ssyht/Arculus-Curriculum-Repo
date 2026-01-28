@@ -1,4 +1,4 @@
-# Chapter 1 - Stealthy Reconnaissance and Payload Deployment (Normal Scenario)
+# Chapter 1 - Stealthy Reconnaissance and Payload Employment (Normal Scenario)
 
 ## 1.1 Purpose of the Lab
 
@@ -16,7 +16,7 @@ To follow along and get the most out of this module, you should:
 
 * Be able to navigate to the Mission Execution Dashboard
 
-* Have a mission available for “Stealthy Reconnaissance and Payload Deployment”
+* Have a mission available for “Stealthy Reconnaissance and Payload Employment”
 
 ## 1.3 References to Guide Lab Work
 
