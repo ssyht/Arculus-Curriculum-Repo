@@ -1,6 +1,31 @@
-# Arculus Curriculum Repository
+# This is the Arculus Learning Platform web portal repo
+-----------------------------------------------
 
-## Overview
+To run the portal in the Docker on a Cloud VM, do the following: 
+-----------------------------------------------------------
+#### Update the IP address of the server in the following files (change from localhost to the IP of the server): 
+
+1.(1 place) /ArculusLearning/ArculusUI/src/main/java/com/cyberrange/web/utility/RestClient.java
+
+2.(3 places) /ArculusLearning/ArculusUI/src/main/resources/static/js/angular_controllers/moduleController.js
+
+3.(1 place) /ArculusLearning/ArculusUI/src/main/resources/static/js/angularService/mainService.js
+
+#### Change database source in the following file (replace the IP with the new database server IP):
+
+/ArculusLearning/ArculusAPI/src/main/resources/application.properties
+
+#### Update the github authentication client ID/secret (replace both values with the appropriate ones):
+
+1. /ArculusLearning/ArculusUI/src/main/resources/github.properties
+
+2. /ArculusLearning/ArculusUI/src/main/resources/static/js/angular_controllers/mainController.js
+
+To run the portal on the local, modify all these files above to local settings. 
+-----------------------------------------------------------
+
+# Arculus Curriculum Repository Overview
+
 The **Arculus Curriculum Repository** contains the complete instructional materials, labs, and simulations designed to support hands-on learning with the **Arculus drone security and mission orchestration platform**.  
 This curriculum is structured as a sequence of labs and simulations that progressively introduce students to Arculus software infrastructure, drone configuration, mission planning, execution, and adversarial scenarios.
 
