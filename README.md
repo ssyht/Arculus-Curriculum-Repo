@@ -24,7 +24,7 @@ To run the portal in the Docker on a Cloud VM, do the following:
 To run the portal on the local, modify all these files above to local settings. 
 -----------------------------------------------------------
 
-# Arculus Curriculum Repository Overview
+# Curriculum Overview
 
 The **Arculus Curriculum Repository** contains the complete instructional materials, labs, and simulations designed to support hands-on learning with the **Arculus drone security and mission orchestration platform**.  
 This curriculum is structured as a sequence of labs and simulations that progressively introduce students to Arculus software infrastructure, drone configuration, mission planning, execution, and adversarial scenarios.
