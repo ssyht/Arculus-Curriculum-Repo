@@ -30,9 +30,6 @@ Monitor the mission map and activity log to confirm normal execution before any 
 
 * Observe the mission map and activity log as the system initiates safe shutdown and data protection mechanisms.
 
-<p align="center"> <img src="../img/kill_3.png" width="900px"></p>
-
-
 ## 2.5 Monitoring Safe Termination Behavior
 
 During both manual and autonomous kill switch activation, observe the system behavior carefully.
@@ -50,6 +47,8 @@ These behaviors confirm that the kill switch has successfully enforced mission s
 ## 2.6 Mission Termination Confirmation
 
 * Once kill switch procedures are completed, the Mission Execution Dashboard displays a termination message indicating that the mission has ended in safe mode.
+
+<p align="center"> <img src="../img/kill_3.png" width="900px"></p>
 
 * Verify that mission status reflects termination due to kill switch enforcement.
 
