@@ -2,27 +2,38 @@
 
 ## 1.1 Purpose of the Lab
 
-In this module, you will learn how unsecured command transmission can impact the behavior of an unmanned aerial vehicle within a simulated cyber-physical system. Using the AERPAW digital twin environment, this lab focuses on understanding how plaintext navigation commands can be intercepted and spoofed, and how cryptographic protection prevents unauthorized control.
+This experiment demonstrates how unencrypted and unauthenticated MAVLink communication can be exploited by an adversary to inject malicious commands into an active UAV mission. MAVLink is widely used for communication between a Ground Control Station (GCS) and unmanned aerial vehicles, and when operated in plaintext mode, it exposes critical command and telemetry data over the network.
 
-This lab is designed to provide hands-on exposure to command injection attacks by allowing you to execute a controlled simulation involving a base station and a drone. You will observe system behavior when navigation commands are transmitted in plaintext and compare it with behavior when commands are protected using encryption and authentication.
+In this module, you will first establish a baseline mission execution where communication between the GCS and the drone operates normally. You will then observe how an attacker can passively monitor MAVLink traffic and actively inject commands without possessing any cryptographic credentials. The experiment highlights how the lack of encryption and authentication allows an attacker to manipulate flight behavior, override operator intent, and compromise mission integrity.
 
-Rather than designing new security mechanisms, the emphasis of this lab is on recognizing how insecure communication channels enable control-plane attacks and why cryptographic protections are essential for safe and reliable UAV operations.
+This experiment serves as the foundation for later modules that introduce encrypted MAVLink communication and secure command execution.
 
-By the end of this lab, you will gain practical experience in identifying command spoofing risks and understanding how secure messaging improves trust and safety in mission-oriented systems.
+## 1.2 What You Will Learn
 
-## 1.2 Prerequisites
+**By completing this experiment, you will gain hands-on experience with:**
+
+* Understanding plaintext MAVLink communication behavior
+
+* Observing real-time UAV telemetry and command flow
+
+* Executing a command injection attack without encryption barriers
+
+* Analyzing why such attacks succeed in unsecured communication channels
+
+## 1.3 Prerequisites
 
 To follow along and get the most out of this module, you should:
 
-* Have access to the provided AERPAW simulation environment
+* An active AERPAW account and a created experiment/development session
 
-* Be familiar with using a terminal or command-line interface
+* OpenVPN client installed (Linux OpenVPN v2 recommended)
 
-* Understand basic networking concepts such as UDP communication
+* SSH keypair uploaded to AERPAW portal
 
-* Have basic familiarity with Python scripts
+* Basic comfort running commands in a Linux terminal
 
-## 1.3 References to the Guide Lab Work
+
+## 1.4 References to the Guide Lab Work
 
 **Please use the links below to learn the related information for this lab:**
 
@@ -32,7 +43,7 @@ To follow along and get the most out of this module, you should:
 
 * <a href = "https://sites.google.com/ncsu.edu/aerpaw-user-manual/"> AERPAW User Manual</a>
 
-## 1.4 Goals/Outcomes
+## 1.5 Goals/Outcomes
 
 By the end of this lab module, you will be able to:
 

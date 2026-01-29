@@ -1,55 +1,191 @@
-# Chapter 2 – Plaintext vs Encrypted Command Injection
+# Chapter 3
 
-## 2.1 Overview
 
-In this chapter, you will execute the command injection experiment using the AERPAW digital twin. The simulation consists of two logical components: a base station that sends navigation commands and a drone that receives and executes those commands.
+## 3.1 Overview
 
-The components communicate using UDP messages that contain navigation instructions. Depending on the configuration, these messages are transmitted either in plaintext or in encrypted form.
+In this chapter, you will execute the UAV mission under normal operating conditions with plaintext MAVLink communication and no adversarial interference. This baseline execution is critical, as it establishes expected mission behavior before any command injection is introduced.
 
-## 2.2 Plaintext Command Injection Scenario
+All steps in this chapter must complete successfully before proceeding to the attack phases in later chapters.
 
-* In this scenario, navigation commands are transmitted in plaintext without authentication.
+## 3.1 Starting the MAVLink Simulation Environment
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+* Begin by ensuring that no MAVLink services are currently running on any node.
 
-### 2.2.1 Start the drone receiver process so it listens for incoming UDP commands. 
+* On the GCS node, check for active MAVLink processes:
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+```bash
+ps aux | grep mav
+```
+* If any MAVLink-related processes are running, stop them before continuing.
 
-* Then, from the base station, send legitimate plaintext navigation commands and observe normal mission execution.
+## 3.2 Launching the UAV Simulation
 
-### 2.2.2 Next, inject a spoofed plaintext navigation command that alters the intended flight path. 
+* On the UAV node, navigate to the experiment repository:
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+```bash
+cd ~/mavlink_experiment/Mavlink-AERPAW
+```
 
-* Because the command is not protected, the drone accepts the spoofed message and deviates from its planned route. This behavior demonstrates how plaintext communication allows unauthorized entities to influence system behavior.
+* Start the UAV simulation using the provided launch script:
 
-## 2.3 Encrypted Command Transmission Scenario
+```bash
+start_uav_simulation.sh
+```
 
-* In this scenario, command transmission is protected using encryption and authentication.
+**Observe the terminal output and confirm that:**
 
-### 2.3.1 Restart the drone receiver in protected mode so that it verifies incoming commands before execution. 
+* The UAV simulator initializes successfully
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+* MAVLink endpoints are created
 
-* From the base station, send encrypted navigation commands using the secure message format.
+* The system reports that it is waiting for GCS commands
 
-### 2.3.2 Attempt to inject the same spoofed plaintext command used earlier. 
+* Do not proceed until the simulation is running without errors.
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+## 3.3 Starting the Ground Control Station (GCS)
 
-* The drone rejects or ignores the unauthorized command, and the mission proceeds as expected or enters a safe state.
+* On the GCS node, navigate to the repository directory:
 
-* This behavior demonstrates how cryptographic protections prevent command injection attacks.
+```bash
+cd ~/mavlink_experiment/Mavlink-AERPAW
+```
 
-## 2.4 Analysis and Observations
+* Start the GCS control script responsible for sending MAVLink commands:
 
-* Compare the system behavior observed in both scenarios. Notice how plaintext communication allows direct control manipulation, while encrypted communication enforces trust and integrity.
+```bash
+python3 gcs_controller_plaintext.py
+```
+Verify that:
 
-* Reflect on how similar vulnerabilities could impact real-world UAV systems and other cyber-physical platforms if command channels are not secured.
+* The GCS successfully connects to the UAV
 
-## 2.5 As a Result
+* Heartbeat messages are exchanged
 
-As a result of completing this chapter, you observed how the security of command transmission directly affects the behavior of a cyber-physical system. You first saw that when navigation commands are transmitted in plaintext, the drone accepts any well-formed command, including spoofed or unauthorized messages. This resulted in unintended changes to the mission path, demonstrating how insecure communication channels enable command injection attacks.
+* Telemetry data begins streaming
 
-You then observed that when encryption and authentication are enabled, the same spoofed commands are no longer accepted. The drone either ignores the unauthorized commands or continues executing its original mission, showing that cryptographic protection enforces trust and prevents unauthorized control. Through this experiment, you gained practical insight into why secure communication is essential for UAV control systems and how control-plane security directly impacts mission safety and system reliability.
+At this point, the GCS and UAV are communicating entirely in plaintext.
+
+## 3.4 Verifying Normal Telemetry and Heartbeats
+
+While the GCS controller is running, observe the terminal output.
+
+**Confirm the following:**
+
+* MAVLink heartbeat messages are received at regular intervals
+
+* Telemetry values (position, altitude, velocity) update continuously
+
+* No error or warning messages appear in the logs
+
+This confirms that the communication channel is functioning normally.
+
+## 3.5 Arming the Vehicle
+
+* From the GCS node, issue the arm command through the controller script.
+
+* If arming is triggered automatically by the script, observe the output.
+
+* If manual arming is required, execute:
+
+```bash
+python3 arm_vehicle_plaintext.py
+```
+
+**Confirm in the output that:**
+
+* The UAV reports an armed state
+
+* No safety or authorization checks prevent arming
+
+This demonstrates that the UAV accepts plaintext control commands.
+
+## 3.6 Executing the Mission Waypoints
+
+* Once armed, the GCS initiates the mission.
+
+* From the GCS node, start mission execution:
+
+```bash
+python3 start_mission_plaintext.py
+```
+
+**Observe the UAV behavior and terminal logs:**
+
+* The UAV begins moving along predefined waypoints
+
+* Telemetry reflects changes in position and altitude
+
+* No unexpected deviations occur
+
+At this stage, the mission is executing exactly as intended.
+
+## 3.7 Monitoring Mission Progress
+
+Allow the mission to continue running for several minutes.
+
+During this time, continuously observe:
+
+* GCS terminal output
+
+* UAV simulation logs
+
+* Telemetry updates
+
+**Confirm that:**
+
+* Waypoints are followed in sequence
+
+* Commands are acknowledged correctly
+
+* Mission execution remains stable
+
+No attacker activity has occurred yet.
+
+## 3.8 Verifying Absence of Adversarial Activity
+
+On the **attacker node**, confirm that no packet capture or injection tools are running:
+
+```bash
+ps aux | grep tcpdump
+ps aux | grep python
+```
+
+**Ensure that:**
+
+* No MAVLink packets are being captured
+
+* No spoofed or injected commands are being sent
+
+This confirms the integrity of the baseline execution.
+
+## 3.9 Completing the Baseline Mission
+
+Allow the mission to reach its natural completion.
+
+**Observe:**
+
+* Final waypoint reached
+
+* Mission completion message in GCS logs
+
+* UAV enters idle or loiter state
+
+**Do not stop the simulation yet.**
+
+## 3.10 Baseline Observation Summary
+
+At the end of the baseline execution, the following conditions should be true:
+
+* MAVLink communication occurred entirely in plaintext
+
+* The UAV accepted commands without cryptographic verification
+
+* Mission execution followed operator intent exactly
+
+* No deviations or anomalies were observed
+
+These observations form the reference point for the attack steps introduced in the next chapter.
+
+## 3.11 As a Result
+
+You have now successfully completed the baseline plaintext MAVLink mission execution. The system is functioning as designed, but without any security protections on command authenticity or integrity. In the next chapter, you will begin passively observing MAVLink traffic and demonstrate how plaintext communication enables an attacker to prepare for command injection.
