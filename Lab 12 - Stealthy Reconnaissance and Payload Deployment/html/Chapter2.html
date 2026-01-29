@@ -471,67 +471,149 @@ pre[class*="language-"] {
 
 <body>
 
-<h2 id="toc_2">1.1 Purpose of the lab.</h2>
+<h2 id="toc_2">2.1 Preparing the Host Environment</h2>
 
-<p>In this module, you will learn how to execute a mission in a normal operating state where the Ground Control Station (GCS) maintains active communication with the drones throughout the mission lifecycle. The focus of this lab is to observe the expected end-to-end mission flow including reconnaissance, target identification, payload deployment, and mission completion.</p>
+<p>In this chapter, you will execute and observe a live mission under varying operational conditions using the Mission Execution Dashboard. The focus of this chapter is to understand how mission behavior evolves from normal execution to compromised states and how the system responds to communication loss, adversarial detection, and autonomous operation.</p>
 
-<p>This lab provides hands-on practice in monitoring mission progress through the Mission Execution Dashboard and understanding how mission coordination is performed when communication is stable and uninterrupted.</p>
+<p>You will step through reconnaissance, payload deployment, and threat simulation scenarios while monitoring real-time mission state through the mission map and activity logs. This chapter also highlights the system’s ability to transition between operator-controlled execution and autonomous decision-making, as well as the enforcement of fail-safe mechanisms when mission integrity or security is at risk.</p>
 
-<p>By the end of this module, you will be able to describe the normal mission workflow and identify the key checkpoints that confirm successful mission execution.</p>
+<p>By the end of this chapter, you will have a practical understanding of how mission execution adapts to both normal and adverse conditions, preparing you to analyze advanced fail-safe and kill switch behaviors in subsequent modules.</p>
 
-<h3 id="toc_3">1.1.1 The secure boot process consists of both software preparation and physical device configuration.</h3>
+<h2 id="toc_2">2.2 Launching the Mission</h2>
 
-<p>The software phase includes preparing the Jetson Linux environment, assembling the root filesystem, and generating cryptographic keys used for authentication and encryption. The physical phase includes testing signed flashing on an unfused device, permanently programming security fuses, and validating secure boot enforcement on the device.</p>
-
-<p>This staged workflow ensures that secure boot is validated safely before irreversible hardware changes are made.</p>
-
-
-<h2 id="toc_3">1.2 Prerequisites.</h2>
-
-<p>To follow along and get the most out of this module, you should:</p>
-<ul>
-  <li>Have access to the Arculus Ground Control Client (portal UI)</li>
-  <li>Be able to navigate to the Mission Execution Dashboard</li>
-  <li>Have a mission available for “Stealthy Reconnaissance and Payload Employment”</li>
-</ul>
-
-<h2 id="toc_3">1.3 References to guide lab work.</h2>
+<h3 id="toc_3">2.2.1 Navigate to the Mission Execution Dashboard within the Arculus Ground Control Client. Locate the mission titled Stealthy Reconnaissance and Payload Employment and start execution using the Execute Mission option.</h3>
 
 <ul>
-<li> Arculus GitHub Repository – <a href="https://github.com/arculus-zt/arculus-sw/tree/master" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master</a></li>
-<li> Arculus Documentation – <a href="https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs</a></li>
-<li> Simulation Walkthrough: Intermittent Connectivity – <a href="https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQDhSG3rBvDqRYCAtsWTlmTNAWZ5fglPevonEDR931sXyrA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=zGyibW" target="_blank">https://mailmissouri-my.sharepoint.com/:v:/g/personal/neupaner_umsystem_edu/IQDhSG3rBvDqRYCAtsWTlmTNAWZ5fglPevonEDR931sXyrA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=zGyibW</a></li>
+    <li>Once execution begins, the mission transitions into an active runtime state and the mission map becomes visible.</li>
 </ul>
 
+<h2 id="toc_2">2.3 Surveillance Drone Deployment and Reconnaissance</h2>
 
-<h2 id="toc_9">1.4 Goals/Outcomes.</h2>
+<h3 id="toc_3">2.3.1 In the initial phase of the mission, the Ground Control Station (GCS) deploys the surveillance drone for reconnaissance.</h3>
 
-<p>By the end of this lab module, you will be able to:</p>
+<p align = "center"><img src="../img/placeholder.png" width="65%" alt="placeholder"></p> 
 
-<p><b>(i) Understand Normal Mission Execution Behavior</b></p>
+<h3 id="toc_3">2.3.2 Observe the surveillance drone flying toward the enemy air base while maintaining active communication with the GCS.</h3>
+
+<p align = "center"><img src="../img/placeholder.png" width="65%" alt="placeholder"></p> 
+
 <ul>
-  <li>Observe the end-to-end mission workflow under normal operating conditions</li>
-  <li>Identify how continuous communication between the Ground Control Station (GCS) and drones enables coordinated mission execution</li>
-  <li>Understand the baseline behavior of reconnaissance, target identification, and payload deployment</li>
+    <li>During this phase, the drone transmits real-time video feed and telemetry data back to the ground station.</li>
+    <li>The GCS analyzes the incoming video feed to identify enemy aircraft and mark the target coordinates.</li>
 </ul>
 
-<p><b>(ii) Analyze Mission Behavior Under Compromised Conditions</b></p>
+<h2 id="toc_2">2.4 Reconnaissance Completion and Payload Drone Deployment</h2>
+
 <ul>
-  <li>Identify how the system detects adversarial conditions such as RF spectrum surveillance or loss of communication</li>
-  <li>Observe the transition from GCS-controlled execution to autonomous RL-guided behavior</li>
-  <li>Understand how mission objectives can still be achieved when direct communication is unavailable</li>
+    <li>After completing reconnaissance, the surveillance drone returns to the GCS.</li>
 </ul>
 
-<p><b>(iii) Evaluate Kill Switch and Fail-Safe Enforcement</b></p>
+<h3 id="toc_3">2.4.1 Following this, the GCS deploys the armed payload drone, which begins flying toward the identified target while maintaining communication with the GCS.</h3>
+
 <ul>
-  <li>Distinguish between operator-initiated kill switch actions under active communication</li>
-  <li>Understand autonomous kill switch activation when communication with the GCS cannot be re-established</li>
-  <li>Analyze how kill switch mechanisms prevent data leakage, physical capture, and mission compromise</li>
+    <li>Monitor the mission map and activity log to confirm that the payload drone is progressing toward the target.</li>
 </ul>
 
+<h3 id="toc_3">2.4.2 Common Execution Path Before Compromise</h3>
+
+<ul>
+    <li>Up to this point, the mission execution flow is identical for both normal and compromised scenarios.</li>
+    <li>During this phase, the system operates under full Ground Control Station (GCS) supervision with continuous communication between the GCS and deployed drones. All reconnaissance and payload preparation steps are completed without adversarial interference.</li>
+    <li>The mission behavior diverges only when adversarial conditions are introduced in the next step.</li>
+</ul>
+
+<h2 id="toc_2">2.4 Simulating RF Spectrum Scanner (Compromised Condition)</h2>
+
+<ul>
+    <li>In a normal operating scenario, the payload drone would proceed to deploy the payload on the target under active GCS control, resulting in mission success.</li>
+</ul>
+
+<h3 id="toc_3">2.5.1 While the payload drone is en route to the target, simulate the compromised scenario by clicking the Simulate RF Spectrum Scanner option on the Mission Execution Dashboard.</h3>
+
+<ul>
+    <li>This action represents the presence of an enemy UAV defense or RF surveillance system within the target area. The system detects abnormal RF activity and identifies potential threats to the mission.</li>
+</ul>
+
+<p align = "center"><img src="../img/placeholder.png" width="65%" alt="placeholder"></p> 
+
+
+<ul>
+    <li>Observe the Activity Log for messages indicating RF spectrum surveillance detection. These messages confirm that the environment has transitioned into a compromised operational state.</li>
+</ul>
+
+<h2 id="toc_2">2.6 Loss of Active Communication and Autonomous Mode</h2>
+
+<h3 id="toc_3">2.6.1 As RF surveillance is detected, communication between the GCS and the payload drone is disrupted.</h3>
+
+<ul>
+    <li>Observe that the payload drone enters an autonomous RL-guided mode, indicating that there is no longer active communication between the GCS and the drone. The drone continues execution based on pre-trained policies and mission constraints.</li>
+    <li>This behavior demonstrates how the system adapts when direct operator control is no longer available.</li>
+</ul>
+
+<h2 id="toc_2">2.7 Payload Deployment Under Compromised Conditions</h2>
+
+<h3 id="toc_3">2.7.1 While operating autonomously, the payload drone proceeds toward the target location.</h3>
+
+<p align = "center"><img src="../img/placeholder.png" width="65%" alt="placeholder"></p> 
+
+<ul>
+    <li>Observe the mission map and activity log as the drone deploys the payload on the target without active GCS communication. This confirms that mission objectives can still be achieved under compromised conditions using autonomous decision-making.</li>
+</ul>
+
+<h2 id="toc_2">2.8 Mission Completion</h2>
+
+<h3 id="toc_3">2.8.1 Once the payload is successfully deployed, the system displays a mission completion message indicating that the target has been destroyed.</h3>
+
+<ul>
+    <li>Navigate back to the Mission Execution Dashboard to verify that the mission status reflects successful completion under compromised conditions.</li>
+</ul>
+
+<h2 id="toc_2">2.9 As a Result</h2>
+
+<p>As a result of completing this chapter, you observed how a mission executes under compromised conditions where adversarial RF surveillance and communication loss occur. You saw how the system detects threats, transitions from GCS-controlled execution to autonomous RL-guided operation, and successfully completes mission objectives despite the absence of direct communication. This scenario highlights the system’s resilience and ability to operate securely in contested environments.</p>
 
 
 
+
+
+<ul>
+    <li>Download the Jetson Linux Board Support Package and the sample Ubuntu root filesystem corresponding to Jetson Linux version r36.4.3.</li>
+    <li>These packages contain the bootloader, kernel, flashing utilities, and base operating system required to prepare signed images.</li>
+</ul>
+
+<h2 id="toc_2">2.3 Assembling the Root Filesystem</h2>
+
+<ul>
+    <li>Extract the BSP and populate the root filesystem using the provided tools. Apply NVIDIA binaries to complete the BSP setup.</li>
+    <li>At the end of this step, the Jetson Linux environment is fully assembled and ready for secure boot configuration.</li>
+</ul>
+
+<h2 id="toc_2">2.4 Entering Force Recovery Mode</h2>
+
+<ul>
+    <li>Power off the Jetson Orin Nano and place it into Force Recovery Mode using the board-specific sequence. Connect the device to the host system using a USB-C cable.</li>
+    <li>Verify that the device is detected by the host as an NVIDIA recovery device before proceeding.</li>
+</ul>
+
+<h2 id="toc_2">2.5 Generating Secure Boot Keys</h2>
+
+<h3 id="toc_3">2.5.1 Create a secure directory on the host system to store cryptographic keys.</h3>
+
+<ul>
+    <li>Generate the required Public Key Cryptography (PKC) key used for boot authentication. Optionally generate a Secure Boot Key (SBK) for bootloader encryption and UEFI Secure Boot keys if additional boot restrictions are desired.</li>
+    <li>Ensure that all key material is securely backed up and stored offline.</li>
+</ul>
+
+<h2 id="toc_2">2.6 Testing Signed Flashing on an Unfused Device</h2>
+
+<p>Before burning any fuses, perform signed flashing on an unfused Jetson Orin Nano.</p>
+
+<h3 id="toc_3">2.6.1 Flash the device using signed images and verify that the system boots successfully, reboots cleanly, and can be reflashed repeatedly.</h3>
+
+<ul>
+    <li>This step confirms that key generation and signing are correct.</li>
+    <li>If signed flashing does not work at this stage, do not proceed further.</li>
+</ul>
 
 <script type="text/javascript">
 var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(\w+)\b/i,t=0,n=_self.Prism={util:{encode:function(e){return e instanceof a?new a(e.type,n.util.encode(e.content),e.alias):"Array"===n.util.type(e)?e.map(n.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},objId:function(e){return e.__id||Object.defineProperty(e,"__id",{value:++t}),e.__id},clone:function(e){var t=n.util.type(e);switch(t){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=n.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return n.util.clone(e)})}return e}},languages:{extend:function(e,t){var a=n.util.clone(n.languages[e]);for(var r in t)a[r]=t[r];return a},insertBefore:function(e,t,a,r){r=r||n.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==t)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return n.languages.DFS(n.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,t,a,r){r=r||{};for(var l in e)e.hasOwnProperty(l)&&(t.call(e,l,e[l],a||l),"Object"!==n.util.type(e[l])||r[n.util.objId(e[l])]?"Array"!==n.util.type(e[l])||r[n.util.objId(e[l])]||(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,l,r)):(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,null,r)))}},plugins:{},highlightAll:function(e,t){var a={callback:t,selector:'code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'};n.hooks.run("before-highlightall",a);for(var r,l=a.elements||document.querySelectorAll(a.selector),i=0;r=l[i++];)n.highlightElement(r,e===!0,a.callback)},highlightElement:function(t,a,r){for(var l,i,o=t;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=n.languages[l]),t.className=t.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=t.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=t.textContent,u={element:t,language:l,grammar:i,code:s};if(!s||!i)return n.hooks.run("complete",u),void 0;if(n.hooks.run("before-highlight",u),a&&_self.Worker){var c=new Worker(n.filename);c.onmessage=function(e){u.highlightedCode=e.data,n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},c.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=n.highlight(u.code,u.grammar,u.language),n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(t),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},highlight:function(e,t,r){var l=n.tokenize(e,t);return a.stringify(n.util.encode(l),r)},tokenize:function(e,t){var a=n.Token,r=[e],l=t.rest;if(l){for(var i in l)t[i]=l[i];delete t.rest}e:for(var i in t)if(t.hasOwnProperty(i)&&t[i]){var o=t[i];o="Array"===n.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],c=u.inside,g=!!u.lookbehind,h=!!u.greedy,f=0,d=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var m=r[p];if(r.length>e.length)break e;if(!(m instanceof a)){u.lastIndex=0;var y=u.exec(m),v=1;if(!y&&h&&p!=r.length-1){var b=r[p+1].matchedStr||r[p+1],k=m+b;if(p<r.length-2&&(k+=r[p+2].matchedStr||r[p+2]),u.lastIndex=0,y=u.exec(k),!y)continue;var w=y.index+(g?y[1].length:0);if(w>=m.length)continue;var _=y.index+y[0].length,P=m.length+b.length;if(v=3,P>=_){if(r[p+1].greedy)continue;v=2,k=k.slice(0,P)}m=k}if(y){g&&(f=y[1].length);var w=y.index+f,y=y[0].slice(f),_=w+y.length,S=m.slice(0,w),O=m.slice(_),j=[p,v];S&&j.push(S);var A=new a(i,c?n.tokenize(y,c):y,d,y,h);j.push(A),O&&j.push(O),Array.prototype.splice.apply(r,j)}}}}}return r},hooks:{all:{},add:function(e,t){var a=n.hooks.all;a[e]=a[e]||[],a[e].push(t)},run:function(e,t){var a=n.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(t)}}},a=n.Token=function(e,t,n,a,r){this.type=e,this.content=t,this.alias=n,this.matchedStr=a||null,this.greedy=!!r};if(a.stringify=function(e,t,r){if("string"==typeof e)return e;if("Array"===n.util.type(e))return e.map(function(n){return a.stringify(n,t,e)}).join("");var l={type:e.type,content:a.stringify(e.content,t,r),tag:"span",classes:["token",e.type],attributes:{},language:t,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===n.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}n.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var t=JSON.parse(e.data),a=t.language,r=t.code,l=t.immediateClose;_self.postMessage(n.highlight(r,n.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var r=document.currentScript||[].slice.call(document.getElementsByTagName("script")).pop();return r&&(n.filename=r.src,document.addEventListener&&!r.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",n.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
