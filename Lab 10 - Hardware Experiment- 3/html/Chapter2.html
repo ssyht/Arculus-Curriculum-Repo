@@ -471,57 +471,54 @@ pre[class*="language-"] {
 
 <body>
 
-<h2 id="toc_2">1.1 Purpose of the lab.</h2>
+<h2 id="toc_2">2.1 Overview</h2>
 
-<p>In this module, you will learn how software-based attestation can be used to establish trust in command and control systems when hardware security mechanisms are not available. Building on the secure communication and replay protection concepts from the previous modules, this lab focuses on verifying the integrity of the command sender before accepting control messages.</p>
+<p>In this chapter, you will extend the UAV command simulation by adding software-based attestation to the command transmission process.</p>
 
-<p>This lab is designed to provide hands-on exposure to software-based trust verification by allowing you to generate and validate cryptographic fingerprints of the sender environment. You will observe how commands originating from a trusted sender are accepted, while commands from modified or untrusted software are rejected. Rather than relying on physical trusted platform modules, this experiment demonstrates how software-based attestation can be used to approximate hardware-backed trust in virtualized and edge environments.</p>
-
-<p>By the end of this lab, you will gain practical experience in understanding how trust can be established at the software level and why integrity verification is critical for mission safety.</p>
+<p>The base station computes cryptographic hashes of selected software components, such as the sender script or container image, and includes this attestation data with each encrypted command. The drone receiver verifies the attestation data against a predefined allowlist before executing any command. This setup allows the system to enforce trust in the sender software even in the absence of hardware-backed security mechanisms.</p>
 
 
-<h2 id="toc_3">1.2 Prerequisites.</h2>
+<h2 id="toc_3">2.2 Trust Sender Scenario</h2>
 
-<p>To follow along and get the most out of this module, you should:</p>
+<p>In this scenario, commands originate from a known and trusted sender.</p>
+
+<h3 id="toc_3">2.2.1 First, generate cryptographic fingerprints of the trusted sender components and store them in an allowlist on the drone receiver.</h3>
+
+<p>Start the receiver with attestation verification enabled.</p>
+
+<h3 id="toc_3">2.2.2 Send encrypted commands from the trusted sender.</h3>
+
+<p>Because the attestation data matches the allowlist, the drone accepts the commands and executes them as expected.</p>
+<p>This behavior demonstrates how software-based attestation enables trusted command execution.</p>
+
+<h2 id="toc_3">2.3 Modified Sender Scenario</h2>
+
 <ul>
-  <li>Have completed Hardware experiments lab: Replay Attack and Defense and Plaintext vs Encrypted Command Injection.</li>
-  <li>Have access to the provided AERPAW simulation environment</li>
-  <li>Be familiar with using a terminal or command-line interface</li>
-  <li>Understand basic concepts of encryption and message verification</li>
+  <li>In this scenario, the sender software is modified to simulate an untrusted or compromised environment.</li>
 </ul>
 
-<h2 id="toc_3">1.3 References to guide lab work.</h2>
-<p>Please use the links below to learn the related information for this lab.</p>
+<h3 id="toc_3">2.3.1 Make a small change to the sender code or rebuild the sender environment so that its cryptographic fingerprint changes.</h3>
 
 <ul>
-<li> Arculus GitHub Repository – <a href="https://github.com/arculus-zt/arculus-sw/tree/master" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master</a></li>
-<li> Arculus Documentation – <a href="https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs</a></li>
-<li> AERPAW User Manual – <a href="https://sites.google.com/ncsu.edu/aerpaw-user-manual/" target="_blank">https://sites.google.com/ncsu.edu/aerpaw-user-manual/</a></li>
+  <li>Send encrypted commands using the modified sender.</li>
 </ul>
 
+<h3 id="toc_3">2.3.2 The drone detects that the attestation data does not match the allowlist and rejects the commands.</h3>
 
-<h2 id="toc_9">1.4 Goals/Outcomes.</h2>
-
-<p>By the end of this lab module, you will be able to:</p>
-
-<p><b>(i) Understand Software-Based Attestation</b></p>
 <ul>
-  <li>Identify how software fingerprints can be used to establish trust</li>
-  <li>Understand the limitations of software-based trust models</li>
+  <li>This behavior demonstrates how integrity verification prevents commands from untrusted software from being executed.</li>
 </ul>
 
-<p><b>(ii) Execute an Attestation Verification Simulation</b></p>
+<h2 id="toc_3">2.4 Analysis and Observations</h2>
+
 <ul>
-  <li>Generate cryptographic hashes of trusted sender components</li>
-  <li>Attach attestation data to encrypted commands</li>
+  <li>Compare the outcomes of the trusted and modified sender scenarios. Observe how the system enforces trust based on software integrity and prevents command execution when the sender environment changes.</li>
+  <li>Reflect on how software-based attestation can be used in virtualized, edge, and resource-constrained environments where hardware trust anchors are unavailable.</li>
 </ul>
 
-<p><b>(iii) Analyze Trust Enforcement in Command Execution</b></p>
-<ul>
-  <li>Compare system behavior between trusted and modified senders</li>
-  <li>Understand how integrity checks prevent unauthorized command execution</li>
-</ul>
+<h2 id="toc_3">2.5 As a Result</h2>
 
+<p>As a result of completing this chapter, you observed how software-based attestation enables trust enforcement in UAV command and control systems. You were able to view that commands from a trusted sender were accepted and executed, while commands from a modified or untrusted sender were rejected based on integrity verification. This demonstrates how software-based trust mechanisms can prevent unauthorized control even when communication channels are encrypted. Through this experiment, you gained practical insight into how integrity, authenticity, and trust work together to protect mission-critical cyber-physical systems.</p>
 
 
 <script type="text/javascript">
