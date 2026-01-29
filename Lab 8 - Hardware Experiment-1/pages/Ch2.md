@@ -1,55 +1,128 @@
-# Chapter 2 – Plaintext vs Encrypted Command Injection
+# Chapter 2 — AERPAW User Setup and Instance Preparation
 
 ## 2.1 Overview
 
-In this chapter, you will execute the command injection experiment using the AERPAW digital twin. The simulation consists of two logical components: a base station that sends navigation commands and a drone that receives and executes those commands.
+In this chapter, you will set up your workstation, register as an AERPAW user, configure access to AERPAW resources, and prepare the environment required to run experiments. These setup steps are essential before conducting the experiment described in Chapter 3.
 
-The components communicate using UDP messages that contain navigation instructions. Depending on the configuration, these messages are transmitted either in plaintext or in encrypted form.
+You will learn how to configure software on your local machine, create and authorize an AERPAW user account, set up SSH keys for secure access, and connect to the AERPAW virtual or development environment. By the end of this chapter, you will be ready to initiate experiments on the AERPAW platform.
 
-## 2.2 Plaintext Command Injection Scenario
+## 2.2 AERPAW User Prerequisites
 
-* In this scenario, navigation commands are transmitted in plaintext without authentication.
+Before beginning setup, ensure you have the following:
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+* A PC or laptop with a supported operating system (Linux recommended; Windows or macOS also supported)
+* Reliable internet connectivity
+* Institutional credentials (for identity provider login)
+* Ability to install required software on your workstation
 
-### 2.2.1 Start the drone receiver process so it listens for incoming UDP commands. 
+## 2.3 Workstation Configuration
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+To interact with the AERPAW platform and experiment resources, configure your local workstation with the following tools:
 
-* Then, from the base station, send legitimate plaintext navigation commands and observe normal mission execution.
+### 2.3.1 Terminal and SSH Client
 
-### 2.2.2 Next, inject a spoofed plaintext navigation command that alters the intended flight path. 
+You need a terminal with SSH support to connect securely to remote nodes in the AERPAW environment.
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+* On **Linux or macOS**, use the built-in terminal
+* On **Windows**, you can use terminal applications such as cmder, PowerShell/SSH, or third-party SSH clients
 
-* Because the command is not protected, the drone accepts the spoofed message and deviates from its planned route. This behavior demonstrates how plaintext communication allows unauthorized entities to influence system behavior.
+SSH is used for remote command execution and accessing experiment resources.
 
-## 2.3 Encrypted Command Transmission Scenario
+### 2.3.2 QGroundControl
 
-* In this scenario, command transmission is protected using encryption and authentication.
+Install QGroundControl to monitor and control mobile nodes (e.g., UAVs or UGVs) used in the experiment. Choose the appropriate installer for your platform (Windows, macOS, Linux) and follow official installation instructions from the QGroundControl documentation.
 
-### 2.3.1 Restart the drone receiver in protected mode so that it verifies incoming commands before execution. 
+During setup:
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+* Set Unit system to metric
+* Select Autopilot as ArduPilot
+* Choose vehicle Frame (e.g., quad) as applicable
 
-* From the base station, send encrypted navigation commands using the secure message format.
+QGroundControl will be used to monitor nodes in the AERPAW environment.
 
-### 2.3.2 Attempt to inject the same spoofed plaintext command used earlier. 
+### 2.3.3 OpenVPN Client
 
-<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
+Install an OpenVPN client to connect to AERPAW's VPN required for accessing virtual experiment resources.
 
-* The drone rejects or ignores the unauthorized command, and the mission proceeds as expected or enters a safe state.
+* On Linux, install OpenVPN (version 2 recommended)
+* On macOS, use clients such as Tunnelblick
+* On Windows, use the official OpenVPN client
 
-* This behavior demonstrates how cryptographic protections prevent command injection attacks.
+OpenVPN enables secure connectivity from your workstation to the AERPAW development environment.
 
-## 2.4 Analysis and Observations
+## 2.4 AERPAW Account Creation
 
-* Compare the system behavior observed in both scenarios. Notice how plaintext communication allows direct control manipulation, while encrypted communication enforces trust and integrity.
+You must create and configure an AERPAW user account to access the experiment portal and request experiment resources.
 
-* Reflect on how similar vulnerabilities could impact real-world UAV systems and other cyber-physical platforms if command channels are not secured.
+### 2.4.1 Register and Log In
 
-## 2.5 As a Result
+1. Navigate to the AERPAW experiment website (through the official AERPAW portal).
+2. Click Experiment Web Portal from the menu and choose Login.
+3. Select your institution from the identity provider dropdown and authenticate using your institutional credentials.
+4. After successful login, you will return to the portal with access to user features.
 
-As a result of completing this chapter, you observed how the security of command transmission directly affects the behavior of a cyber-physical system. You first saw that when navigation commands are transmitted in plaintext, the drone accepts any well-formed command, including spoofed or unauthorized messages. This resulted in unintended changes to the mission path, demonstrating how insecure communication channels enable command injection attacks.
+### 2.4.2 Edit Your Profile
 
-You then observed that when encryption and authentication are enabled, the same spoofed commands are no longer accepted. The drone either ignores the unauthorized commands or continues executing its original mission, showing that cryptographic protection enforces trust and prevents unauthorized control. Through this experiment, you gained practical insight into why secure communication is essential for UAV control systems and how control-plane security directly impacts mission safety and system reliability.
+Once logged in:
+
+1. Click Profile in the navigation bar.
+2. Fill in required fields such as Employer/Organization and Position/Title.
+3. Provide information about your Field of Research and anticipated platform usage.
+4. Save updates.
+
+The AERPAW team may review your information before granting full experiment access.
+
+## 2.5 SSH Key Setup
+
+For secure access to experiment nodes and services, upload your SSH public key to your AERPAW profile:
+
+1. If you already have an SSH key pair, you may use it. Otherwise, generate a new SSH key pair on your workstation.
+2. Copy the contents of your SSH public key file (e.g., `id_rsa.pub`).
+3. In the AERPAW portal, navigate to the SSH keys section of your profile and upload the public key.
+
+SSH keys authorize your identity when connecting to experiment resources without requiring passwords.
+
+## 2.6 Requesting Experimenter Role and Project Access
+
+To run experiments on AERPAW you must:
+
+1. Request the Experimenter role from the AERPAW portal.
+2. Create or join a project that will contain your experiments.
+3. Provide required project details (title, description, team members).
+4. Submit and wait for project approval as required.
+
+Approval times may vary and are subject to review by the AERPAW team.
+
+## 2.7 Starting and Managing an Experiment
+
+Once you have experimenter access:
+
+1. Click Projects in the navigation bar and select your project.
+2. Under the Experiments section, click Create.
+3. Enter an experiment name and description (e.g., `plaintext_encrypted_node_test`).
+4. Choose experiment resources (nodes) required for your experiment.
+5. Save and request experiment activation.
+
+After approval, your experiment will be allocated a development session, and you will receive access details for the virtual environment.
+
+## 2.8 Connecting to Experiment Resources
+
+Once your experiment session is active:
+
+1. Download any "Linked files" listed on the experiment page to your workstation.
+2. Use OpenVPN to connect your workstation into the AERPAW VPN.
+3. Use SSH to connect to the virtual nodes provided (e.g., UAV/UGV environments).
+4. Launch QGroundControl and verify connectivity to the aerial vehicle node if applicable.
+
+You are now prepared to run the experiment steps described in Chapter 3.
+
+## 2.9 Post-Setup Validation
+
+Before proceeding to experimental steps:
+
+* Confirm VPN connection is active and stable
+* Check SSH access to each allocated node
+* Verify QGroundControl can connect and display status
+* Ensure your experiment session remains active
+
+This preparation ensures that the experiment in Chapter 3 can be executed without environment setup issues.

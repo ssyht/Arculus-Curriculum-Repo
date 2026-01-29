@@ -69,7 +69,7 @@ In a normal operating scenario, the payload drone would proceed to deploy the pa
 
 ### 2.7.1 While operating autonomously, the payload drone proceeds toward the target location.
 
-<p align="center"> <img src="../img/kill_switch_1.png" width="900px"></p>
+<p align="center"> <img src="../img/ch2_2.2_1.png" width="900px"></p>
 
 * Observe the mission map and activity log as the drone deploys the payload on the target without active GCS communication. This confirms that mission objectives can still be achieved under compromised conditions using autonomous decision-making.
 
