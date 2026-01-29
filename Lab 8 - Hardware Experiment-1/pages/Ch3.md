@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Chapter 3
+=======
+# Chapter 3 – Plaintext vs Encrypted Command Injection
+>>>>>>> 50af6f7488e51af723c4da2c420f06bd2e129eef
 
 
 ## 3.1 Overview
@@ -63,6 +67,7 @@ Verify that:
 
 * Telemetry data begins streaming
 
+<<<<<<< HEAD
 At this point, the GCS and UAV are communicating entirely in plaintext.
 
 ## 3.4 Verifying Normal Telemetry and Heartbeats
@@ -189,3 +194,6 @@ These observations form the reference point for the attack steps introduced in t
 ## 3.11 As a Result
 
 You have now successfully completed the baseline plaintext MAVLink mission execution. The system is functioning as designed, but without any security protections on command authenticity or integrity. In the next chapter, you will begin passively observing MAVLink traffic and demonstrate how plaintext communication enables an attacker to prepare for command injection.
+=======
+You then observed that when encryption and authentication are enabled, the same spoofed commands are no longer accepted. The drone either ignores the unauthorized commands or continues executing its original mission, showing that cryptographic protection enforces trust and prevents unauthorized control. Through this experiment, you gained practical insight into why secure communication is essential for UAV control systems and how control-plane security directly impacts mission safety and system reliability.
+>>>>>>> 50af6f7488e51af723c4da2c420f06bd2e129eef
