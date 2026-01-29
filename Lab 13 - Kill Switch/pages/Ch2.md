@@ -14,9 +14,13 @@ Monitor the mission map and activity log to confirm normal execution before any 
 
 ### 2.3.1 While active communication with the GCS is available, manually trigger the kill switch using the Kill Switch control in the Mission Execution Dashboard.
 
+<p align="center"> <img src="../img/kill_switch_1.png" width="900px"></p>
+
 ### 2.3.2 Once activated, observe the immediate termination of mission execution. The system begins controlled shutdown procedures, including stopping drone movement and securing mission data.
 
 * Review the activity log to confirm that the kill switch was triggered by operator action and that safe termination procedures were enforced.
+
+<p align="center"> <img src="../img/kill_2.png" width="900px"></p>
 
 ## 2.4 Autonomous Kill Switch Activation
 
@@ -25,6 +29,9 @@ Monitor the mission map and activity log to confirm normal execution before any 
 * When the system determines that mission integrity is at risk, the kill switch is activated autonomously without operator intervention. This represents a fail-safe response to potential physical capture or adversarial control.
 
 * Observe the mission map and activity log as the system initiates safe shutdown and data protection mechanisms.
+
+<p align="center"> <img src="../img/kill_3.png" width="900px"></p>
+
 
 ## 2.5 Monitoring Safe Termination Behavior
 
