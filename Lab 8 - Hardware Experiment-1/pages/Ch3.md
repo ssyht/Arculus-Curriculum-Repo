@@ -1,4 +1,4 @@
-# Chapter 2 – Plaintext vs Encrypted Command Injection
+# Chapter 3 – Plaintext vs Encrypted Command Injection
 
 ## 2.1 Overview
 
