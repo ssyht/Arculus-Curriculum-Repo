@@ -233,7 +233,7 @@ ls -lah bootloader/tee.bin
 
 This step verifies that fTPM support was correctly enabled during the OP-TEE build and that the expected configuration and artifacts were generated.
 
-Run this grep:
+Run this grep command:
 
 ```bash
 sudo grep -RIn "CFG_FTPM\|ftpm\|tpm" \
