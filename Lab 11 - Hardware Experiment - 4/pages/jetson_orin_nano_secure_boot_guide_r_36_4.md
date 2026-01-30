@@ -68,6 +68,7 @@ sudo apt install -y \
   pkg-config
 
 sudo apt-get install qemu-user-tools
+sudo apt-get install libxml2-utils
 ```
 
 
@@ -145,11 +146,14 @@ In your bundle, the build driver is usually optee_src_build.sh (you already have
 First, make sure the paths are exported into the userspace:
 
 ```bash
+cd ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee
+
+# Toolchain env (NVIDIA script expects these)
 export CROSS_COMPILE_AARCH64_PATH=/usr
 export CROSS_COMPILE_AARCH64=/usr/bin/aarch64-linux-gnu-
 export PKG_CONFIG=/usr/bin/pkg-config
 
-# set this after you locate STMM (step 2)
+# STMM binary used by OP-TEE build (you should already have it in your BSP)
 export UEFI_STMM_PATH=~/Linux_for_Tegra/bootloader/standalonemm_optee_t234.bin
 ```
 Now run the OP-TEE build. 
@@ -161,39 +165,48 @@ For The Jetson Nano Orin, the tag will be (t234).
 
 ```bash
 cd ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee
+# Build OP-TEE + fTPM
 sudo -E ./optee_src_build.sh -p t234 -t
 ```
-
 ---
+## A-5. Copy the built OP-TEE core into the BSP bootloader folder
 
-## A-5. After build, locate the generated TOS image
+L4T doesn’t usually generate a tos-optee_t234.img from this script; instead the packaging scripts pull in OP-TEE payloads (like tee.bin) during flash image generation.
 
 ```bash
 cd ~/nvidia/Linux_for_Tegra
-find . -maxdepth 4 -type f \( -name "tos*.img" -o -name "*optee*img" \) | head -n 50
-```
 
-You want something like:
+# backup (if you have space)
+cp -av bootloader/tee.bin bootloader/tee.bin.bak 2>/dev/null || true
 
-* `tos.img` (build output)
+# copy your freshly built tee.bin into bootloader/
+cp -av source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.bin bootloader/tee.bin
 
-* or a produced image under `bootloader/`
-
-If you get `tos.img`, install it by copying it to `/bootloader`:
-```bash
-cp ~/nvidia/Linux_for_Tegra/source/tos.img ~/nvidia/Linux_for_Tegra/bootloader/tos-optee_t234.img
+# sanity check
+ls -lah bootloader/tee.bin
 ```
 
 ---
 
-## A-6. Add your custom TA
+## A-5. Quick “is fTPM actually in this build?” sanity check
 
-Later, once you build UUID.ta, you’ll copy it into the rootfs so it’s present after flash:
+Run this grep:
 
 ```bash
-sudo mkdir -p ~/nvidia/Linux_for_Tegra/rootfs/lib/optee_armtz
-sudo cp <your_uuid>.ta ~/nvidia/Linux_for_Tegra/rootfs/lib/optee_armtz/
+grep -RIn "CFG_FTPM\|ftpm\|tpm" \
+  ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/conf.mk \
+  ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/optee_os/mk/config.mk \
+  2>/dev/null | head -n 120
+
 ```
+And also check if an fTPM TA shows up in install output:
+```bash
+find ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234 -type f \
+  -iname "*tpm*" -o -iname "*ftpm*" -o -iname "*.ta" | head -n 50
+```
+
+---
+
 
 ---
 
@@ -222,100 +235,23 @@ Example: **0955:7xxx NVIDIA Corp.**
 If you don’t, flashing will not work (USB passthrough/filter needs fixing).
 ---
 
-## B-2. Generate Secure Boot Keys
-
-Create a secure directory for all keys:
-
-```bash
-mkdir -p ~/jetson-keys/{pkc,sbk,uefi}
-chmod 700 ~/jetson-keys
-```
-
-### Required
-
-- **PKC key** (asymmetric, used for authentication/signing)
-
-### Optional
-
-- **SBK** (symmetric key, used for bootloader encryption)
-- **UEFI Secure Boot keys** (PK / KEK / db)
-
-> 🔐 **Back these up offline.** If you fuse keys and lose them, the device becomes permanently un‑updatable.
 
 ---
 
-## B-3. Test Signed Flashing (Unfused Board)
 
-**Do this before burning fuses.**
 
-Example for NVMe boot using initrd flash:
-
-```bash
-sudo ./tools/kernel_flash/l4t_initrd_flash.sh \
-  --external-device nvme0n1p1 \
-  -u ~/jetson-keys/pkc/pkc.pem \
-  -v ~/jetson-keys/sbk/sbk.key \
-  --uefi-keys ~/jetson-keys/uefi/uefi_keys.conf \
-  -p "-c ./bootloader/generic/cfg/flash_t234_qspi.xml" \
-  -c ./tools/kernel_flash/flash_l4t_t234_nvme.xml \
-  --showlogs --network usb0 \
-  jetson-orin-nano-devkit external
-```
-
-### Validate
-
-- System boots successfully
-- Reboots cleanly
-- Can be reflashed repeatedly
-
-If this does **not** work unfused, do **not** proceed.
 
 ---
 
-## B-4. Prepare Fuse Configuration
-
-Generate fuse configuration **without burning**:
-
-```bash
-sudo ./odmfuse.sh --generate <options>
-```
-
-Inspect the generated fuse data carefully.
 
 ---
 
-## B-5. Burn Secure Boot Fuses (Irreversible)
-
-Once fully validated:
-
-```bash
-sudo ./odmfuse.sh <final-options>
-```
-
-This permanently programs:
-
-- PKC public key hash
-- Optional SBK
-- Secure boot enable flags
-
-> ⚠️ After this step, **unsigned images will never boot again**.
 
 ---
 
-## B-6. Flash Signed Images on a Fused Board
-
-Repeat the **same signed flash command** used in Step 6.
-
-The boot ROM will now enforce signature verification using the fused PKC.
 
 ---
 
-## B-7. Post‑Fuse Verification Checklist
-
-- Device boots without host attached
-- Unsigned images fail to boot
-- Signed reflashes succeed
-- (Optional) UEFI Secure Boot restricts kernels/bootloaders
 
 ---
 
