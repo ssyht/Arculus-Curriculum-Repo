@@ -471,291 +471,365 @@ pre[class*="language-"] {
 
 <body>
 
-<h2 id="toc_2">3.1 Overview</h2>
+<h2 id="toc_2">5.1 Overview</h2>
 
-<p>In this chapter, you will establish the cryptographic foundation necessary for securing MAVLink communications. This involves installing OpenSSL with FIPS (Federal Information Processing Standards) validation, which ensures that the cryptographic implementations meet rigorous security standards established by the U.S. government.</p>
+<p>In this chapter, you will execute the complete path spoofing experiment, demonstrating both the vulnerability of unencrypted MAVLink commands and the protection provided by cryptographic defenses. You will observe the drone's behavior in two critical scenarios: when navigation commands are sent in plaintext (vulnerable to spoofing) and when commands are encrypted (protected from spoofing).</p>
 
-<p>FIPS-validated cryptography is essential for security-critical applications. FIPS 140-2 certification ensures that cryptographic modules have been tested and validated to meet specific security requirements. By using FIPS-validated OpenSSL, you guarantee that the encryption protecting your drone commands meets industry-recognized security standards.</p>
+<p>This chapter brings together all the components configured in previous chapters: the AERPAW testbed, FIPS-validated cryptography, flight mission script, and command sender/receiver infrastructure. Through hands-on experimentation, you will witness firsthand how encryption transforms a vulnerable system into a secure one.</p>
 
-<p>This chapter will guide you through installing OpenSSL 3.1.2 with FIPS module support, generating cryptographic keys for AES-256-GCM encryption and HMAC-SHA256 authentication, and securely distributing these keys between the ground control station and the drone.</p>
-
-<p>By completing this chapter, you will have a fully functional cryptographic infrastructure ready to protect MAVLink navigation commands from spoofing attacks.</p>
+<p>By completing this chapter, you will have successfully demonstrated a complete attack-and-defense cycle in a UAV command and control system, gaining practical insight into the critical importance of cryptographic security for autonomous vehicles.</p>
 
 
-<h2 id="toc_3">3.2 Prerequisites</h2>
+<h2 id="toc_3">5.2 Prerequisites</h2>
 
 <p>Before starting this chapter, ensure that:</p>
 
 <ul>
-  <li>You have root access to both the drone and base station nodes</li>
-  <li>The AERPAW environment is properly configured (Chapter 2 completed)</li>
-  <li>You are familiar with basic Linux command-line operations</li>
-  <li>You understand the difference between encryption (confidentiality) and authentication (integrity)</li>
+  <li>All previous chapters (1-4) are completed</li>
+  <li>QGroundControl is connected and displaying telemetry</li>
+  <li>SSH connections to OEO Console, drone, and base station are active</li>
+  <li>Cryptographic keys are properly distributed</li>
+  <li>Flight script and sender/receiver scripts are in place</li>
+  <li>The drone has GPS lock and is ready for flight</li>
 </ul>
 
 
-<h2 id="toc_4">3.3 Understanding FIPS-Validated Cryptography</h2>
+<h2 id="toc_4">5.3 Starting the Experiment</h2>
 
-<h3 id="toc_4_1">3.3.1 What is FIPS 140-2?</h3>
+<h3 id="toc_4_1">5.3.1 Access the OEO Console</h3>
 
-<p>FIPS 140-2 (Federal Information Processing Standards Publication 140-2) is a U.S. government standard that specifies security requirements for cryptographic modules. It ensures that:</p>
+<p>From your local machine, ensure the SSH tunnel to the OEO Console is active.</p>
+
+<h3 id="toc_4_2">5.3.2 Check Active Screen Sessions</h3>
+
+<p>List active screen sessions:</p>
+
+<pre><code class="language-bash">screen -ls
+</code></pre>
+
+<p align="center"><img src="../img/Ch5-c1.png" width="65%" alt="Ch5-c1"></p>
+
+<p>You should see the mavproxy session already running. This session manages communication with the drone's autopilot.</p>
+
+<h3 id="toc_4_3">5.3.3 Start the Experiment</h3>
+
+<p>From the OEO Console, start the AERPAW experiment:</p>
+
+<pre><code class="language-bash">./startOEOConsole.sh
+</code></pre>
+
+<p>Then execute:</p>
+
+<pre><code class="language-bash">all start_experiment
+</code></pre>
+
+<p align="center"><img src="../img/Ch5-1.png" width="65%" alt="Ch5-1"></p>
+
+<p>This command starts the experiment scripts on all allocated nodes. You should see confirmation that the vehicle script has been activated on the drone.</p>
+
+
+<h2 id="toc_5">5.4 Pre-Flight Procedures</h2>
+
+<h3 id="toc_5_1">5.4.1 Check Drone Status in QGroundControl</h3>
+
+<p>In QGroundControl, verify:</p>
 
 <ul>
-  <li>Cryptographic algorithms are implemented correctly</li>
-  <li>Key management is performed securely</li>
-  <li>The module has been independently tested and validated</li>
-  <li>Physical and logical security boundaries are maintained</li>
+  <li>Connection status shows "Ready to Fly"</li>
+  <li>GPS has adequate satellite lock (10+ satellites)</li>
+  <li>Battery voltage is sufficient</li>
+  <li>Home position is set correctly</li>
 </ul>
 
-<h3 id="toc_4_2">3.3.2 Why FIPS Matters for UAV Security</h3>
+<p align="center"><img src="../img/Ch5-2.png" width="65%" alt="Ch5-2"></p>
 
-<p>For unmanned aerial vehicles operating in security-sensitive environments:</p>
+<h3 id="toc_5_2">5.4.2 Set Flight Mode to GUIDED</h3>
 
-<ul>
-  <li><strong>Regulatory Compliance</strong>: Government and military applications often require FIPS validation</li>
-  <li><strong>Assured Security</strong>: FIPS validation provides confidence that cryptographic implementations are correct</li>
-  <li><strong>Attack Resistance</strong>: FIPS-validated modules are tested against known cryptographic attacks</li>
-  <li><strong>Interoperability</strong>: FIPS provides a common security baseline across different systems</li>
-</ul>
+<p>From the OEO Console, set the drone to GUIDED mode:</p>
 
-<h3 id="toc_4_3">3.3.3 Cryptographic Components</h3>
+<pre><code class="language-bash">5 set_mode GUIDED
+</code></pre>
 
-<p>This experiment uses two cryptographic mechanisms:</p>
+<p align="center"><img src="../img/Ch5-3.png" width="65%" alt="Ch5-3"></p>
 
-<p><strong>AES-256-GCM:</strong> Advanced Encryption Standard with 256-bit keys in Galois/Counter Mode</p>
-<ul>
-  <li>Provides confidentiality (encryption)</li>
-  <li>Provides integrity (authentication)</li>
-  <li>Resistant to tampering and forgery</li>
-</ul>
+<h3 id="toc_5_3">5.4.3 Arm the Drone</h3>
 
-<p><strong>HMAC-SHA256:</strong> Hash-based Message Authentication Code using SHA-256</p>
-<ul>
-  <li>Provides message authentication</li>
-  <li>Prevents unauthorized command modification</li>
-  <li>Complements AES-GCM for defense-in-depth</li>
-</ul>
+<p>Arm the drone's motors:</p>
+
+<pre><code class="language-bash">5 arm
+</code></pre>
+
+<p align="center"><img src="../img/Ch5-arm.png" width="65%" alt="Ch5-arm"></p>
+
+<p>Verify in QGroundControl that the drone shows "Armed" status.</p>
 
 
-<h2 id="toc_5">3.4 Installing OpenSSL with FIPS Module</h2>
+<h2 id="toc_6">5.5 Scenario 1: Plaintext Command Vulnerability (Attack Succeeds)</h2>
 
-<h3 id="toc_5_1">3.4.1 Access the Drone Node</h3>
+<p>In this scenario, you will demonstrate how unencrypted navigation commands can be exploited for path spoofing attacks.</p>
 
-<p>SSH into the drone node where the cryptographic setup will be performed:</p>
+<h3 id="toc_6_1">5.5.1 Start the Receiver on the Drone</h3>
+
+<p>SSH into the drone and start the receiver in listening mode:</p>
 
 <pre><code class="language-bash">ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5
+cd /root
+env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 receiver_v2.py \
+  --listen 0.0.0.0 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key
 </code></pre>
 
-<h3 id="toc_5_2">3.4.2 Create Installation Script</h3>
+<p align="center"><img src="../img/Ch5-4.png" width="65%" alt="Ch5-4"></p>
 
-<p>The installation script automates the process of building OpenSSL with FIPS support. Due to length, the complete script content is available in the documentation. Make the script executable and run it:</p>
+<p>The receiver will begin listening for navigation commands on UDP port 14551.</p>
 
-<pre><code class="language-bash">chmod +x /root/install_openssl_fips_312.sh
-/root/install_openssl_fips_312.sh
-</code></pre>
+<h3 id="toc_6_2">5.5.2 Observe Initial Flight</h3>
 
-<p>The script will:</p>
+<p>Watch the drone in QGroundControl as it:</p>
 
 <ol>
-  <li>Install required build dependencies</li>
-  <li>Download OpenSSL 3.1.2 source code</li>
-  <li>Configure the build with FIPS module enabled</li>
-  <li>Compile OpenSSL (this step takes the longest time)</li>
-  <li>Install to <code>/usr/local/ssl</code></li>
-  <li>Run FIPS self-tests</li>
-  <li>Configure environment variables</li>
+  <li>Takes off to 25 meters altitude</li>
+  <li>Flies to BS1 (first waypoint)</li>
+  <li>Dwells for the configured time</li>
+  <li>Proceeds toward BS2</li>
 </ol>
 
-<p align="center"><img src="../img/Ch3-1.png" width="65%" alt="Ch3-1"></p>
+<p align="center"><img src="../img/Ch5-arm.png" width="65%" alt="Ch5-arm"></p>
 
-<h3 id="toc_5_3">3.4.3 Verify Installation</h3>
+<h3 id="toc_6_3">5.5.3 Send Plaintext Command from Base Station</h3>
 
-<p>After installation completes, verify that FIPS-validated OpenSSL is properly installed:</p>
-
-<pre><code class="language-bash">source /etc/profile.d/openssl-fips.sh
-which openssl
-openssl version -a
-openssl list -providers
-</code></pre>
-
-<p align="center"><img src="../img/Ch3-2.png" width="65%" alt="Ch3-2"></p>
-
-<p>Expected output should show:</p>
-
-<ul>
-  <li>OpenSSL 3.1.2 installation path</li>
-  <li>FIPS provider listed and active</li>
-  <li>Base provider listed and active</li>
-</ul>
-
-<h3 id="toc_5_4">3.4.4 Test FIPS Enforcement</h3>
-
-<p>Verify that FIPS mode is enforcing security policies by testing a non-FIPS-approved algorithm:</p>
-
-<pre><code class="language-bash">echo "test" | openssl md5
-</code></pre>
-
-<p>This command should <strong>fail</strong> with an error message, indicating that MD5 (which is not FIPS-approved) is blocked. This confirms that FIPS enforcement is active.</p>
-
-
-<h2 id="toc_6">3.5 Generating Cryptographic Keys</h2>
-
-<p>With FIPS-validated OpenSSL installed, you can now generate the cryptographic keys needed for securing MAVLink communications.</p>
-
-<h3 id="toc_6_1">3.5.1 Generate AES-256 Encryption Key</h3>
-
-<p>Generate a 256-bit (32-byte) random key for AES encryption:</p>
-
-<pre><code class="language-bash">cd /root
-openssl rand -out mavlink_aes256.key 32
-</code></pre>
-
-<p>This key will be used to encrypt navigation commands, ensuring confidentiality.</p>
-
-<h3 id="toc_6_2">3.5.2 Generate HMAC Authentication Key</h3>
-
-<p>Generate a 256-bit (32-byte) random key for HMAC authentication:</p>
-
-<pre><code class="language-bash">openssl rand -out mavlink_hmac.key 32
-</code></pre>
-
-<p>This key will be used to authenticate commands, ensuring integrity and preventing tampering.</p>
-
-<h3 id="toc_6_3">3.5.3 Verify Key Generation</h3>
-
-<p>Confirm that both keys were generated successfully:</p>
-
-<pre><code class="language-bash">ls -l mavlink_aes256.key mavlink_hmac.key
-wc -c mavlink_aes256.key mavlink_hmac.key
-</code></pre>
-
-<p align="center"><img src="../img/Ch3-3.png" width="65%" alt="Ch3-3"></p>
-
-<p>Each key should be exactly 32 bytes in size.</p>
-
-<h3 id="toc_6_4">3.5.4 Set Appropriate Permissions</h3>
-
-<p>Protect the keys with restrictive file permissions:</p>
-
-<pre><code class="language-bash">chmod 600 mavlink_aes256.key mavlink_hmac.key
-</code></pre>
-
-<p>This ensures only the root user can read the keys.</p>
-
-
-<h2 id="toc_7">3.6 Distributing Keys to Base Station</h2>
-
-<p>For the base station to send encrypted commands, it must have copies of the cryptographic keys.</p>
-
-<h3 id="toc_7_1">3.6.1 Copy Keys from Drone to Base Station</h3>
-
-<p>From your local machine, use SCP to transfer the keys from the drone to the base station:</p>
-
-<pre><code class="language-bash">scp -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5:/root/mavlink_aes256.key \
-    root@192.168.144.1:/root/
-
-scp -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5:/root/mavlink_hmac.key \
-    root@192.168.144.1:/root/
-</code></pre>
-
-<h3 id="toc_7_2">3.6.2 Verify Keys on Base Station</h3>
-
-<p>SSH into the base station and verify the keys are present:</p>
+<p>When the drone is approaching or has reached BS2, SSH into the base station and send a plaintext navigation command:</p>
 
 <pre><code class="language-bash">ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.1
-ls -l mavlink_aes256.key mavlink_hmac.key
+cd /root
+env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 sender_v2.py \
+  --mode plain \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.69866117 \
+  --alt 25
 </code></pre>
 
-<p align="center"><img src="../img/Ch3-4.png" width="65%" alt="Ch3-4"></p>
+<p align="center"><img src="../img/Ch5-5.png" width="65%" alt="Ch5-5"></p>
 
-<p>Both keys should be present with 32-byte sizes.</p>
+<h3 id="toc_6_4">5.5.4 Observe Spoofing Behavior</h3>
 
+<p>Monitor QGroundControl to observe:</p>
 
-<h2 id="toc_8">3.7 Security Considerations</h2>
+<ol>
+  <li>The receiver detects the plaintext command</li>
+  <li>The drone deviates 90 meters east from the intended path</li>
+  <li>The drone enters a holding pattern at the spoofed location</li>
+</ol>
 
-<h3 id="toc_8_1">3.7.1 Key Management Best Practices</h3>
+<p align="center"><img src="../img/Ch5-6.png" width="65%" alt="Ch5-6"></p>
 
-<p>In production environments, consider:</p>
+<p>This demonstrates a successful path spoofing attack due to lack of encryption.</p>
 
-<ul>
-  <li><strong>Secure Key Generation</strong>: Keys should be generated on secure systems with good entropy sources</li>
-  <li><strong>Key Distribution</strong>: Use secure channels (e.g., encrypted USB drives, secure network transfers)</li>
-  <li><strong>Key Storage</strong>: Store keys encrypted at rest when possible</li>
-  <li><strong>Key Rotation</strong>: Periodically generate new keys and retire old ones</li>
-  <li><strong>Access Control</strong>: Limit key access to only authorized personnel and systems</li>
-</ul>
+<h3 id="toc_6_5">5.5.5 Send Encrypted Override (Optional)</h3>
 
-<h3 id="toc_8_2">3.7.2 FIPS Compliance</h3>
+<p>To demonstrate recovery, send an encrypted command:</p>
 
-<p>When deploying in regulated environments:</p>
+<pre><code class="language-bash">env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 sender_v2.py \
+  --mode enc \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.69866117 \
+  --alt 25
+</code></pre>
 
-<ul>
-  <li>Always use FIPS-validated cryptographic modules</li>
-  <li>Ensure FIPS mode is enabled and enforced</li>
-  <li>Document cryptographic key lifecycle</li>
-  <li>Perform regular security audits</li>
-  <li>Maintain logs of cryptographic operations</li>
-</ul>
+<p align="center"><img src="../img/Ch5-7.png" width="65%" alt="Ch5-7"></p>
 
-<h3 id="toc_8_3">3.7.3 Limitations of Software-Based Security</h3>
+<p>The drone should:</p>
 
-<p>Software-based cryptography has limitations:</p>
+<ol>
+  <li>Detect the encrypted command within the 30-second window</li>
+  <li>Immediately return to launch position</li>
+  <li>Land safely</li>
+</ol>
 
-<ul>
-  <li>Keys stored in memory can potentially be extracted</li>
-  <li>No hardware-backed secure element protects keys</li>
-  <li>System compromise could expose keys</li>
-</ul>
+<h3 id="toc_6_6">5.5.6 Review Telemetry Logs</h3>
 
-<p>For higher security requirements, consider hardware security modules (HSMs) or trusted platform modules (TPMs).</p>
+<p>After the drone lands, review the flight logs:</p>
 
+<pre><code class="language-bash">cd /root/Results
+ls -lt *.txt | head -1
+cat &lt;most_recent_log_file&gt;
+</code></pre>
 
-<h2 id="toc_9">3.8 Troubleshooting</h2>
+<p align="center"><img src="../img/Ch5-8.png" width="65%" alt="Ch5-8"></p>
 
-<h3 id="toc_9_1">Issue: OpenSSL Installation Fails</h3>
-
-<p><strong>Symptoms:</strong> Build errors during compilation</p>
-
-<p><strong>Solutions:</strong></p>
-
-<ul>
-  <li>Ensure all build dependencies are installed</li>
-  <li>Check available disk space (OpenSSL source requires ~500MB)</li>
-  <li>Review error messages for missing libraries</li>
-  <li>Verify internet connectivity for downloading source</li>
-</ul>
-
-<h3 id="toc_9_2">Issue: FIPS Provider Not Active</h3>
-
-<p><strong>Symptoms:</strong> <code>openssl list -providers</code> doesn't show FIPS provider</p>
-
-<p><strong>Solutions:</strong></p>
+<p>The logs will show:</p>
 
 <ul>
-  <li>Verify <code>/usr/local/ssl/openssl.cnf</code> exists and is properly configured</li>
-  <li>Source the environment script: <code>source /etc/profile.d/openssl-fips.sh</code></li>
-  <li>Check <code>OPENSSL_CONF</code> environment variable points to correct config file</li>
-  <li>Verify <code>fips.so</code> module exists in <code>/usr/local/ssl/lib/ossl-modules/</code></li>
-</ul>
-
-<h3 id="toc_9_3">Issue: MD5 Test Still Works</h3>
-
-<p><strong>Symptoms:</strong> <code>openssl md5</code> does not fail as expected</p>
-
-<p><strong>Solutions:</strong></p>
-
-<ul>
-  <li>FIPS mode may not be properly enforced</li>
-  <li>Check that base provider is not exclusively activated</li>
-  <li>Review <code>openssl.cnf</code> configuration</li>
-  <li>Re-run fipsinstall</li>
+  <li>Timestamp of plaintext command detection</li>
+  <li>State transition to spoofed waypoint</li>
+  <li>Position data confirming the deviation</li>
+  <li>Encrypted command detection (if override was sent)</li>
+  <li>Return to launch behavior</li>
 </ul>
 
 
-<h2 id="toc_10">3.9 As a Result</h2>
+<h2 id="toc_7">5.6 Scenario 2: Encrypted Command Protection (Attack Prevented)</h2>
 
-<p>As a result of completing this chapter, you have successfully established a FIPS-validated cryptographic infrastructure for securing MAVLink communications. You installed OpenSSL 3.1.2 with FIPS module support, verified that FIPS enforcement is active, generated cryptographic keys for AES-256-GCM encryption and HMAC-SHA256 authentication, and securely distributed these keys between the drone and base station. Your cryptographic foundation is now ready to protect navigation commands from spoofing attacks in the next chapter.</p>
+<p>In this scenario, you will demonstrate how encryption prevents path spoofing attacks.</p>
 
+<h3 id="toc_7_1">5.6.1 Reset the Experiment</h3>
+
+<p>If continuing from Scenario 1, reset the experiment:</p>
+
+<ol>
+  <li>Stop all running scripts (Ctrl+C on receiver)</li>
+  <li>Clear the command file:</li>
+</ol>
+
+<pre><code class="language-bash">rm /tmp/flight_cmd.txt
+</code></pre>
+
+<ol start="3">
+  <li>Ensure the drone is landed and disarmed</li>
+  <li>Restart the experiment via OEO Console</li>
+</ol>
+
+<h3 id="toc_7_2">5.6.2 Restart Receiver</h3>
+
+<p>Restart the receiver on the drone:</p>
+
+<pre><code class="language-bash">env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 receiver_v2.py \
+  --listen 0.0.0.0 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key
+</code></pre>
+
+<h3 id="toc_7_3">5.6.3 Arm and Begin Flight</h3>
+
+<p>From OEO Console:</p>
+
+<pre><code class="language-bash">5 set_mode GUIDED
+5 arm
+</code></pre>
+
+<p>Observe the drone takeoff and begin its mission.</p>
+
+<h3 id="toc_7_4">5.6.4 Send Encrypted Command at BS2</h3>
+
+<p>When the drone approaches BS2, send an encrypted command from the base station:</p>
+
+<pre><code class="language-bash">env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 sender_v2.py \
+  --mode enc \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.69866117 \
+  --alt 25
+</code></pre>
+
+<h3 id="toc_7_5">5.6.5 Observe Defense Behavior</h3>
+
+<p>Monitor QGroundControl to observe:</p>
+
+<ol>
+  <li>The receiver successfully decrypts the command</li>
+  <li>The drone does NOT deviate from the intended path</li>
+  <li>The drone immediately returns to launch position</li>
+  <li>The drone lands safely</li>
+</ol>
+
+<p align="center"><img src="../img/Ch5-9.png" width="65%" alt="Ch5-9"></p>
+
+<p>This demonstrates successful prevention of the path spoofing attack through encryption.</p>
+
+<p align="center"><img src="../img/Ex1_Ch5_receiver_enc.png" width="65%" alt="Ex1_Ch5_receiver_enc"></p>
+
+<h3 id="toc_7_6">5.6.6 Review Defense Logs</h3>
+
+<p>Examine the flight logs:</p>
+
+<pre><code class="language-bash">cd /root/Results
+cat &lt;most_recent_log_file&gt;
+</code></pre>
+
+<p align="center"><img src="../img/Ch5-def.png" width="65%" alt="Ch5-def"></p>
+
+<p>The logs will show:</p>
+
+<ul>
+  <li>Timestamp of encrypted command detection</li>
+  <li>No deviation to spoofed waypoint</li>
+  <li>Direct return to launch behavior</li>
+  <li>Successful landing</li>
+</ul>
+
+
+<h2 id="toc_8">5.7 Analysis and Observations</h2>
+
+<p align="center"><img src="../img/Ch5-log1.png" width="65%" alt="Ch5-log1"></p>
+
+<p>During this whole process, at the drone's end we see plaintext and encrypted messages being parsed.</p>
+
+<p align="center"><img src="../img/Ch5-log2.png" width="65%" alt="Ch5-log2"></p>
+
+<p>And also we can see telemetry logs as:</p>
+
+<p align="center"><img src="../img/Ch5-log3.png" width="65%" alt="Ch5-log3"></p>
+
+<h3 id="toc_8_1">5.7.1 Comparing Attack and Defense Scenarios</h3>
+
+<p>Compare the outcomes of plaintext versus encrypted command scenarios in terms of command reception, spoof detection, flight behavior, mission outcome, and security level.</p>
+
+<h3 id="toc_8_2">5.7.2 Understanding the Security Improvement</h3>
+
+<p>The experiment demonstrates key security principles including confidentiality, integrity, attack prevention, and defense-in-depth.</p>
+
+<h3 id="toc_8_3">5.7.3 Real-World Implications</h3>
+
+<p>In operational UAV systems, path spoofing could lead to mission failure, unauthorized activities, physical damage, regulatory violations, and safety risks. Cryptographic protection is essential for security-critical applications.</p>
+
+
+<h2 id="toc_9">5.8 Post-Experiment Procedures</h2>
+
+<h3 id="toc_9_1">5.8.1 Stop All Scripts</h3>
+
+<p>Terminate all running experiment scripts.</p>
+
+<h3 id="toc_9_2">5.8.2 Collect and Archive Data</h3>
+
+<p>Gather all experimental data:</p>
+
+<pre><code class="language-bash"># On the drone
+cd /root/Results
+tar -czf experiment_results_$(date +%Y%m%d_%H%M%S).tar.gz *.txt *.csv
+
+# Download to local machine
+scp -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5:/root/Results/experiment_results_*.tar.gz ./
+</code></pre>
+
+<h3 id="toc_9_3">5.8.3 Clean Up Temporary Files</h3>
+
+<p>Remove temporary command files:</p>
+
+<pre><code class="language-bash">rm /tmp/flight_cmd.txt
+</code></pre>
+
+<h3 id="toc_9_4">5.8.4 Release AERPAW Resources</h3>
+
+<p>Release allocated nodes through the AERPAW portal.</p>
+
+
+<h2 id="toc_10">5.9 Troubleshooting</h2>
+
+<p>Common issues and solutions for drone not taking off, receiver not detecting commands, unexpected deviations, and decryption failures.</p>
+
+
+<h2 id="toc_11">5.10 As a Result</h2>
+
+<p>As a result of completing this chapter, you have successfully executed a comprehensive path spoofing attack and defense experiment on a UAV system. You demonstrated how plaintext navigation commands are vulnerable to spoofing attacks that can divert the drone from its intended path. You then showed how FIPS-validated cryptographic protection prevents these attacks, ensuring the drone follows only authenticated commands from authorized ground control stations.</p>
+
+<p>Through hands-on experimentation, you observed the dramatic difference between vulnerable and secure systems. You gained practical experience with cryptographic key management, secure command protocols, and the real-world implications of UAV security. This experiment provides a foundation for understanding how cryptography protects autonomous systems from adversarial manipulation.</p>
+
+<p>The principles demonstrated in this lab—confidentiality, integrity, authentication, and defense-in-depth—apply broadly to all command and control systems. By mastering these concepts in the controlled AERPAW environment, you are prepared to implement security solutions for real-world autonomous systems.</p>
 
 <script type="text/javascript">
 var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(\w+)\b/i,t=0,n=_self.Prism={util:{encode:function(e){return e instanceof a?new a(e.type,n.util.encode(e.content),e.alias):"Array"===n.util.type(e)?e.map(n.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},objId:function(e){return e.__id||Object.defineProperty(e,"__id",{value:++t}),e.__id},clone:function(e){var t=n.util.type(e);switch(t){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=n.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return n.util.clone(e)})}return e}},languages:{extend:function(e,t){var a=n.util.clone(n.languages[e]);for(var r in t)a[r]=t[r];return a},insertBefore:function(e,t,a,r){r=r||n.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==t)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return n.languages.DFS(n.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,t,a,r){r=r||{};for(var l in e)e.hasOwnProperty(l)&&(t.call(e,l,e[l],a||l),"Object"!==n.util.type(e[l])||r[n.util.objId(e[l])]?"Array"!==n.util.type(e[l])||r[n.util.objId(e[l])]||(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,l,r)):(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,null,r)))}},plugins:{},highlightAll:function(e,t){var a={callback:t,selector:'code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'};n.hooks.run("before-highlightall",a);for(var r,l=a.elements||document.querySelectorAll(a.selector),i=0;r=l[i++];)n.highlightElement(r,e===!0,a.callback)},highlightElement:function(t,a,r){for(var l,i,o=t;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=n.languages[l]),t.className=t.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=t.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=t.textContent,u={element:t,language:l,grammar:i,code:s};if(!s||!i)return n.hooks.run("complete",u),void 0;if(n.hooks.run("before-highlight",u),a&&_self.Worker){var c=new Worker(n.filename);c.onmessage=function(e){u.highlightedCode=e.data,n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},c.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=n.highlight(u.code,u.grammar,u.language),n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(t),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},highlight:function(e,t,r){var l=n.tokenize(e,t);return a.stringify(n.util.encode(l),r)},tokenize:function(e,t){var a=n.Token,r=[e],l=t.rest;if(l){for(var i in l)t[i]=l[i];delete t.rest}e:for(var i in t)if(t.hasOwnProperty(i)&&t[i]){var o=t[i];o="Array"===n.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],c=u.inside,g=!!u.lookbehind,h=!!u.greedy,f=0,d=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var m=r[p];if(r.length>e.length)break e;if(!(m instanceof a)){u.lastIndex=0;var y=u.exec(m),v=1;if(!y&&h&&p!=r.length-1){var b=r[p+1].matchedStr||r[p+1],k=m+b;if(p<r.length-2&&(k+=r[p+2].matchedStr||r[p+2]),u.lastIndex=0,y=u.exec(k),!y)continue;var w=y.index+(g?y[1].length:0);if(w>=m.length)continue;var _=y.index+y[0].length,P=m.length+b.length;if(v=3,P>=_){if(r[p+1].greedy)continue;v=2,k=k.slice(0,P)}m=k}if(y){g&&(f=y[1].length);var w=y.index+f,y=y[0].slice(f),_=w+y.length,S=m.slice(0,w),O=m.slice(_),j=[p,v];S&&j.push(S);var A=new a(i,c?n.tokenize(y,c):y,d,y,h);j.push(A),O&&j.push(O),Array.prototype.splice.apply(r,j)}}}}}return r},hooks:{all:{},add:function(e,t){var a=n.hooks.all;a[e]=a[e]||[],a[e].push(t)},run:function(e,t){var a=n.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(t)}}},a=n.Token=function(e,t,n,a,r){this.type=e,this.content=t,this.alias=n,this.matchedStr=a||null,this.greedy=!!r};if(a.stringify=function(e,t,r){if("string"==typeof e)return e;if("Array"===n.util.type(e))return e.map(function(n){return a.stringify(n,t,e)}).join("");var l={type:e.type,content:a.stringify(e.content,t,r),tag:"span",classes:["token",e.type],attributes:{},language:t,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===n.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}n.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var t=JSON.parse(e.data),a=t.language,r=t.code,l=t.immediateClose;_self.postMessage(n.highlight(r,n.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var r=document.currentScript||[].slice.call(document.getElementsByTagName("script")).pop();return r&&(n.filename=r.src,document.addEventListener&&!r.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",n.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
@@ -763,4 +837,3 @@ var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScop
 
 </body>
 </html>
-

@@ -471,59 +471,91 @@ pre[class*="language-"] {
 
 <body>
 
-<h2 id="toc_2">1.1 Purpose of the lab.</h2>
+<h2 id="toc_2">1.1 Purpose of the Lab</h2>
 
-<p>In this module, you will learn how unsecured command transmission can impact the behavior of an unmanned aerial vehicle within a simulated cyber-physical system. Using the AERPAW digital twin environment, this lab focuses on understanding how plaintext navigation commands can be intercepted and spoofed, and how cryptographic protection prevents unauthorized control.</p>
+<p>In this module, you will learn how encrypted MAVLink communication can protect UAV navigation commands from path spoofing attacks. This lab demonstrates a critical vulnerability in drone command and control systems: adversaries can inject false navigation commands to divert drones from their intended flight paths, potentially leading to mission failure or security breaches.</p>
 
-<p>This lab is designed to provide hands-on exposure to command injection attacks by allowing you to execute a controlled simulation involving a base station and a drone. You will observe system behavior when navigation commands are transmitted in plaintext and compare it with behavior when commands are protected using encryption and authentication.</p>
+<p>This lab provides hands-on exposure to both attack and defense scenarios. You will observe how a drone responds to plaintext navigation commands that can be spoofed by an adversary, causing the drone to deviate from its planned route. You will then implement cryptographic defenses using FIPS-validated AES-256-GCM encryption and HMAC-SHA256 authentication to secure the command channel.</p>
 
-<p>Rather than designing new security mechanisms, the emphasis of this lab is on recognizing how insecure communication channels enable control-plane attacks and why cryptographic protections are essential for safe and reliable UAV operations.</p>
+<p>Rather than simply applying encryption as a black box, the emphasis of this lab is on understanding the complete security lifecycle: from setting up the AERPAW testbed environment and configuring the drone's flight mission, to implementing FIPS-compliant cryptography and observing how encryption prevents spoofing attacks in real-time.</p>
 
-<p>By the end of this lab, you will gain practical experience in identifying command spoofing risks and understanding how secure messaging improves trust and safety in mission-oriented systems.</p>
+<p>By the end of this lab, you will gain practical experience in securing UAV command and control systems through cryptographic methods and will understand how defense-in-depth strategies protect critical autonomous systems from adversarial manipulation.</p>
 
-<h2 id="toc_3">1.2 Prerequisites.</h2>
 
-<p>To follow along and get the most out of this module, you should:</p>
+<h2 id="toc_3">1.2 Prerequisites</h2>
+
+<p><strong>To follow along and get the most out of this module, you should:</strong></p>
+
 <ul>
-  <li>Have access to the provided AERPAW simulation environment</li>
-  <li>Be familiar with using a terminal or command-line interface</li>
-  <li>Understand basic networking concepts such as UDP communication</li>
-  <li>Have basic familiarity with Python scripts</li>
+  <li>Have access to the AERPAW simulation environment with allocated drone and base station resources</li>
+  <li>Be familiar with using SSH and command-line interfaces in Linux environments</li>
+  <li>Understand basic networking concepts such as UDP communication and port forwarding</li>
+  <li>Have basic knowledge of Python programming</li>
+  <li>Be familiar with MAVLink protocol fundamentals</li>
+  <li>Understand basic cryptographic concepts (encryption, authentication, hashing)</li>
+  <li>Have QGroundControl installed on your local machine</li>
+  <li>Have an active OpenVPN connection to the AERPAW testbed</li>
 </ul>
 
 
-<h2 id="toc_3">1.3 References to guide lab work.</h2>
-<p>Please use the links below to learn the related information for this lab.</p>
+<h2 id="toc_4">1.3 References to Guide Lab Work</h2>
+
+<p><strong>Please use the links below to learn the related information for this lab:</strong></p>
 
 <ul>
-<li> Arculus GitHub Repository – <a href="https://github.com/arculus-zt/arculus-sw/tree/master" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master</a></li>
-<li> Arculus Documentation – <a href="https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs</a></li>
-<li> AERPAW User Manual – <a href="https://sites.google.com/ncsu.edu/aerpaw-user-manual/" target="_blank">https://sites.google.com/ncsu.edu/aerpaw-user-manual/</a></li>
+  <li><a href="https://github.com/BishwasWagle/Mavlink-AERPAW">MAVLink-AERPAW GitHub Repository</a></li>
+  <li><a href="https://sites.google.com/ncsu.edu/aerpaw-user-manual/">AERPAW User Manual</a></li>
+  <li><a href="https://sites.google.com/ncsu.edu/aerpaw-user-manual/3-user-resources-and-policies/3-3-tutorial-videos/aadm-instructions">AADM Instructions for AERPAW</a></li>
+  <li><a href="https://mavlink.io/en/">MAVLink Protocol Documentation</a></li>
+  <li><a href="https://www.openssl.org/docs/">OpenSSL Documentation</a></li>
+  <li><a href="https://docs.qgroundcontrol.com/master/en/">QGroundControl User Guide</a></li>
 </ul>
 
 
-<h2 id="toc_9">1.4 Goals/Outcomes.</h2>
+<h2 id="toc_5">1.4 Goals/Outcomes</h2>
 
 <p>By the end of this lab module, you will be able to:</p>
 
-<p><b>(i) Understand Insecure Command Transmission</b></p>
+<p><strong>(i) Understand Path Spoofing Vulnerabilities</strong></p>
+
 <ul>
-  <li>Identify how plaintext navigation commands can be spoofed</li>
-  <li>Recognize the risks of unauthenticated control messages</li>
+  <li>Identify how unencrypted navigation commands can be exploited</li>
+  <li>Recognize the security risks in UAV command and control systems</li>
+  <li>Understand the attack surface of MAVLink communication</li>
 </ul>
 
-<p><b>(ii) Execute a Command Injection Simulation</b></p>
+<p><strong>(ii) Configure AERPAW Testbed Environment</strong></p>
+
 <ul>
-  <li>Run a pre-configured UAV control simulation in AERPAW</li>
-  <li>Observe drone behavior under normal and spoofed command conditions</li>
+  <li>Set up OEO Console with proper SSH tunneling</li>
+  <li>Configure drone and base station experiment scripts</li>
+  <li>Establish QGroundControl connection to the drone</li>
 </ul>
 
-<p><b>(iii) Analyze the Effect of Cryptographic Protection</b></p>
+<p><strong>(iii) Implement FIPS-Compliant Cryptography</strong></p>
+
 <ul>
-  <li>Compare system behavior with and without encrypted commands</li>
-  <li>Understand how encryption and authentication prevent unauthorized control</li>
+  <li>Install and configure OpenSSL with FIPS module</li>
+  <li>Generate cryptographic keys for AES-256-GCM and HMAC-SHA256</li>
+  <li>Securely distribute keys between ground control station and drone</li>
 </ul>
 
+<p><strong>(iv) Execute Attack and Defense Scenarios</strong></p>
+
+<ul>
+  <li>Demonstrate path spoofing with plaintext commands</li>
+  <li>Observe drone deviation behavior under attack</li>
+  <li>Implement encrypted command protection</li>
+  <li>Verify that encryption prevents spoofing attacks</li>
+</ul>
+
+<p><strong>(v) Analyze Security Outcomes</strong></p>
+
+<ul>
+  <li>Compare system behavior with and without encryption</li>
+  <li>Understand the role of cryptographic authentication in UAV security</li>
+  <li>Evaluate the effectiveness of FIPS-validated cryptographic implementations</li>
+</ul>
 
 
 <script type="text/javascript">
