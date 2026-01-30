@@ -64,6 +64,10 @@ python3 receiver_antireplay.py \
 
 Keep this terminal running during the experiment.
 
+<p align="center"> <img src="../img/no_defense_receiver.png" width="900px"> </p>
+
+The receiver starts listening for encrypted MAVLink commands and accepts all incoming packets without freshness validation.
+
 ### 2.3.4 Sending Encrypted Commands
 
 On the base station, send encrypted navigation commands:
@@ -83,6 +87,10 @@ python3 sender_antireplay.py \
 
 This command generates encrypted MAVLink traffic for capture.
 
+<p align="center"> <img src="../img/sender.png" width="900px"> </p>
+
+This command generates encrypted MAVLink traffic that can later be captured and replayed.
+
 ## 2.4 Replay Attack Without Protection
 
 In this scenario, the drone does not enforce freshness checks on incoming commands.
@@ -97,6 +105,8 @@ Start packet capture on the monitoring or adversary node:
 tcpdump -i any udp port 14551 -w cmd_capture.pcap
 ```
 
+<p align="center"> <img src="../img/tcp_dump_capture.png" width="900px"> </p>
+
 Allow normal encrypted command traffic to occur while capture is running, then stop capture using Ctrl+C.
 
 ### 2.4.2 Replay the captured command during a later phase of the mission
@@ -107,6 +117,8 @@ Replay the captured traffic:
 tcpreplay --intf1=<interface> cmd_capture.pcap
 ```
 
+<p align="center"> <img src="../img/tcp_replay_capture.png" width="900px"> </p>
+
 Replace <interface> with your active interface (example: eth0)
 
 ### 2.4.3 Expected system behavior (no protection)
@@ -114,6 +126,10 @@ Replace <interface> with your active interface (example: eth0)
 Because the command is encrypted but not checked for freshness, the drone accepts the replayed command and executes it again.
 
 This behavior demonstrates how replay attacks can succeed even when encryption is used, as long as the system does not verify whether a command is new or duplicated.
+
+<p align="center"> <img src="../img/no_defense_accepted.png" width="900px"> </p>
+
+The drone executes the replayed command, demonstrating a successful replay attack.
 
 ## 2.5 Replay Attack With Protection Enabled
 
@@ -142,11 +158,19 @@ Replay the captured traffic again:
 tcpreplay --intf1=<interface> cmd_capture_defended.pcap
 ```
 
+<p align="center"> <img src="../img/manual_replay_attack.png" width="900px"> </p>
+
+This represents a replay attempt under defended conditions.
+
 ## 2.5.3 Expected system behavior (protection enabled)
 
 The drone rejects the replayed message because it detects that the command is stale, duplicated, or outside the allowed freshness window.
 
 This behavior demonstrates how replay protection prevents attackers from reusing previously valid commands.
+
+<p align="center"> <img src="../img/defended_replay_rejected.png" width="900px"> </p>
+
+The drone ignores stale or duplicated packets, preventing the attack.
 
 ## 2.6 Analysis and Observations
 
