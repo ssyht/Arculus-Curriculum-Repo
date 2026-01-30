@@ -41,6 +41,35 @@
 ---
 
 ## A. Software Setup 
+```bash
+sudo apt update
+sudo apt install -y \
+  build-essential \
+  git \
+  wget \
+  curl \
+  python3 \
+  python3-pip \
+  libssl-dev \
+  libncurses5-dev \
+  bison \
+  flex \
+  libelf-dev \
+  bc \
+  cpio \
+  rsync \
+  device-tree-compiler \
+  u-boot-tools \
+  lz4 \
+  zstd \
+  usbutils \ 
+  gcc-aarch64-linux-gnu \
+  g++-aarch64-linux-gnu \
+  pkg-config
+
+sudo apt-get install qemu-user-tools
+```
+
 
 ## A-1. Download Jetson Linux r36.4.3 (BSP + RootFS)
 
@@ -79,8 +108,8 @@ cd ~/nvidia/Linux_for_Tegra/source
 sudo ./source_sync.sh
 ```
 
-When prompted each time in line 13-14, `Please enter a tag to sync /home/vboxuser/nvidia/Linux_for_Tegra/source/kernel/kernel-jammy-src source to 
-(enter nothing to skip):` enter **jetson_36.4**.
+When prompted `Please enter a tag to sync /home/vboxuser/nvidia/Linux_for_Tegra/source/kernel/kernel-jammy-src source to 
+(enter nothing to skip):` **you must enter** `jetson_36.4`.
 
 Example:
 ```bash
@@ -100,18 +129,28 @@ Please enter a tag to sync /home/vboxuser/nvidia/Linux_for_Tegra/source/kernel/k
 Syncing up with tag jetson_36.4...
 ```
 After sync, confirm OP-TEE shows up:
+
 ```bash
+ls -lah tegra/optee-src
+
+ls -lah tegra/optee-src/nv-optee | head
+
 find . -maxdepth 4 -iname "*optee*" | head -n 50
 ```
+![Screenshot 2026-01-29 215024.png](Screenshot%202026-01-29%20215024.png)
 ---
 
 ## A-4. Build OP-TEE with fTPM enabled 
-In your bundle, the build driver is usually nvsrc_build.sh (you already have it). 
-First, confirm it has OP-TEE target:
+In your bundle, the build driver is usually optee_src_build.sh (you already have it). 
+First, make sure the paths are exported into the userspace:
 
 ```bash
-cd ~/nvidia/Linux_for_Tegra/source
-grep -i optee -n ./nvsrc_build.sh | head -n 50
+export CROSS_COMPILE_AARCH64_PATH=/usr
+export CROSS_COMPILE_AARCH64=/usr/bin/aarch64-linux-gnu-
+export PKG_CONFIG=/usr/bin/pkg-config
+
+# set this after you locate STMM (step 2)
+export UEFI_STMM_PATH=~/Linux_for_Tegra/bootloader/standalonemm_optee_t234.bin
 ```
 Now run the OP-TEE build. 
 One of these patterns will match your nvsrc_build.sh (the script help decides which exact syntax it expects):
@@ -120,22 +159,9 @@ The -t here is the NVIDIA convention used for enabling fTPM when building OP-TEE
 
 For The Jetson Nano Orin, the tag will be (t234).
 
-Try **Pattern A**:
 ```bash
-sudo ./nvsrc_build.sh -p t234 optee -t
-```
-If it errors quickly, try **Pattern B**:
-```bash
-sudo ./nvsrc_build.sh optee -p t234 -t
-```
-If it errors again, try **Pattern C**:
-```bash
-sudo ./nvsrc_build.sh -p t234 --optee -t
-```
-
-If it errors once more, print help and run the exact target name it shows:
-```bash
-./nvsrc_build.sh -h | sed -n '1,200p'
+cd ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee
+sudo -E ./optee_src_build.sh -p t234 -t
 ```
 
 ---
