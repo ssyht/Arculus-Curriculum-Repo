@@ -2,25 +2,27 @@
 
 ## 1.1 Purpose of the Lab
 
-In this module, you will learn how replay attacks can impact the security of command and control systems in unmanned aerial vehicles. Building on the secure command transmission concepts introduced in Module 1, this lab focuses on understanding how previously captured valid commands can be reused by an attacker to manipulate system behavior.
+In this module, you will learn how replay attacks can impact the security of command and control systems in unmanned aerial vehicles. Building on encrypted MAVLink communication introduced in earlier modules, this lab focuses on understanding how previously captured valid commands can be reused by an attacker.
 
-This lab is designed to provide hands-on exposure to replay attacks by allowing you to capture legitimate encrypted command traffic and replay it during a mission. You will observe how a system behaves when freshness checks are not enforced and how replay protection mechanisms prevent stale or duplicated commands from being accepted.
+This lab provides hands-on exposure to replay attacks by allowing you to capture encrypted UAV command traffic and replay it during an active mission. You will observe how the drone behaves when freshness checks are not enforced and how replay protection mechanisms prevent duplicated or stale commands from being accepted.
 
-Rather than developing new cryptographic algorithms, the emphasis of this lab is on recognizing why encryption alone is not sufficient and how freshness guarantees such as nonces, sequence numbers, and timestamps are required to ensure secure control-plane communication.
+Rather than developing new cryptographic protocols, the emphasis of this lab is on understanding why encryption alone is not sufficient and how timestamps, sequence numbers, and nonces improve communication security.
 
-By the end of this lab, you will gain practical experience in identifying replay vulnerabilities and understanding how replay protection improves trust and reliability in mission-oriented systems.
+By the end of this lab, you will gain practical experience in identifying replay vulnerabilities and evaluating anti-replay defenses in UAV systems.
 
 ## 1.2 Prerequisites
 
 **To follow along and get the most out of this module, you should:**
 
-* Have completed Module 1 or understand encrypted command transmission
+* Have completed the encrypted command transmission experiment [Lab-8 : Path spoofing with encrypted mavlink navigation command]
 
-* Have access to the provided AERPAW simulation environment
+* Have access to the AERPAW simulation environment
 
 * Be familiar with using a terminal or command-line interface
 
 * Understand basic networking concepts such as UDP communication
+
+* Have generated AES and HMAC keys
 
 ## 1.3 References to Guide Lab Work
 
@@ -40,16 +42,18 @@ By the end of this lab module, you will be able to:
 
 * Identify how valid encrypted commands can be reused by an attacker
 
-* Recognize why encryption alone does not prevent replay attacks
+* Recognize replay vulnerabilities in UAV communication
 
 **(ii) Execute a Replay Attack Simulation**
 
-* Capture legitimate UAV command traffic
+* Capture MAVLink command packets
 
-* Replay captured commands during a mission
+* Replay captured traffic
+
+* Observe drone behavior
 
 **(iii) Analyze Replay Protection Mechanisms**
 
-* Compare system behavior with and without freshness checks
+* Compare defended and undefended modes
 
-* Understand how nonces, sequence numbers, and timestamps prevent replay attacks
+* Understand the role of timestamps, nonces, and sequence numbers

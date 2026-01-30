@@ -2,127 +2,162 @@
 
 ## 2.1 Overview
 
-In this chapter, you will set up your workstation, register as an AERPAW user, configure access to AERPAW resources, and prepare the environment required to run experiments. These setup steps are essential before conducting the experiment described in Chapter 3.
+In this chapter, you will perform a replay attack experiment on encrypted UAV navigation commands and evaluate the effectiveness of anti-replay defenses.
 
-You will learn how to configure software on your local machine, create and authorize an AERPAW user account, set up SSH keys for secure access, and connect to the AERPAW virtual or development environment. By the end of this chapter, you will be ready to initiate experiments on the AERPAW platform.
+Encrypted MAVLink commands are transmitted from the base station to the drone using AES-256-GCM and HMAC-SHA256. An adversary can capture these packets and replay them later to disrupt mission execution.
 
-## 2.2 AERPAW User Prerequisites
+This chapter demonstrates system behavior in two modes:
 
-Before beginning setup, ensure you have the following:
+* No-defense mode, where replayed packets are accepted
+* Defended mode, where replayed packets are rejected
+
+By completing this chapter, you will be able to reproduce and analyze replay attacks in the AERPAW environment.
+
+## 2.2 Prerequisites and Environment Setup
+
+Before starting this experiment, ensure that:
 
 * A PC or laptop with a supported operating system (Linux recommended; Windows or macOS also supported)
 * Reliable internet connectivity
-* Institutional credentials (for identity provider login)
-* Ability to install required software on your workstation
+* You have access to an active AERPAW experiment session
+* The drone and base station nodes are allocated
+* SSH access to both nodes is available
+* AES and HMAC keys are generated and shared
+* QGroundControl is installed and configured
+* Active OpenVPN connection
 
-## 2.3 Workstation Configuration
+This chapter assumes that basic AERPAW user registration and VPN setup have already been completed.
 
-To interact with the AERPAW platform and experiment resources, configure your local workstation with the following tools:
+## 2.3 Network and System Configuration
 
-### 2.3.1 Terminal and SSH Client
+### 2.3.1 Network Roles
 
-You need a terminal with SSH support to connect securely to remote nodes in the AERPAW environment.
+This experiment uses the following components:
 
-* On **Linux or macOS**, use the built-in terminal
-* On **Windows**, you can use terminal applications such as cmder, PowerShell/SSH, or third-party SSH clients
+* Base Station (GCS): Sends encrypted navigation commands
+* Drone: Receives and executes commands
+* Adversary (optional): Captures and replays packets
 
-SSH is used for remote command execution and accessing experiment resources.
+All MAVLink communication uses UDP port 14551.
 
-### 2.3.2 QGroundControl
+### 2.3.2 Required Files
 
-Install QGroundControl to monitor and control mobile nodes (e.g., UAVs or UGVs) used in the experiment. Choose the appropriate installer for your platform (Windows, macOS, Linux) and follow official installation instructions from the QGroundControl documentation.
+Ensure that the following files are present on both the base station and the drone:
 
-During setup:
+sender_antireplay.py
+receiver_antireplay.py
+mavlink_aes256.key
+mavlink_hmac.key
 
-* Set Unit system to metric
-* Select Autopilot as ArduPilot
-* Choose vehicle Frame (e.g., quad) as applicable
+### 2.3.3 Starting the Receiver
 
-QGroundControl will be used to monitor nodes in the AERPAW environment.
+On the drone node, start the receiver in no-defense mode:
 
-### 2.3.3 OpenVPN Client
+```bash
+python3 receiver_antireplay.py \
+--mode no_defense \
+--listen 0.0.0.0 \
+--port 14551 \
+--aes-key mavlink_aes256.key \
+--hmac-key mavlink_hmac.key
+```
 
-Install an OpenVPN client to connect to AERPAW's VPN required for accessing virtual experiment resources.
+Keep this terminal running during the experiment.
 
-* On Linux, install OpenVPN (version 2 recommended)
-* On macOS, use clients such as Tunnelblick
-* On Windows, use the official OpenVPN client
+### 2.3.4 Sending Encrypted Commands
 
-OpenVPN enables secure connectivity from your workstation to the AERPAW development environment.
+On the base station, send encrypted navigation commands:
 
-## 2.4 AERPAW Account Creation
+```bash
+python3 sender_antireplay.py \
+--cmd goto \
+--lat <latitude> \
+--lon <longitude> \
+--alt 25 \
+--ip <drone_ip> \
+--port 14551 \
+--aes-key mavlink_aes256.key \
+--hmac-key mavlink_hmac.key \
+--freeze_ts --seq 1
+```
 
-You must create and configure an AERPAW user account to access the experiment portal and request experiment resources.
+This command generates encrypted MAVLink traffic for capture.
 
-### 2.4.1 Register and Log In
+## 2.4 Replay Attack Without Protection
 
-1. Navigate to the AERPAW experiment website (through the official AERPAW portal).
-2. Click Experiment Web Portal from the menu and choose Login.
-3. Select your institution from the identity provider dropdown and authenticate using your institutional credentials.
-4. After successful login, you will return to the portal with access to user features.
+In this scenario, the drone does not enforce freshness checks on incoming commands.
 
-### 2.4.2 Edit Your Profile
+### 2.4.1 Run the simulation and capture valid encrypted traffic
 
-Once logged in:
+First, run the simulation and allow the base station to send a valid encrypted navigation command.
 
-1. Click Profile in the navigation bar.
-2. Fill in required fields such as Employer/Organization and Position/Title.
-3. Provide information about your Field of Research and anticipated platform usage.
-4. Save updates.
+Start packet capture on the monitoring or adversary node:
 
-The AERPAW team may review your information before granting full experiment access.
+```bash
+tcpdump -i any udp port 14551 -w cmd_capture.pcap
+```
 
-## 2.5 SSH Key Setup
+Allow normal encrypted command traffic to occur while capture is running, then stop capture using Ctrl+C.
 
-For secure access to experiment nodes and services, upload your SSH public key to your AERPAW profile:
+### 2.4.2 Replay the captured command during a later phase of the mission
 
-1. If you already have an SSH key pair, you may use it. Otherwise, generate a new SSH key pair on your workstation.
-2. Copy the contents of your SSH public key file (e.g., `id_rsa.pub`).
-3. In the AERPAW portal, navigate to the SSH keys section of your profile and upload the public key.
+Replay the captured traffic:
 
-SSH keys authorize your identity when connecting to experiment resources without requiring passwords.
+```bash
+tcpreplay --intf1=<interface> cmd_capture.pcap
+```
 
-## 2.6 Requesting Experimenter Role and Project Access
+Replace <interface> with your active interface (example: eth0)
 
-To run experiments on AERPAW you must:
+### 2.4.3 Expected system behavior (no protection)
 
-1. Request the Experimenter role from the AERPAW portal.
-2. Create or join a project that will contain your experiments.
-3. Provide required project details (title, description, team members).
-4. Submit and wait for project approval as required.
+Because the command is encrypted but not checked for freshness, the drone accepts the replayed command and executes it again.
 
-Approval times may vary and are subject to review by the AERPAW team.
+This behavior demonstrates how replay attacks can succeed even when encryption is used, as long as the system does not verify whether a command is new or duplicated.
 
-## 2.7 Starting and Managing an Experiment
+## 2.5 Replay Attack With Protection Enabled
 
-Once you have experimenter access:
+In this scenario, replay protection mechanisms are enabled on the drone receiver.
 
-1. Click Projects in the navigation bar and select your project.
-2. Under the Experiments section, click Create.
-3. Enter an experiment name and description (e.g., `plaintext_encrypted_node_test`).
-4. Choose experiment resources (nodes) required for your experiment.
-5. Save and request experiment activation.
+## 2.5.1 Restart the receiver with freshness validation enabled
 
-After approval, your experiment will be allocated a development session, and you will receive access details for the virtual environment.
+Stop the previous receiver using Ctrl+C.
 
-## 2.8 Connecting to Experiment Resources
+Restart the receiver in defended mode:
 
-Once your experiment session is active:
+```bash
+python3 receiver_antireplay.py \
+--mode defended \
+--listen 0.0.0.0 \
+--port 14551 \
+--aes-key mavlink_aes256.key \
+--hmac-key mavlink_hmac.key
+```
 
-1. Download any "Linked files" listed on the experiment page to your workstation.
-2. Use OpenVPN to connect your workstation into the AERPAW VPN.
-3. Use SSH to connect to the virtual nodes provided (e.g., UAV/UGV environments).
-4. Launch QGroundControl and verify connectivity to the aerial vehicle node if applicable.
+## 2.5.2 Attempt to replay the captured command
 
-You are now prepared to run the experiment steps described in Chapter 3.
+Replay the captured traffic again:
 
-## 2.9 Post-Setup Validation
+```bash
+tcpreplay --intf1=<interface> cmd_capture_defended.pcap
+```
 
-Before proceeding to experimental steps:
+## 2.5.3 Expected system behavior (protection enabled)
 
-* Confirm VPN connection is active and stable
-* Check SSH access to each allocated node
-* Verify QGroundControl can connect and display status
-* Ensure your experiment session remains active
+The drone rejects the replayed message because it detects that the command is stale, duplicated, or outside the allowed freshness window.
 
-This preparation ensures that the experiment in Chapter 3 can be executed without environment setup issues.
+This behavior demonstrates how replay protection prevents attackers from reusing previously valid commands.
+
+## 2.6 Analysis and Observations
+
+Compare the outcomes of the two scenarios.
+
+* In no-defense mode, previously captured encrypted commands can be replayed and accepted by the drone, leading to unintended behavior.
+
+* In defended mode, the same commands are rejected when replay protection is enabled, preserving mission integrity.
+
+This experiment highlights that encryption alone does not prevent replay attacks and that freshness validation is required to ensure command authenticity over time.
+
+## 2.7 As a Result
+
+As a result of completing this chapter, you observed how replay attacks exploit the absence of freshness checks in encrypted communication. You were able to view that when replay protection is disabled, previously captured encrypted commands can be reused and accepted by the drone, leading to unintended behavior. When replay protection mechanisms are enabled, the same commands are correctly rejected, preserving mission integrity. Through this experiment, you gained practical insight into why secure systems must verify not only who sent a command, but also when it was sent.
