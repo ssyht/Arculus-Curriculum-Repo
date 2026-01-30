@@ -473,52 +473,497 @@ pre[class*="language-"] {
 
 <h2 id="toc_2">2.1 Overview</h2>
 
-<p>In this chapter, you will extend the UAV command simulation by adding software-based attestation to the command transmission process.</p>
+<p>In this chapter, you will implement and evaluate a software-based attestation mechanism that verifies the identity of ground control stations sending MAVLink commands to the drone. This experiment addresses a critical limitation of encryption and replay protection: both defenses fail if an adversary obtains valid cryptographic keys.</p>
 
-<p>The base station computes cryptographic hashes of selected software components, such as the sender script or container image, and includes this attestation data with each encrypted command. The drone receiver verifies the attestation data against a predefined allowlist before executing any command. This setup allows the system to enforce trust in the sender software even in the absence of hardware-backed security mechanisms.</p>
+<p>Encrypted MAVLink commands with replay protection can still be exploited by a man-in-the-middle attacker who has access to the shared AES and HMAC keys. Software-based attestation adds an additional security layer by verifying that commands originate from authorized systems, not just authorized keys.</p>
 
-
-<h2 id="toc_3">2.2 Trust Sender Scenario</h2>
-
-<p>In this scenario, commands originate from a known and trusted sender.</p>
-
-<h3 id="toc_3">2.2.1 First, generate cryptographic fingerprints of the trusted sender components and store them in an allowlist on the drone receiver.</h3>
-
-<p>Start the receiver with attestation verification enabled.</p>
-
-<h3 id="toc_3">2.2.2 Send encrypted commands from the trusted sender.</h3>
-
-<p>Because the attestation data matches the allowlist, the drone accepts the commands and executes them as expected.</p>
-<p>This behavior demonstrates how software-based attestation enables trusted command execution.</p>
-
-<h2 id="toc_3">2.3 Modified Sender Scenario</h2>
+<p>This chapter demonstrates system behavior in two modes:</p>
 
 <ul>
-  <li>In this scenario, the sender software is modified to simulate an untrusted or compromised environment.</li>
+  <li>No attestation enforcement, where any system with valid keys can send commands</li>
+  <li>Attestation enforcement enabled, where only allowlisted systems are accepted</li>
 </ul>
 
-<h3 id="toc_3">2.3.1 Make a small change to the sender code or rebuild the sender environment so that its cryptographic fingerprint changes.</h3>
+<p>By completing this chapter, you will be able to reproduce and analyze attestation-based defenses in the AERPAW environment.</p>
+
+
+<h2 id="toc_3">2.2 Prerequisites and Environment Setup</h2>
+
+<p>Before starting this experiment, ensure that:</p>
 
 <ul>
-  <li>Send encrypted commands using the modified sender.</li>
+  <li>A PC or laptop with a supported operating system (Linux recommended; Windows or macOS also supported)</li>
+  <li>Reliable internet connectivity</li>
+  <li>You have access to an active AERPAW experiment session</li>
+  <li>The drone and base station nodes are allocated</li>
+  <li>SSH access to both nodes (and optionally an adversary node) is available</li>
+  <li>AES and HMAC keys are generated and distributed to all test nodes</li>
+  <li>QGroundControl is installed and configured</li>
+  <li>Active OpenVPN connection</li>
 </ul>
 
-<h3 id="toc_3">2.3.2 The drone detects that the attestation data does not match the allowlist and rejects the commands.</h3>
+<p>This chapter assumes that encrypted command transmission and anti-replay protection have already been implemented and tested.</p>
+
+
+<h2 id="toc_4">2.3 Network and System Configuration</h2>
+
+<h3 id="toc_4_1">2.3.1 Network Roles</h3>
+
+<p>This experiment uses the following components:</p>
 
 <ul>
-  <li>This behavior demonstrates how integrity verification prevents commands from untrusted software from being executed.</li>
+  <li><strong>Base Station 1 (Legitimate GCS):</strong> 192.168.144.1 - Authorized to send commands</li>
+  <li><strong>Base Station 2 (Adversary):</strong> 192.168.144.2 - Has valid keys but not authorized</li>
+  <li><strong>Drone:</strong> 192.168.144.5 - Receives and validates commands with attestation</li>
 </ul>
 
-<h2 id="toc_3">2.4 Analysis and Observations</h2>
+<p>All MAVLink communication uses UDP port 14551.</p>
+
+
+<h3 id="toc_4_2">2.3.2 Understanding Software-Based Attestation</h3>
+
+<p>Software-based attestation works by computing a cryptographic hash of the sender's system state. This hash serves as a unique identifier or "fingerprint" of the system. The drone maintains an allowlist of trusted hashes and only accepts commands from systems whose hashes match entries in the allowlist.</p>
+
+<p><strong>Key Components:</strong></p>
 
 <ul>
-  <li>Compare the outcomes of the trusted and modified sender scenarios. Observe how the system enforces trust based on software integrity and prevents command execution when the sender environment changes.</li>
-  <li>Reflect on how software-based attestation can be used in virtualized, edge, and resource-constrained environments where hardware trust anchors are unavailable.</li>
+  <li><strong>Attestation Hash:</strong> A cryptographic digest computed from system properties (hostname, network configuration, system files, etc.)</li>
+  <li><strong>Allowlist:</strong> A file containing hashes of authorized ground control stations</li>
+  <li><strong>Attestation Token:</strong> The hash value included with each command message</li>
 </ul>
 
-<h2 id="toc_3">2.5 As a Result</h2>
+<p>This approach provides defense-in-depth: even if an attacker steals the encryption keys, they cannot send commands without having the exact system configuration of an authorized ground station.</p>
 
-<p>As a result of completing this chapter, you observed how software-based attestation enables trust enforcement in UAV command and control systems. You were able to view that commands from a trusted sender were accepted and executed, while commands from a modified or untrusted sender were rejected based on integrity verification. This demonstrates how software-based trust mechanisms can prevent unauthorized control even when communication channels are encrypted. Through this experiment, you gained practical insight into how integrity, authenticity, and trust work together to protect mission-critical cyber-physical systems.</p>
+
+<h3 id="toc_4_3">2.3.3 Required Files</h3>
+
+<p>Ensure that the following files are present on both the base station and the drone:</p>
+
+<ul>
+  <li><code>sender_attested.py</code></li>
+  <li><code>receiver_attested.py</code></li>
+  <li><code>mavlink_aes256.key</code></li>
+  <li><code>mavlink_hmac.key</code></li>
+  <li><code>allowed_attest_hashes.txt</code> (on drone only)</li>
+</ul>
+
+
+<h2 id="toc_5">2.4 Setting Up Attestation Without Enforcement</h2>
+
+<p>In this scenario, the drone does not enforce attestation checks. This demonstrates baseline behavior before adding attestation protection.</p>
+
+<h3 id="toc_5_1">2.4.1 Generate System Attestation Hash</h3>
+
+<p>On Base Station 1 (legitimate GCS), generate the attestation hash:</p>
+
+<pre><code class="language-bash">cd /root
+python3 sender_attested.py \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.6986117 \
+  --alt 25 \
+  --ip 192.168.144.5 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key \
+  --freeze_ts --seq 1
+</code></pre>
+
+<p>The sender will output its attestation hash. Note this value - you will need it for the allowlist.</p>
+
+<p><strong>Example output:</strong></p>
+<pre><code>[INFO] env_fpm=kf736fcddc61... attest=bea661e71173a51b859d695d6ec8c6234aa8971ba5ac6d9bd24d87140f661228
+</code></pre>
+
+
+<h3 id="toc_5_2">2.4.2 Start Receiver Without Attestation Enforcement</h3>
+
+<p>On the drone node (192.168.144.5), start the receiver without attestation enforcement:</p>
+
+<pre><code class="language-bash">cd /root
+env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 receiver_attested.py \
+  --mode defended \
+  --listen 0.0.0.0 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key
+</code></pre>
+
+<p>Note that the <code>--allowlist</code> parameter is not specified, so the receiver will accept commands from any source with valid encryption keys.</p>
+
+
+<h3 id="toc_5_3">2.4.3 Send Commands from Legitimate Base Station</h3>
+
+<p>From Base Station 1 (192.168.144.1), send a command:</p>
+
+<pre><code class="language-bash">python3 sender_attested.py \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.6986117 \
+  --alt 25 \
+  --ip 192.168.144.5 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key \
+  --freeze_ts --seq 21
+</code></pre>
+
+<p>The command is sent with the system's attestation hash included in the message.</p>
+
+
+<h3 id="toc_5_4">2.4.4 Send Commands from Adversary Node</h3>
+
+<p>From Base Station 2 (192.168.144.2 - adversary node), send the same command:</p>
+
+<pre><code class="language-bash">python3 sender_attested.py \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.6986117 \
+  --alt 25 \
+  --ip 192.168.144.5 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key \
+  --freeze_ts --seq 23
+</code></pre>
+
+
+<h3 id="toc_5_5">2.4.5 Observe Receiver Behavior</h3>
+
+<p>On the drone receiver terminal, you will see both commands being accepted.</p>
+
+<p><strong>Key Observation:</strong> Without attestation enforcement, the drone accepts commands from both the legitimate base station and the adversary node, because both have valid encryption keys.</p>
+
+
+<h2 id="toc_6">2.5 Implementing Attestation-Based Defense</h2>
+
+<p>Now we will enable attestation enforcement to prevent unauthorized nodes from sending commands.</p>
+
+<h3 id="toc_6_1">2.5.1 Create the Allowlist File</h3>
+
+<p>On the drone node, create the allowlist file with only the legitimate base station's hash:</p>
+
+<pre><code class="language-bash">cd /root
+cat &gt; allowed_attest_hashes.txt &lt;&lt; EOF
+bea661e71173a51b859d695d6ec8c6234aa8971ba5ac6d9bd24d87140f661228
+e78f5e77d6aa9c2a886a8bbd668e0a99e246126d16e2f5dd8a647260e5bd8342f4b0
+EOF
+</code></pre>
+
+<p>Replace the hash values with the actual attestation hashes from your legitimate base stations. Each line contains one authorized system hash.</p>
+
+<p>Verify the file was created correctly:</p>
+
+<pre><code class="language-bash">cat allowed_attest_hashes.txt
+</code></pre>
+
+
+<h3 id="toc_6_2">2.5.2 Restart Receiver with Attestation Enforcement</h3>
+
+<p>Stop the previous receiver using Ctrl+C.</p>
+
+<p>Restart the receiver with attestation enforcement enabled:</p>
+
+<pre><code class="language-bash">env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 receiver_attested.py \
+  --mode defended \
+  --listen 0.0.0.0 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key \
+  --allowlist ./allowed_attest_hashes.txt
+</code></pre>
+
+<figure>
+  <img src="../img/Ex3-2.png" alt="Receiver with attestation enforcement enabled" style="max-width:100%; height:auto;">
+  <figcaption><b>Figure 2.1:</b> Receiver with attestation enforcement enabled.</figcaption>
+</figure>
+
+<p>The receiver now loads the allowlist and will only accept commands from systems whose attestation hashes are in the file.</p>
+
+
+<h3 id="toc_6_3">2.5.3 Test Command from Legitimate Base Station</h3>
+
+<p>From Base Station 1 (192.168.144.1), send a command:</p>
+
+<pre><code class="language-bash">python3 sender_attested.py \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.6986117 \
+  --alt 25 \
+  --ip 192.168.144.5 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key \
+  --freeze_ts --seq 21
+</code></pre>
+
+<figure>
+  <img src="../img/Ex3-3.png" alt="Legitimate sender transmitting command" style="max-width:100%; height:auto;">
+  <figcaption><b>Figure 2.2:</b> Legitimate base station sending command.</figcaption>
+</figure>
+
+<figure>
+  <img src="../img/Ex3-4.png" alt="Command accepted by drone" style="max-width:100%; height:auto;">
+  <figcaption><b>Figure 2.3:</b> Drone accepts command from allowlisted system.</figcaption>
+</figure>
+
+<p><strong>Expected Result:</strong> The drone accepts the command because Base Station 1's attestation hash is in the allowlist.</p>
+
+<p>On the receiver side, you will see:</p>
+
+<pre><code>[2026-01-29 16:07:41] [OK] Accepted ENC command: GOTO 35.7302614,-78.6986117,25.0 seq=21 ts=1769728865997
+</code></pre>
+
+
+<h3 id="toc_6_4">2.5.4 Test Command from Adversary Node</h3>
+
+<p>From Base Station 2 (192.168.144.2 - adversary), send a command:</p>
+
+<pre><code class="language-bash">python3 sender_attested.py \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.6986117 \
+  --alt 25 \
+  --ip 192.168.144.5 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key \
+  --freeze_ts --seq 23
+</code></pre>
+
+<figure>
+  <img src="../img/Ex3-5.png" alt="Adversary attempting to send command" style="max-width:100%; height:auto;">
+  <figcaption><b>Figure 2.4:</b> Adversary node attempting to send command.</figcaption>
+</figure>
+
+<p><strong>Expected Result:</strong> The drone rejects the command because Base Station 2's attestation hash is not in the allowlist.</p>
+
+<p>On the receiver side, you will see:</p>
+
+<pre><code>[2026-01-29 16:09:36] [DROP] Unknown/modified software (attest not allowlisted): d0e4a388b463f0c...
+</code></pre>
+
+<figure>
+  <img src="../img/Ex3-6.png" alt="Command rejected due to attestation failure" style="max-width:100%; height:auto;">
+  <figcaption><b>Figure 2.5:</b> Drone rejects command from non-allowlisted system.</figcaption>
+</figure>
+
+<p>The adversary's command is dropped despite having valid encryption keys and proper replay protection, because the system attestation fails.</p>
+
+
+<h2 id="toc_7">2.6 Understanding Attestation Implementation</h2>
+
+<h3 id="toc_7_1">2.6.1 How Attestation Hash is Generated</h3>
+
+<p>The <code>sender_attested.py</code> script computes the attestation hash by collecting system information:</p>
+
+<pre><code class="language-python">def compute_attest():
+    """Compute system attestation hash from hostname, IPs, and system files"""
+    import hashlib
+    import socket
+    import subprocess
+    
+    # Collect system identifiers
+    hostname = socket.gethostname()
+    
+    # Get network interfaces
+    try:
+        result = subprocess.check_output(['hostname', '-I'])
+        ips = result.decode().strip()
+    except:
+        ips = "unknown"
+    
+    # Hash system state
+    h = hashlib.sha256()
+    h.update(hostname.encode())
+    h.update(ips.encode())
+    
+    return h.hexdigest()
+</code></pre>
+
+<p>This creates a unique fingerprint based on the system's configuration. Any change to the hostname or network configuration will result in a different hash.</p>
+
+
+<h3 id="toc_7_2">2.6.2 Message Format with Attestation</h3>
+
+<p>Commands sent with attestation include the hash in the message format:</p>
+
+<pre><code>ENC|v1|&lt;nonce&gt;|&lt;ciphertext&gt;|&lt;hmac&gt;|&lt;attestation_hash&gt;
+</code></pre>
+
+<p>The attestation hash is appended to the encrypted message, allowing the receiver to verify the sender's identity before processing the command.</p>
+
+
+<h3 id="toc_7_3">2.6.3 Receiver Validation Logic</h3>
+
+<p>The <code>receiver_attested.py</code> script performs the following checks:</p>
+
+<ol>
+  <li><strong>Decrypt and verify HMAC</strong> (encryption layer)</li>
+  <li><strong>Check sequence number and timestamp</strong> (replay protection layer)</li>
+  <li><strong>Verify attestation hash against allowlist</strong> (identity verification layer)</li>
+</ol>
+
+<p>Only if all three checks pass is the command executed.</p>
+
+
+<h3 id="toc_7_4">2.6.4 Command Line Parameters</h3>
+
+<p><strong>Receiver parameters:</strong></p>
+
+<ul>
+  <li><code>--mode</code>: <code>no_defense</code> (accept all) or <code>defended</code> (enforce checks)</li>
+  <li><code>--allowlist</code>: Path to file containing authorized attestation hashes</li>
+  <li><code>--replay_window_ms</code>: Acceptable timestamp deviation (default: 5000ms)</li>
+  <li><code>--nonce_cache_size</code>: Number of nonces to remember (default: 1000)</li>
+</ul>
+
+<p><strong>Sender parameters:</strong></p>
+
+<ul>
+  <li><code>--freeze_ts</code>: Use a fixed timestamp (for testing replay scenarios)</li>
+  <li><code>--seq</code>: Sequence number for the command</li>
+</ul>
+
+
+<h2 id="toc_8">2.7 Analysis and Observations</h2>
+
+<h3 id="toc_8_1">2.7.1 Security Comparison</h3>
+
+<p>Compare the three security layers:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Security Layer</th>
+      <th>Protects Against</th>
+      <th>Limitation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Encryption Only</td>
+      <td>Eavesdropping</td>
+      <td>Vulnerable to replay and MITM with stolen keys</td>
+    </tr>
+    <tr>
+      <td>Encryption + Anti-Replay</td>
+      <td>Eavesdropping + Replay</td>
+      <td>Vulnerable to MITM with stolen keys</td>
+    </tr>
+    <tr>
+      <td>Encryption + Anti-Replay + Attestation</td>
+      <td>Eavesdropping + Replay + Unauthorized Systems</td>
+      <td>Requires secure key distribution and system integrity</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h3 id="toc_8_2">2.7.2 Key Insights</h3>
+
+<ul>
+  <li><strong>Defense in Depth:</strong> Attestation provides security even when encryption keys are compromised</li>
+  <li><strong>System Identity:</strong> Verification extends beyond "what" (encrypted content) to "who" (system identity)</li>
+  <li><strong>Flexibility:</strong> Allowlist can be updated to authorize new systems or revoke compromised ones</li>
+  <li><strong>Performance:</strong> Attestation adds minimal computational overhead (single hash comparison)</li>
+</ul>
+
+
+<h3 id="toc_8_3">2.7.3 Limitations</h3>
+
+<ul>
+  <li><strong>Software-Based:</strong> Not as secure as hardware-based attestation (e.g., TPM)</li>
+  <li><strong>System Changes:</strong> Network reconfigurations require allowlist updates</li>
+  <li><strong>Initial Trust:</strong> Assumes the initial allowlist is created securely</li>
+</ul>
+
+
+<h2 id="toc_9">2.8 Advanced Scenarios</h2>
+
+<h3 id="toc_9_1">2.8.1 Adding a New Authorized System</h3>
+
+<p>To authorize a new base station:</p>
+
+<ol>
+  <li>Run the sender on the new system to get its attestation hash</li>
+  <li>Add the hash to <code>allowed_attest_hashes.txt</code> on the drone</li>
+  <li>Restart the receiver or implement dynamic allowlist reloading</li>
+</ol>
+
+
+<h3 id="toc_9_2">2.8.2 Revoking Compromised Systems</h3>
+
+<p>If a base station is compromised:</p>
+
+<ol>
+  <li>Remove its attestation hash from the allowlist</li>
+  <li>Restart the receiver</li>
+  <li>The compromised system can no longer send commands, even with valid keys</li>
+</ol>
+
+
+<h3 id="toc_9_3">2.8.3 Testing with Multiple Drones</h3>
+
+<p>For multi-drone scenarios:</p>
+
+<ul>
+  <li>Each drone maintains its own allowlist</li>
+  <li>Allowlists can be identical or unique per drone</li>
+  <li>Centralized management systems can distribute allowlists</li>
+</ul>
+
+
+<h2 id="toc_10">2.9 Troubleshooting</h2>
+
+<h3 id="toc_10_1">Common Issues:</h3>
+
+<p><strong>Commands rejected from legitimate base station:</strong></p>
+
+<ul>
+  <li>Verify the hash in <code>allowed_attest_hashes.txt</code> matches the sender's current hash</li>
+  <li>Check for system configuration changes (hostname, network)</li>
+  <li>Ensure no extra whitespace or line breaks in allowlist file</li>
+</ul>
+
+<p><strong>Receiver not loading allowlist:</strong></p>
+
+<ul>
+  <li>Verify file path is correct</li>
+  <li>Check file permissions (<code>chmod 644 allowed_attest_hashes.txt</code>)</li>
+  <li>Confirm <code>--allowlist</code> parameter is specified</li>
+</ul>
+
+<p><strong>Attestation hash changes unexpectedly:</strong></p>
+
+<ul>
+  <li>Network configuration may have changed (DHCP lease, interface changes)</li>
+  <li>Hostname was modified</li>
+  <li>Consider using more stable system identifiers</li>
+</ul>
+
+
+<h2 id="toc_11">2.10 Cleanup and Next Steps</h2>
+
+<p>After completing the experiment:</p>
+
+<ol>
+  <li>Stop all receiver and sender processes</li>
+  <li>Review logs and telemetry data</li>
+  <li>Document attestation hashes for future experiments</li>
+  <li>Back up the allowlist file</li>
+</ol>
+
+
+<h2 id="toc_12">2.11 As a Result</h2>
+
+<p>As a result of completing this chapter, you observed how software-based attestation adds an additional layer of security beyond encryption and replay protection. You were able to see that when attestation enforcement is disabled, any system with valid encryption keys can send commands to the drone. When attestation is enabled, only systems whose attestation hashes are in the allowlist can send commands, preventing unauthorized nodes from controlling the drone even if they have obtained the cryptographic keys.</p>
+
+<p>Through this experiment, you gained practical insight into defense-in-depth security strategies, where multiple independent security mechanisms work together to protect critical systems. You learned that secure UAV command and control requires not only protecting the content of messages (encryption) and their freshness (anti-replay), but also verifying the identity and integrity of the systems sending those messages (attestation).</p>
+
+<p>This layered approach is essential for mission-critical systems where the consequences of unauthorized access can be severe. By implementing attestation-based defenses, you have added a crucial capability that limits the attack surface and provides resilience even when other security layers are compromised.</p>
+
+</body>
 
 
 <script type="text/javascript">

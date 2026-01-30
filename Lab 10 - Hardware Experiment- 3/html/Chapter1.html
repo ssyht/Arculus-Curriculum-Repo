@@ -471,58 +471,79 @@ pre[class*="language-"] {
 
 <body>
 
-<h2 id="toc_2">1.1 Purpose of the lab.</h2>
+<h2 id="toc_2">1.1 Purpose of the Lab</h2>
 
-<p>In this module, you will learn how software-based attestation can be used to establish trust in command and control systems when hardware security mechanisms are not available. Building on the secure communication and replay protection concepts from the previous modules, this lab focuses on verifying the integrity of the command sender before accepting control messages.</p>
+<p>In this module, you will learn how software-based attestation can protect UAV command and control systems from unauthorized ground control stations, even when cryptographic keys are compromised. Building on encrypted MAVLink communication and anti-replay protection introduced in earlier modules, this lab focuses on understanding how system integrity verification adds an additional layer of defense against man-in-the-middle attacks.</p>
 
-<p>This lab is designed to provide hands-on exposure to software-based trust verification by allowing you to generate and validate cryptographic fingerprints of the sender environment. You will observe how commands originating from a trusted sender are accepted, while commands from modified or untrusted software are rejected. Rather than relying on physical trusted platform modules, this experiment demonstrates how software-based attestation can be used to approximate hardware-backed trust in virtualized and edge environments.</p>
+<p>This lab provides hands-on exposure to attestation-based security by allowing you to configure allowlists of trusted sender systems and observe how the drone accepts or rejects commands based on the originating system's identity. You will see how an adversary with access to valid encryption keys can still be blocked if their system is not on the trusted allowlist.</p>
 
-<p>By the end of this lab, you will gain practical experience in understanding how trust can be established at the software level and why integrity verification is critical for mission safety.</p>
+<p>Rather than relying solely on cryptographic secrecy, the emphasis of this lab is on understanding how attestation mechanisms verify not just what is being sent, but who is sending it. You will explore how software-based attestation uses system hashes to create a chain of trust between the ground control station and the drone.</p>
+
+<p>By the end of this lab, you will gain practical experience in implementing and evaluating attestation-based defenses to prevent unauthorized command execution in UAV systems.</p>
 
 
-<h2 id="toc_3">1.2 Prerequisites.</h2>
+<h2 id="toc_3">1.2 Prerequisites</h2>
 
-<p>To follow along and get the most out of this module, you should:</p>
+<p><strong>To follow along and get the most out of this module, you should:</strong></p>
+
 <ul>
-  <li>Have completed Hardware experiments lab: Replay Attack and Defense and Plaintext vs Encrypted Command Injection.</li>
-  <li>Have access to the provided AERPAW simulation environment</li>
+  <li>Have completed the anti-replay attack experiment [Lab-9: Anti-replay attack defense]</li>
+  <li>Have access to the AERPAW simulation environment</li>
   <li>Be familiar with using a terminal or command-line interface</li>
-  <li>Understand basic concepts of encryption and message verification</li>
+  <li>Understand basic networking concepts such as UDP communication</li>
+  <li>Have generated AES and HMAC keys and shared them between authorized nodes</li>
+  <li>Understand the limitations of encryption and replay protection when keys are compromised</li>
 </ul>
 
-<h2 id="toc_3">1.3 References to guide lab work.</h2>
-<p>Please use the links below to learn the related information for this lab.</p>
+
+<h2 id="toc_4">1.3 References to Guide Lab Work</h2>
+
+<p><strong>Please use the links below to learn the related information for this lab:</strong></p>
 
 <ul>
-<li> Arculus GitHub Repository – <a href="https://github.com/arculus-zt/arculus-sw/tree/master" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master</a></li>
-<li> Arculus Documentation – <a href="https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs" target="_blank">https://github.com/arculus-zt/arculus-sw/tree/master/arculus-docs</a></li>
-<li> AERPAW User Manual – <a href="https://sites.google.com/ncsu.edu/aerpaw-user-manual/" target="_blank">https://sites.google.com/ncsu.edu/aerpaw-user-manual/</a></li>
+  <li><a href="https://github.com/BishwasWagle/Mavlink-AERPAW">MAVLink-AERPAW GitHub Repository</a></li>
+  <li><a href="https://sites.google.com/ncsu.edu/aerpaw-user-manual/">AERPAW User Manual</a></li>
+  <li><a href="https://mavlink.io/en/">MAVLink Protocol Documentation</a></li>
 </ul>
 
 
-<h2 id="toc_9">1.4 Goals/Outcomes.</h2>
+<h2 id="toc_5">1.4 Goals/Outcomes</h2>
 
 <p>By the end of this lab module, you will be able to:</p>
 
-<p><b>(i) Understand Software-Based Attestation</b></p>
+<p><strong>(i) Understand Attestation-Based Security</strong></p>
+
 <ul>
-  <li>Identify how software fingerprints can be used to establish trust</li>
-  <li>Understand the limitations of software-based trust models</li>
+  <li>Identify scenarios where encryption and replay protection are insufficient</li>
+  <li>Recognize the importance of verifying sender identity in command and control systems</li>
+  <li>Understand how software-based attestation creates a chain of trust</li>
 </ul>
 
-<p><b>(ii) Execute an Attestation Verification Simulation</b></p>
+<p><strong>(ii) Implement Attestation Mechanisms</strong></p>
+
 <ul>
-  <li>Generate cryptographic hashes of trusted sender components</li>
-  <li>Attach attestation data to encrypted commands</li>
+  <li>Configure sender attestation using system hashes</li>
+  <li>Create and manage allowlists of trusted systems</li>
+  <li>Generate attestation tokens for command authentication</li>
 </ul>
 
-<p><b>(iii) Analyze Trust Enforcement in Command Execution</b></p>
+<p><strong>(iii) Evaluate Attestation Defenses</strong></p>
+
 <ul>
-  <li>Compare system behavior between trusted and modified senders</li>
-  <li>Understand how integrity checks prevent unauthorized command execution</li>
+  <li>Test command acceptance from authorized ground stations</li>
+  <li>Observe command rejection from unauthorized nodes</li>
+  <li>Compare system behavior with and without attestation enforcement</li>
 </ul>
 
+<p><strong>(iv) Analyze Man-in-the-Middle Attack Mitigation</strong></p>
 
+<ul>
+  <li>Understand how attestation prevents attacks even with compromised keys</li>
+  <li>Evaluate the effectiveness of software-based hardware attestation</li>
+  <li>Identify the role of attestation in defense-in-depth security strategies</li>
+</ul>
+
+</body>
 
 <script type="text/javascript">
 var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(\w+)\b/i,t=0,n=_self.Prism={util:{encode:function(e){return e instanceof a?new a(e.type,n.util.encode(e.content),e.alias):"Array"===n.util.type(e)?e.map(n.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},objId:function(e){return e.__id||Object.defineProperty(e,"__id",{value:++t}),e.__id},clone:function(e){var t=n.util.type(e);switch(t){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=n.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return n.util.clone(e)})}return e}},languages:{extend:function(e,t){var a=n.util.clone(n.languages[e]);for(var r in t)a[r]=t[r];return a},insertBefore:function(e,t,a,r){r=r||n.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==t)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return n.languages.DFS(n.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,t,a,r){r=r||{};for(var l in e)e.hasOwnProperty(l)&&(t.call(e,l,e[l],a||l),"Object"!==n.util.type(e[l])||r[n.util.objId(e[l])]?"Array"!==n.util.type(e[l])||r[n.util.objId(e[l])]||(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,l,r)):(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,null,r)))}},plugins:{},highlightAll:function(e,t){var a={callback:t,selector:'code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'};n.hooks.run("before-highlightall",a);for(var r,l=a.elements||document.querySelectorAll(a.selector),i=0;r=l[i++];)n.highlightElement(r,e===!0,a.callback)},highlightElement:function(t,a,r){for(var l,i,o=t;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=n.languages[l]),t.className=t.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=t.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=t.textContent,u={element:t,language:l,grammar:i,code:s};if(!s||!i)return n.hooks.run("complete",u),void 0;if(n.hooks.run("before-highlight",u),a&&_self.Worker){var c=new Worker(n.filename);c.onmessage=function(e){u.highlightedCode=e.data,n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},c.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=n.highlight(u.code,u.grammar,u.language),n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(t),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},highlight:function(e,t,r){var l=n.tokenize(e,t);return a.stringify(n.util.encode(l),r)},tokenize:function(e,t){var a=n.Token,r=[e],l=t.rest;if(l){for(var i in l)t[i]=l[i];delete t.rest}e:for(var i in t)if(t.hasOwnProperty(i)&&t[i]){var o=t[i];o="Array"===n.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],c=u.inside,g=!!u.lookbehind,h=!!u.greedy,f=0,d=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var m=r[p];if(r.length>e.length)break e;if(!(m instanceof a)){u.lastIndex=0;var y=u.exec(m),v=1;if(!y&&h&&p!=r.length-1){var b=r[p+1].matchedStr||r[p+1],k=m+b;if(p<r.length-2&&(k+=r[p+2].matchedStr||r[p+2]),u.lastIndex=0,y=u.exec(k),!y)continue;var w=y.index+(g?y[1].length:0);if(w>=m.length)continue;var _=y.index+y[0].length,P=m.length+b.length;if(v=3,P>=_){if(r[p+1].greedy)continue;v=2,k=k.slice(0,P)}m=k}if(y){g&&(f=y[1].length);var w=y.index+f,y=y[0].slice(f),_=w+y.length,S=m.slice(0,w),O=m.slice(_),j=[p,v];S&&j.push(S);var A=new a(i,c?n.tokenize(y,c):y,d,y,h);j.push(A),O&&j.push(O),Array.prototype.splice.apply(r,j)}}}}}return r},hooks:{all:{},add:function(e,t){var a=n.hooks.all;a[e]=a[e]||[],a[e].push(t)},run:function(e,t){var a=n.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(t)}}},a=n.Token=function(e,t,n,a,r){this.type=e,this.content=t,this.alias=n,this.matchedStr=a||null,this.greedy=!!r};if(a.stringify=function(e,t,r){if("string"==typeof e)return e;if("Array"===n.util.type(e))return e.map(function(n){return a.stringify(n,t,e)}).join("");var l={type:e.type,content:a.stringify(e.content,t,r),tag:"span",classes:["token",e.type],attributes:{},language:t,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===n.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}n.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var t=JSON.parse(e.data),a=t.language,r=t.code,l=t.immediateClose;_self.postMessage(n.highlight(r,n.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var r=document.currentScript||[].slice.call(document.getElementsByTagName("script")).pop();return r&&(n.filename=r.src,document.addEventListener&&!r.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",n.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
