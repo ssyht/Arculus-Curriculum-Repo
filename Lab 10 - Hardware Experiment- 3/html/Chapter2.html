@@ -673,10 +673,8 @@ EOF
   --allowlist ./allowed_attest_hashes.txt
 </code></pre>
 
-<figure>
-  <img src="../img/Ex3-2.png" alt="Receiver with attestation enforcement enabled" style="max-width:100%; height:auto;">
-  <figcaption><b>Figure 2.1:</b> Receiver with attestation enforcement enabled.</figcaption>
-</figure>
+<p align = "center"><img src="../img/Ex3-2.png" width="65%" alt="Ex3-2"></p> 
+
 
 <p>The receiver now loads the allowlist and will only accept commands from systems whose attestation hashes are in the file.</p>
 
@@ -697,15 +695,11 @@ EOF
   --freeze_ts --seq 21
 </code></pre>
 
-<figure>
-  <img src="../img/Ex3-3.png" alt="Legitimate sender transmitting command" style="max-width:100%; height:auto;">
-  <figcaption><b>Figure 2.2:</b> Legitimate base station sending command.</figcaption>
-</figure>
+<p align = "center"><img src="../img/Ex3-3.png" width="65%" alt="Ex3-3"></p> 
 
-<figure>
-  <img src="../img/Ex3-4.png" alt="Command accepted by drone" style="max-width:100%; height:auto;">
-  <figcaption><b>Figure 2.3:</b> Drone accepts command from allowlisted system.</figcaption>
-</figure>
+
+<p align = "center"><img src="../img/Ex3-4.png" width="65%" alt="Ex3-4"></p> 
+
 
 <p><strong>Expected Result:</strong> The drone accepts the command because Base Station 1's attestation hash is in the allowlist.</p>
 
@@ -731,10 +725,9 @@ EOF
   --freeze_ts --seq 23
 </code></pre>
 
-<figure>
-  <img src="../img/Ex3-5.png" alt="Adversary attempting to send command" style="max-width:100%; height:auto;">
-  <figcaption><b>Figure 2.4:</b> Adversary node attempting to send command.</figcaption>
-</figure>
+
+<p align = "center"><img src="../img/Ex3-5.png" width="65%" alt="Ex3-5"></p> 
+
 
 <p><strong>Expected Result:</strong> The drone rejects the command because Base Station 2's attestation hash is not in the allowlist.</p>
 
@@ -743,10 +736,9 @@ EOF
 <pre><code>[2026-01-29 16:09:36] [DROP] Unknown/modified software (attest not allowlisted): d0e4a388b463f0c...
 </code></pre>
 
-<figure>
-  <img src="../img/Ex3-6.png" alt="Command rejected due to attestation failure" style="max-width:100%; height:auto;">
-  <figcaption><b>Figure 2.5:</b> Drone rejects command from non-allowlisted system.</figcaption>
-</figure>
+
+<p align = "center"><img src="../img/Ex3-6.png" width="65%" alt="Ex3-6"></p> 
+
 
 <p>The adversary's command is dropped despite having valid encryption keys and proper replay protection, because the system attestation fails.</p>
 
