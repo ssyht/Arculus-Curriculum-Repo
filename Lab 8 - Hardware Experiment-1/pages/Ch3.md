@@ -1,199 +1,409 @@
-<<<<<<< HEAD
-# Chapter 3
-=======
-# Chapter 3 – Plaintext vs Encrypted Command Injection
->>>>>>> 50af6f7488e51af723c4da2c420f06bd2e129eef
-
+# Chapter 3 — Cryptographic Infrastructure Setup
 
 ## 3.1 Overview
 
-In this chapter, you will execute the UAV mission under normal operating conditions with plaintext MAVLink communication and no adversarial interference. This baseline execution is critical, as it establishes expected mission behavior before any command injection is introduced.
+In this chapter, you will establish the cryptographic foundation necessary for securing MAVLink communications. This involves installing OpenSSL with FIPS (Federal Information Processing Standards) validation, which ensures that the cryptographic implementations meet rigorous security standards established by the U.S. government.
 
-All steps in this chapter must complete successfully before proceeding to the attack phases in later chapters.
+FIPS-validated cryptography is essential for security-critical applications. FIPS 140-2 certification ensures that cryptographic modules have been tested and validated to meet specific security requirements. By using FIPS-validated OpenSSL, you guarantee that the encryption protecting your drone commands meets industry-recognized security standards.
 
-## 3.1 Starting the MAVLink Simulation Environment
+This chapter will guide you through installing OpenSSL 3.1.2 with FIPS module support, generating cryptographic keys for AES-256-GCM encryption and HMAC-SHA256 authentication, and securely distributing these keys between the ground control station and the drone.
 
-* Begin by ensuring that no MAVLink services are currently running on any node.
+By completing this chapter, you will have a fully functional cryptographic infrastructure ready to protect MAVLink navigation commands from spoofing attacks.
 
-* On the GCS node, check for active MAVLink processes:
+## 3.2 Prerequisites
 
-```bash
-ps aux | grep mav
-```
-* If any MAVLink-related processes are running, stop them before continuing.
+Before starting this chapter, ensure that:
 
-## 3.2 Launching the UAV Simulation
+* You have root access to both the drone and base station nodes
+* The AERPAW environment is properly configured (Chapter 2 completed)
+* You are familiar with basic Linux command-line operations
+* You understand the difference between encryption (confidentiality) and authentication (integrity)
 
-* On the UAV node, navigate to the experiment repository:
+## 3.3 Understanding FIPS-Validated Cryptography
 
-```bash
-cd ~/mavlink_experiment/Mavlink-AERPAW
-```
+### 3.3.1 What is FIPS 140-2?
 
-* Start the UAV simulation using the provided launch script:
+FIPS 140-2 (Federal Information Processing Standards Publication 140-2) is a U.S. government standard that specifies security requirements for cryptographic modules. It ensures that:
 
-```bash
-start_uav_simulation.sh
-```
+* Cryptographic algorithms are implemented correctly
+* Key management is performed securely
+* The module has been independently tested and validated
+* Physical and logical security boundaries are maintained
 
-**Observe the terminal output and confirm that:**
+### 3.3.2 Why FIPS Matters for UAV Security
 
-* The UAV simulator initializes successfully
+For unmanned aerial vehicles operating in security-sensitive environments:
 
-* MAVLink endpoints are created
+* **Regulatory Compliance**: Government and military applications often require FIPS validation
+* **Assured Security**: FIPS validation provides confidence that cryptographic implementations are correct
+* **Attack Resistance**: FIPS-validated modules are tested against known cryptographic attacks
+* **Interoperability**: FIPS provides a common security baseline across different systems
 
-* The system reports that it is waiting for GCS commands
+### 3.3.3 Cryptographic Components
 
-* Do not proceed until the simulation is running without errors.
+This experiment uses two cryptographic mechanisms:
 
-## 3.3 Starting the Ground Control Station (GCS)
+* **AES-256-GCM**: Advanced Encryption Standard with 256-bit keys in Galois/Counter Mode
+  * Provides confidentiality (encryption)
+  * Provides integrity (authentication)
+  * Resistant to tampering and forgery
+  
+* **HMAC-SHA256**: Hash-based Message Authentication Code using SHA-256
+  * Provides message authentication
+  * Prevents unauthorized command modification
+  * Complements AES-GCM for defense-in-depth
 
-* On the GCS node, navigate to the repository directory:
+## 3.4 Installing OpenSSL with FIPS Module
 
-```bash
-cd ~/mavlink_experiment/Mavlink-AERPAW
-```
+### 3.4.1 Access the Drone Node
 
-* Start the GCS control script responsible for sending MAVLink commands:
-
-```bash
-python3 gcs_controller_plaintext.py
-```
-Verify that:
-
-* The GCS successfully connects to the UAV
-
-* Heartbeat messages are exchanged
-
-* Telemetry data begins streaming
-
-<<<<<<< HEAD
-At this point, the GCS and UAV are communicating entirely in plaintext.
-
-## 3.4 Verifying Normal Telemetry and Heartbeats
-
-While the GCS controller is running, observe the terminal output.
-
-**Confirm the following:**
-
-* MAVLink heartbeat messages are received at regular intervals
-
-* Telemetry values (position, altitude, velocity) update continuously
-
-* No error or warning messages appear in the logs
-
-This confirms that the communication channel is functioning normally.
-
-## 3.5 Arming the Vehicle
-
-* From the GCS node, issue the arm command through the controller script.
-
-* If arming is triggered automatically by the script, observe the output.
-
-* If manual arming is required, execute:
+SSH into the drone node where the cryptographic setup will be performed:
 
 ```bash
-python3 arm_vehicle_plaintext.py
+ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5
 ```
 
-**Confirm in the output that:**
+### 3.4.2 Create Installation Script
 
-* The UAV reports an armed state
-
-* No safety or authorization checks prevent arming
-
-This demonstrates that the UAV accepts plaintext control commands.
-
-## 3.6 Executing the Mission Waypoints
-
-* Once armed, the GCS initiates the mission.
-
-* From the GCS node, start mission execution:
+The installation script automates the process of building OpenSSL with FIPS support. Create the script as follows:
 
 ```bash
-python3 start_mission_plaintext.py
+cat > /root/install_openssl_fips_312.sh << 'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+# OpenSSL FIPS build/install script (3.1.2)
+# Installs to /usr/local/ssl
+# Generates: /usr/local/ssl/fipsmodule.cnf and /usr/local/ssl/openssl.cnf
+# Creates: /etc/profile.d/openssl-fips.sh (env vars) and ./path.sh (local helper)
+
+OPENSSL_VER="3.1.2"
+SRC_DIR="/usr/local/src"
+PREFIX="/usr/local/ssl"
+OPENSSLDIR="/usr/local/ssl"
+TARBALL="openssl-${OPENSSL_VER}.tar.gz"
+URL="https://www.openssl.org/source/${TARBALL}"
+
+# ---- helpers ----
+die() { echo "ERROR: $*" >&2; exit 1; }
+need_root() { [[ "${EUID}" -eq 0 ]] || die "Run as root (use sudo)."; }
+
+echo_step() { echo -e "\n========== $* ==========\n"; }
+
+# ---- main ----
+need_root
+
+echo_step "Installing build dependencies"
+apt update
+apt install -y build-essential checkinstall git perl \
+    libtool automake autoconf pkg-config wget ca-certificates
+
+mkdir -p "${SRC_DIR}"
+cd "${SRC_DIR}"
+
+echo_step "Downloading OpenSSL ${OPENSSL_VER} source (if needed)"
+if [[ ! -f "${TARBALL}" ]]; then
+    wget -O "${TARBALL}" "${URL}"
+else
+    echo "Tarball already exists: ${SRC_DIR}/${TARBALL}"
+fi
+
+echo_step "Extracting source (if needed)"
+if [[ ! -d "openssl-${OPENSSL_VER}" ]]; then
+    tar -xf "${TARBALL}"
+else
+    echo "Source directory already exists: ${SRC_DIR}/openssl-${OPENSSL_VER}"
+fi
+
+cd "openssl-${OPENSSL_VER}"
+
+echo_step "Configuring OpenSSL with FIPS (static build)"
+./Configure enable-fips no-shared --prefix="${PREFIX}" --openssldir="${OPENSSLDIR}"
+
+echo_step "Building"
+make -j"$(nproc)"
+
+echo_step "Installing to ${PREFIX}"
+make install
+
+# Detect lib directory (some systems use lib64)
+LIBDIR="${PREFIX}/lib"
+MODULEDIR="${LIBDIR}/ossl-modules"
+if [[ -d "${PREFIX}/lib64" ]]; then
+    if [[ -d "${PREFIX}/lib64/ossl-modules" ]]; then
+        LIBDIR="${PREFIX}/lib64"
+        MODULEDIR="${LIBDIR}/ossl-modules"
+    fi
+fi
+
+[[ -d "${MODULEDIR}" ]] || die "Module directory not found: ${MODULEDIR}"
+[[ -f "${MODULEDIR}/fips.so" ]] || die "FIPS module not found: ${MODULEDIR}/fips.so"
+
+echo_step "Running fipsinstall (generates fipsmodule.cnf + runs self-tests)"
+"${PREFIX}/bin/openssl" fipsinstall \
+    -out "${PREFIX}/fipsmodule.cnf" \
+    -module "${MODULEDIR}/fips.so"
+
+echo_step "Writing OpenSSL config to enable FIPS provider (${PREFIX}/openssl.cnf)"
+cat > "${PREFIX}/openssl.cnf" <<'EOFCONF'
+openssl_conf = openssl_init
+
+.include /usr/local/ssl/fipsmodule.cnf
+
+[openssl_init]
+providers = provider_sect
+
+[provider_sect]
+base = base_sect
+fips = fips_sect
+
+[base_sect]
+activate = 1
+
+[fips_sect]
+activate = 1
+EOFCONF
+
+echo_step "Creating env script (/etc/profile.d/openssl-fips.sh) and local helper (./path.sh)"
+cat > /etc/profile.d/openssl-fips.sh <<EOFENV
+# OpenSSL 3.1.2 FIPS environment
+export PATH=${PREFIX}/bin:\$PATH
+export LD_LIBRARY_PATH=${LIBDIR}:\$LD_LIBRARY_PATH
+export OPENSSL_MODULES=${MODULEDIR}
+export OPENSSL_CONF=${PREFIX}/openssl.cnf
+EOFENV
+chmod 0644 /etc/profile.d/openssl-fips.sh
+
+cat > "${SRC_DIR}/path.sh" <<EOFPATH
+#!/usr/bin/env bash
+export PATH=${PREFIX}/bin:\$PATH
+export LD_LIBRARY_PATH=${LIBDIR}:\$LD_LIBRARY_PATH
+export OPENSSL_MODULES=${MODULEDIR}
+export OPENSSL_CONF=${PREFIX}/openssl.cnf
+echo "Environment set:"
+echo " PATH=\$PATH"
+echo " LD_LIBRARY_PATH=\$LD_LIBRARY_PATH"
+echo " OPENSSL_MODULES=\$OPENSSL_MODULES"
+echo " OPENSSL_CONF=\$OPENSSL_CONF"
+EOFPATH
+chmod +x "${SRC_DIR}/path.sh"
+
+echo_step "Verification (should show OpenSSL 3.1.2 + FIPS provider active, MD5 blocked)"
+"${PREFIX}/bin/openssl" version -a
+
+# Load config/env for checks in current shell
+export PATH="${PREFIX}/bin:${PATH}"
+export LD_LIBRARY_PATH="${LIBDIR}:${LD_LIBRARY_PATH:-}"
+export OPENSSL_MODULES="${MODULEDIR}"
+export OPENSSL_CONF="${PREFIX}/openssl.cnf"
+
+echo ""
+echo "Providers:"
+openssl list -providers
+
+echo ""
+echo "Test: MD5 should fail in FIPS-only provider set"
+set +e
+openssl md5 <<< "test" >/dev/null 2>&1
+MD5_RC=$?
+set -e
+if [[ "${MD5_RC}" -eq 0 ]]; then
+    echo "WARNING: MD5 succeeded. That usually means default provider is enabled somewhere."
+    echo "Check OPENSSL_CONF=${OPENSSL_CONF} and providers output."
+else
+    echo "OK: MD5 blocked (expected in FIPS-only mode)."
+fi
+
+echo_step "Done"
+echo "To use this OpenSSL in new shells: source /etc/profile.d/openssl-fips.sh (or log out/in)"
+echo "For current session: source ${SRC_DIR}/path.sh"
+EOF
 ```
 
-**Observe the UAV behavior and terminal logs:**
-
-* The UAV begins moving along predefined waypoints
-
-* Telemetry reflects changes in position and altitude
-
-* No unexpected deviations occur
-
-At this stage, the mission is executing exactly as intended.
-
-## 3.7 Monitoring Mission Progress
-
-Allow the mission to continue running for several minutes.
-
-During this time, continuously observe:
-
-* GCS terminal output
-
-* UAV simulation logs
-
-* Telemetry updates
-
-**Confirm that:**
-
-* Waypoints are followed in sequence
-
-* Commands are acknowledged correctly
-
-* Mission execution remains stable
-
-No attacker activity has occurred yet.
-
-## 3.8 Verifying Absence of Adversarial Activity
-
-On the **attacker node**, confirm that no packet capture or injection tools are running:
+Make the script executable and run it:
 
 ```bash
-ps aux | grep tcpdump
-ps aux | grep python
+chmod +x /root/install_openssl_fips_312.sh
+/root/install_openssl_fips_312.sh
 ```
 
-**Ensure that:**
+The script will:
 
-* No MAVLink packets are being captured
+1. Install required build dependencies
+2. Download OpenSSL 3.1.2 source code
+3. Configure the build with FIPS module enabled
+4. Compile OpenSSL (this step takes the longest time)
+5. Install to `/usr/local/ssl`
+6. Run FIPS self-tests
+7. Configure environment variables
 
-* No spoofed or injected commands are being sent
+### 3.4.3 Verify Installation
 
-This confirms the integrity of the baseline execution.
+After installation completes, verify that FIPS-validated OpenSSL is properly installed:
 
-## 3.9 Completing the Baseline Mission
+```bash
+source /etc/profile.d/openssl-fips.sh
+which openssl
+openssl version -a
+openssl list -providers
+```
 
-Allow the mission to reach its natural completion.
+Expected output should show:
 
-**Observe:**
+* OpenSSL 3.1.2 installation path
+* FIPS provider listed and active
+* Base provider listed and active
 
-* Final waypoint reached
+### 3.4.4 Test FIPS Enforcement
 
-* Mission completion message in GCS logs
+Verify that FIPS mode is enforcing security policies by testing a non-FIPS-approved algorithm:
 
-* UAV enters idle or loiter state
+```bash
+echo "test" | openssl md5
+```
 
-**Do not stop the simulation yet.**
+This command should **fail** with an error message, indicating that MD5 (which is not FIPS-approved) is blocked. This confirms that FIPS enforcement is active.
 
-## 3.10 Baseline Observation Summary
+## 3.5 Generating Cryptographic Keys
 
-At the end of the baseline execution, the following conditions should be true:
+With FIPS-validated OpenSSL installed, you can now generate the cryptographic keys needed for securing MAVLink communications.
 
-* MAVLink communication occurred entirely in plaintext
+### 3.5.1 Generate AES-256 Encryption Key
 
-* The UAV accepted commands without cryptographic verification
+Generate a 256-bit (32-byte) random key for AES encryption:
 
-* Mission execution followed operator intent exactly
+```bash
+cd /root
+openssl rand -out mavlink_aes256.key 32
+```
 
-* No deviations or anomalies were observed
+This key will be used to encrypt navigation commands, ensuring confidentiality.
 
-These observations form the reference point for the attack steps introduced in the next chapter.
+### 3.5.2 Generate HMAC Authentication Key
 
-## 3.11 As a Result
+Generate a 256-bit (32-byte) random key for HMAC authentication:
 
-You have now successfully completed the baseline plaintext MAVLink mission execution. The system is functioning as designed, but without any security protections on command authenticity or integrity. In the next chapter, you will begin passively observing MAVLink traffic and demonstrate how plaintext communication enables an attacker to prepare for command injection.
-=======
-You then observed that when encryption and authentication are enabled, the same spoofed commands are no longer accepted. The drone either ignores the unauthorized commands or continues executing its original mission, showing that cryptographic protection enforces trust and prevents unauthorized control. Through this experiment, you gained practical insight into why secure communication is essential for UAV control systems and how control-plane security directly impacts mission safety and system reliability.
->>>>>>> 50af6f7488e51af723c4da2c420f06bd2e129eef
+```bash
+openssl rand -out mavlink_hmac.key 32
+```
+
+This key will be used to authenticate commands, ensuring integrity and preventing tampering.
+
+### 3.5.3 Verify Key Generation
+
+Confirm that both keys were generated successfully:
+
+```bash
+ls -l mavlink_aes256.key mavlink_hmac.key
+wc -c mavlink_aes256.key mavlink_hmac.key
+```
+
+Each key should be exactly 32 bytes in size.
+
+### 3.5.4 Set Appropriate Permissions
+
+Protect the keys with restrictive file permissions:
+
+```bash
+chmod 600 mavlink_aes256.key mavlink_hmac.key
+```
+
+This ensures only the root user can read the keys.
+
+## 3.6 Distributing Keys to Base Station
+
+For the base station to send encrypted commands, it must have copies of the cryptographic keys.
+
+### 3.6.1 Copy Keys from Drone to Base Station
+
+From your local machine, use SCP to transfer the keys from the drone to the base station:
+
+```bash
+scp -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5:/root/mavlink_aes256.key \
+    root@192.168.144.1:/root/
+
+scp -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5:/root/mavlink_hmac.key \
+    root@192.168.144.1:/root/
+```
+
+### 3.6.2 Verify Keys on Base Station
+
+SSH into the base station and verify the keys are present:
+
+```bash
+ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.1
+ls -l mavlink_aes256.key mavlink_hmac.key
+```
+
+Both keys should be present with 32-byte sizes.
+
+## 3.7 Security Considerations
+
+### 3.7.1 Key Management Best Practices
+
+In production environments, consider:
+
+* **Secure Key Generation**: Keys should be generated on secure systems with good entropy sources
+* **Key Distribution**: Use secure channels (e.g., encrypted USB drives, secure network transfers)
+* **Key Storage**: Store keys encrypted at rest when possible
+* **Key Rotation**: Periodically generate new keys and retire old ones
+* **Access Control**: Limit key access to only authorized personnel and systems
+
+### 3.7.2 FIPS Compliance
+
+When deploying in regulated environments:
+
+* Always use FIPS-validated cryptographic modules
+* Ensure FIPS mode is enabled and enforced
+* Document cryptographic key lifecycle
+* Perform regular security audits
+* Maintain logs of cryptographic operations
+
+### 3.7.3 Limitations of Software-Based Security
+
+Software-based cryptography has limitations:
+
+* Keys stored in memory can potentially be extracted
+* No hardware-backed secure element protects keys
+* System compromise could expose keys
+
+For higher security requirements, consider hardware security modules (HSMs) or trusted platform modules (TPMs).
+
+## 3.8 Troubleshooting
+
+### Issue: OpenSSL Installation Fails
+
+**Symptoms:** Build errors during compilation
+
+**Solutions:**
+
+* Ensure all build dependencies are installed
+* Check available disk space (OpenSSL source requires ~500MB)
+* Review error messages for missing libraries
+* Verify internet connectivity for downloading source
+
+### Issue: FIPS Provider Not Active
+
+**Symptoms:** `openssl list -providers` doesn't show FIPS provider
+
+**Solutions:**
+
+* Verify `/usr/local/ssl/openssl.cnf` exists and is properly configured
+* Source the environment script: `source /etc/profile.d/openssl-fips.sh`
+* Check `OPENSSL_CONF` environment variable points to correct config file
+* Verify `fips.so` module exists in `/usr/local/ssl/lib/ossl-modules/`
+
+### Issue: MD5 Test Still Works
+
+**Symptoms:** `openssl md5` does not fail as expected
+
+**Solutions:**
+
+* FIPS mode may not be properly enforced
+* Check that base provider is not exclusively activated
+* Review `openssl.cnf` configuration
+* Re-run fipsinstall
+
+## 3.9 As a Result
+
+As a result of completing this chapter, you have successfully established a FIPS-validated cryptographic infrastructure for securing MAVLink communications. You installed OpenSSL 3.1.2 with FIPS module support, verified that FIPS enforcement is active, generated cryptographic keys for AES-256-GCM encryption and HMAC-SHA256 authentication, and securely distributed these keys between the drone and base station. Your cryptographic foundation is now ready to protect navigation commands from spoofing attacks in the next chapter.

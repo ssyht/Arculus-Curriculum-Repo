@@ -1,176 +1,551 @@
-# Chapter 4 – Plaintext MAVLink Traffic Inspection and Analysis
+# Chapter 4 — Flight Mission Script and Spoof Detection Logic
 
 ## 4.1 Overview
 
-In this chapter, you will observe MAVLink communication passively while the baseline mission continues to run. The objective is to demonstrate that MAVLink messages are transmitted in plaintext and can be easily captured and interpreted by an attacker with network access. No commands are injected in this chapter. The attacker only listens and analyzes traffic.
+In this chapter, you will implement the flight mission script that controls the drone's autonomous flight path and incorporates spoof detection logic. This script is the core of the experiment, as it defines how the drone responds to both legitimate and malicious navigation commands.
 
-## 4.2 Establishing the Attacker Observation Point
+The flight script implements a sequential waypoint mission where the drone flies from its starting position through a series of base stations (BS1 → BS2 → BS3) and returns home. At a critical waypoint (BS2), the script checks whether incoming navigation commands are encrypted or plaintext. If plaintext commands are detected, the drone is programmed to deviate from its intended path, simulating a successful path spoofing attack. If encrypted commands are detected, the spoofing attempt is rejected and the drone returns safely to its launch position.
 
-* Ensure the baseline mission from Chapter 3 is still running and that communication between the GCS and UAV remains active.
+This chapter will guide you through understanding the flight script architecture, configuring waypoints, implementing the spoof detection mechanism, and deploying the script to the drone for execution.
 
-* On the attacker node, navigate to the working directory:
+By completing this chapter, you will have a fully functional flight mission script ready to demonstrate both the vulnerability of unencrypted commands and the protection provided by cryptographic defenses.
 
-```bash
-cd ~/mavlink_experiment/Mavlink-AERPAW
+## 4.2 Prerequisites
+
+Before starting this chapter, ensure that:
+
+* Chapters 2 and 3 are completed (AERPAW environment configured, cryptographic keys generated)
+* You have SSH access to the drone node
+* You are familiar with Python programming basics
+* You understand the MAVLink protocol fundamentals
+* The AERPAW library (aerpawlib) is installed on the drone
+
+## 4.3 Understanding the Flight Mission Architecture
+
+### 4.3.1 Mission Overview
+
+The flight mission consists of the following phases:
+
+1. **Takeoff**: Drone ascends to configured altitude (25 meters)
+2. **Sequential Waypoint Navigation**: Flies through BS1 → BS2 → BS3
+3. **Spoof Detection at BS2**: Checks for plaintext vs. encrypted commands
+4. **Attack Response**: 
+   - If plaintext detected → Deviates 90 meters east (simulated attack success)
+   - If encrypted detected → Returns to launch and lands (attack prevented)
+5. **Mission Continuation**: If no spoof triggered, continues to remaining waypoints
+6. **Return to Launch**: Upon mission completion or spoof detection
+
+### 4.3.2 Key Components
+
+The flight script uses several important components:
+
+* **StateMachine**: AERPAW framework for managing flight states
+* **Waypoint List**: Coordinates for each base station
+* **Spoof Detection Logic**: Monitors incoming command files
+* **Safety Checker**: Validates all waypoint commands before execution
+* **Telemetry Logger**: Records flight data throughout the mission
+
+### 4.3.3 Command File Monitoring
+
+The receiver script (which listens for navigation commands) writes command information to `/tmp/flight_cmd.txt` in the following format:
+
+```
+plain|GOTO|lat,lon,alt    # Plaintext command detected
+enc|GOTO|lat,lon,alt      # Encrypted command detected
 ```
 
-* Confirm that the attacker node can still reach both the GCS and UAV:
+The flight script monitors this file to determine whether incoming commands are encrypted or not.
+
+## 4.4 Flight Script Implementation
+
+### 4.4.1 Access the Drone and Navigate to Script Directory
+
+SSH into the drone and navigate to the experiment directory:
 
 ```bash
-ping <gcs-node-ip>
-ping <uav-node-ip>
+ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5
+cd /root/Profiles/AADMChallenge/PortableNode/
 ```
-* Successful responses confirm that the attacker is positioned on the same network segment.
 
-## 4.2 Identifying the MAVLink Communication Interface
+### 4.4.2 Download or Create the Flight Script
 
-* List available network interfaces on the attacker node:
+Obtain the flight script from the GitHub repository:
 
 ```bash
-ip addr
+wget https://raw.githubusercontent.com/BishwasWagle/Mavlink-AERPAW/main/uav_data_mule.py
 ```
-* Identify the interface connected to the AERPAW experiment network (commonly eth0 or tap0).
 
-* Make note of the interface name. This interface will be used for packet capture.
+Alternatively, if the repository is not accessible, create the script manually using the complete code provided below.
 
-## 4.3 Capturing Plaintext MAVLink Traffic
+### 4.4.3 Complete Flight Script Code
 
-* Start packet capture on the attacker node using tcpdump.
+Below is the complete `uav_data_mule.py` script. This script should be placed at `/root/Profiles/AADMChallenge/PortableNode/uav_data_mule.py` on the drone:
 
-* Run the following command, replacing <interface> with the identified interface name:
+```python
+#!/usr/bin/env python3
+# sequential_fly_spoof_demo.py
+"""
+Sequential AERPAW Flight + Spoof Demo Triggered by Plaintext vs Encrypted Commands
+
+Behavior you requested:
+- Drone flies sequentially through visit_order.
+- When it reaches BS2 (or the configured spoof_trigger_bs):
+  - If it has seen a PLAINTEXT command (receiver writes "plain|GOTO|..."), it deviates 90m east.
+  - If it has seen an ENCRYPTED command (receiver writes "enc|GOTO|...") OR secure flag exists,
+    it discards spoofing and returns home and lands.
+- If messages are always encrypted, spoofing should not occur.
+
+Mechanism:
+- receiver_cmd.py writes:
+    /tmp/flight_cmd.txt => "plain|GOTO|lat,lon,alt" or "enc|GOTO|lat,lon,alt"
+    /tmp/secure_ok.flag => present when an encrypted command was verified+decrypted
+
+Usage:
+python3 sequential_fly_spoof_demo.py --safety_checker_ip <IP> --safety_checker_port <PORT> --dwell 3 --speed 10 --alt 25
+
+Notes:
+- "Home" for landing is vehicle.home_coords (RTL). The GOTO coordinates are used only as a trigger and for logging.
+- Spoof deviation is done as a deliberate wrong waypoint command (safe + reproducible).
+"""
+
+import asyncio
+import datetime
+import csv
+import os
+import math
+from typing import List
+from argparse import ArgumentParser
+
+from aerpawlib.runner import StateMachine, state, background
+from aerpawlib.aerpaw import AERPAW_Platform
+from aerpawlib.vehicle import Vehicle, Drone
+from aerpawlib.util import Coordinate
+from aerpawlib.safetyChecker import SafetyCheckerClient
+
+# === WAYPOINTS (Base Stations) ===
+bs_data_list = [
+    { "id": 0, "name": "start", "coordinates": { "latitude": 35.727367, "longitude": -78.69655491282358 }, "intermediary": None },
+    { "id": 1, "name": "bs1", "coordinates": { "latitude": 35.7275287, "longitude": -78.6962216 }, "intermediary": None },
+    { "id": 2, "name": "bs2", "coordinates": { "latitude": 35.72826, "longitude": -78.70060 }, "intermediary": None },
+    { "id": 3, "name": "bs3", "coordinates": { "latitude": 35.7275287, "longitude": -78.6962216 }, "intermediary": None },
+]
+
+CMD_FILE = "/tmp/flight_cmd.txt"
+
+class SequentialFlyerSpoofDemo(StateMachine):
+    # Flight params
+    uav_altitude = 25.0
+    target_speed = 10.0
+    dwell_seconds = 3.0
+
+    # Visit order: A -> bs1 -> bs2 -> bs3 -> A
+    visit_order = [1, 2, 3]
+
+    # Spoof demo config
+    enable_spoof_demo = True
+    spoof_trigger_bs = 2  # spoof decision at BS2 arrival
+    spoof_offset_east_m = 90  # deviate 90m east
+    override_wait_s = 20.0
+    spoof_hold_wait_s = 30.0  # after spoof, wait up to N sec for encrypted override
+    in_hold = False
+    
+    # internal state
+    start_time = None
+    idx = 0
+
+    secure_ok = False
+    last_cmd = None  # (mode, cmd, lat, lon, alt)
+
+    def initialize_args(self, extra_args: List[str]):
+        directory = "/root/Results"
+        os.makedirs(directory, exist_ok=True)
+
+        default_file = os.path.join(
+            directory,
+            f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_vehicleOut.txt"
+        )
+
+        parser = ArgumentParser()
+        parser.add_argument("--safety_checker_ip", required=True, help="Safety checker IP")
+        parser.add_argument("--safety_checker_port", required=True, help="Safety checker port")
+
+        parser.add_argument("--output", required=False, default=default_file)
+        parser.add_argument("--samplerate", required=False, type=float, default=1.0)
+
+        parser.add_argument("--dwell", required=False, type=float, default=self.dwell_seconds)
+        parser.add_argument("--speed", required=False, type=float, default=self.target_speed)
+        parser.add_argument("--alt", required=False, type=float, default=self.uav_altitude)
+
+        parser.add_argument("--enable_spoof", action="store_true", help="Enable plaintext-triggered spoof demo")
+        parser.add_argument("--disable_spoof", action="store_true", help="Disable spoof demo")
+        parser.add_argument("--spoof_bs", type=int, default=self.spoof_trigger_bs, help="BS id where spoof is triggered")
+        parser.add_argument("--spoof_east_m", type=float, default=self.spoof_offset_east_m, help="Spoof offset east (meters)")
+        parser.add_argument("--override_wait_s", type=float, default=self.override_wait_s, help="Wait for encrypted override (seconds)")
+
+        args = parser.parse_args(args=extra_args)
+
+        self.safety_checker = SafetyCheckerClient(args.safety_checker_ip, args.safety_checker_port)
+        self.dwell_seconds = float(args.dwell)
+        self.target_speed = float(args.speed)
+        self.uav_altitude = float(args.alt)
+
+        self.spoof_trigger_bs = int(args.spoof_bs)
+        self.spoof_offset_east_m = float(args.spoof_east_m)
+        self.override_wait_s = float(args.override_wait_s)
+
+        # spoof toggle
+        if args.disable_spoof:
+            self.enable_spoof_demo = False
+        elif args.enable_spoof:
+            self.enable_spoof_demo = True
+
+        # light logging
+        self._sampling_delay = 1.0 / float(args.samplerate)
+        self._log_file = open(args.output, "w+")
+        self._csv_writer = csv.writer(self._log_file)
+        self._csv_writer.writerow(["ts", "state", "lat", "lon", "alt", "idx", "secure_ok", "last_cmd"])
+        self._log_file.flush()
+
+    def log_row(self, vehicle: Vehicle, state_name: str):
+        pos = vehicle.position
+        ts = datetime.datetime.utcnow().isoformat()
+        self._csv_writer.writerow([
+            ts,
+            state_name,
+            pos.lat if pos else None,
+            pos.lon if pos else None,
+            pos.alt if pos else None,
+            self.idx,
+            int(self.secure_ok),
+            str(self.last_cmd) if self.last_cmd else ""
+        ])
+        self._log_file.flush()
+
+    @background
+    async def sampler(self, vehicle: Vehicle):
+        while True:
+            try:
+                self.log_row(vehicle, "sampler")
+            except Exception:
+                pass
+            await asyncio.sleep(self._sampling_delay)
+
+    @background
+    async def watch_cmd(self):
+        """Watch receiver-published files and update flags."""
+        while True:
+            try:
+                if os.path.exists(CMD_FILE):
+                    line = open(CMD_FILE, "r").read().strip()
+                    # mode|CMD|lat,lon,alt
+                    mode, cmd, coords = line.split("|")
+                    lat_s, lon_s, alt_s = coords.split(",")
+                    self.last_cmd = (mode, cmd, float(lat_s), float(lon_s), float(alt_s))
+            except Exception:
+                pass
+            await asyncio.sleep(0.2)
+
+    def bs_to_coord(self, bs_id: int) -> Coordinate:
+        bs = bs_data_list[bs_id]
+        print(Coordinate(bs["coordinates"]["latitude"], bs["coordinates"]["longitude"], self.uav_altitude), "================")
+        return Coordinate(bs["coordinates"]["latitude"], bs["coordinates"]["longitude"], self.uav_altitude)
+
+    def offset_east(self, base: Coordinate, east_m: float) -> Coordinate:
+        # east => negative East meters
+        east_m = east_m
+        dlon = east_m / (111111.0 * math.cos(math.radians(base.lat)))
+        return Coordinate(lat=base.lat, lon=base.lon + dlon, alt=base.alt)
+
+    async def go_to(self, vehicle: Drone, next_pos: Coordinate, timeout_s=None) -> bool:
+        """Turn, safety-check, then goto. If timeout_s is None, wait indefinitely."""
+        cur_pos = vehicle.position
+        if cur_pos is None:
+            return False
+
+        # Turn
+        new_heading = cur_pos.bearing(next_pos)
+        try:
+            await asyncio.wait_for(vehicle.set_heading(new_heading), timeout=10.0)
+        except asyncio.TimeoutError:
+            print("[WARN] set_heading timed out")
+
+        # Safety check
+        valid, msg = self.safety_checker.validateWaypointCommand(cur_pos, next_pos)
+        if not valid:
+            print(f"[SAFETY] Waypoint rejected: {msg}")
+            return False
+
+        # Move
+        if timeout_s is None:
+            await vehicle.goto_coordinates(next_pos)
+            return True
+
+        try:
+            await asyncio.wait_for(vehicle.goto_coordinates(next_pos), timeout=timeout_s)
+            return True
+        except asyncio.TimeoutError:
+            print(f"[WARN] goto_coordinates timed out after {timeout_s}s")
+            return False
+
+    @state(name="start", first=True)
+    async def start(self, vehicle: Drone):
+        # --- CLEANUP stale command/secure flags from previous runs ---
+        if os.path.exists(CMD_FILE):
+            os.remove(CMD_FILE)
+        self.last_cmd = None
+        asyncio.ensure_future(self.sampler(vehicle))
+        asyncio.ensure_future(self.watch_cmd())
+
+        await vehicle.takeoff(self.uav_altitude)
+        await vehicle.set_groundspeed(self.target_speed)
+
+        self.start_time = datetime.datetime.now()
+        AERPAW_Platform.log_to_oeo(f"Takeoff to {self.uav_altitude}m; speed={self.target_speed}m/s")
+        return "go_next"
+
+    @state(name="hold_spoofed")
+    async def hold_spoofed(self, vehicle: Drone):
+        AERPAW_Platform.log_to_oeo("Holding at spoofed location. Waiting for ENC to RTL...")
+
+        # Optional: reduce speed so it doesn't try to continue anywhere
+        try:
+            await vehicle.set_groundspeed(0)
+        except Exception:
+            pass
+
+        while True:
+            # If ENC command arrives anytime, return home and land
+            if self.last_cmd and self.last_cmd[0] == "enc":
+                AERPAW_Platform.log_to_oeo("ENC received while holding -> RTL + land")
+                return "return_to_launch_and_land"
+
+            # Keep holding
+            await asyncio.sleep(0.5)
+
+    @state(name="go_next")
+    async def go_next(self, vehicle: Drone):
+        # Finished route -> land
+        if self.idx >= len(self.visit_order):
+            return "return_to_launch_and_land"
+
+        target_bs_id = self.visit_order[self.idx]
+        next_pos = self.bs_to_coord(target_bs_id)
+
+        AERPAW_Platform.log_to_oeo(
+            f"Going to BS{target_bs_id} ({self.idx+1}/{len(self.visit_order)})"
+        )
+
+        moved = await self.go_to(vehicle, next_pos, timeout_s=None)
+        if not moved:
+            return "return_to_launch_and_land"
+
+        if self.dwell_seconds > 0:
+            AERPAW_Platform.log_to_oeo(f"Arrived BS{target_bs_id}; dwell {self.dwell_seconds}s")
+            await asyncio.sleep(self.dwell_seconds)
+
+        # ---- Spoof decision point at BS2 ----
+        if self.enable_spoof_demo and target_bs_id == self.spoof_trigger_bs:
+
+            # If ENC already received any time before -> DO NOT spoof, continue mission
+            if self.last_cmd and self.last_cmd[0] == "enc":
+                AERPAW_Platform.log_to_oeo("ENC already present -> do NOT spoof; continue mission")
+                self.idx += 1
+                return "go_next"
+
+            # If PLAINTEXT observed -> spoof, then wait 30s for ENC
+            if self.last_cmd and self.last_cmd[0] == "plain":
+                AERPAW_Platform.log_to_oeo(
+                    f"PLAINTEXT observed -> SPOOF: deviate {self.spoof_offset_east_m:.0f}m east"
+                )
+
+                cur = vehicle.position
+                base = Coordinate(cur.lat, cur.lon, self.uav_altitude)
+                spoof_pos = self.offset_east(base, self.spoof_offset_east_m)
+
+                moved_spoof = await self.go_to(vehicle, spoof_pos, timeout_s=None)
+                if moved_spoof:
+                    AERPAW_Platform.log_to_oeo("Spoof waypoint reached. Waiting 30s for ENC...")
+                else:
+                    AERPAW_Platform.log_to_oeo("Spoof waypoint blocked by safety; holding anyway.")
+                return "hold_spoofed"
+
+                t0 = datetime.datetime.now()
+                while (datetime.datetime.now() - t0).total_seconds() < self.spoof_hold_wait_s:
+                    if self.last_cmd and self.last_cmd[0] == "enc":
+                        AERPAW_Platform.log_to_oeo("ENC received within 30s -> RTL + land")
+                        return "return_to_launch_and_land"
+                    await asyncio.sleep(0.2)
+
+                # No ENC within 30s -> HOLD indefinitely
+                AERPAW_Platform.log_to_oeo("No ENC within 30s -> holding at spoofed location indefinitely")
+                return "hold_spoofed"
+
+            # If neither plain nor enc exists, just continue mission (no spoof)
+            AERPAW_Platform.log_to_oeo("No command observed at trigger -> continue mission")
+
+        # Normal progression (only reached if not spoof-holding / not RTL)
+        self.idx += 1
+        return "go_next"
+
+    @state(name="return_to_launch_and_land")
+    async def return_to_launch_and_land(self, vehicle: Drone):
+        print("Return to launch and landing.")
+
+        # Go home (vehicle.home_coords) and land
+        home = Coordinate(vehicle.home_coords.lat, vehicle.home_coords.lon, vehicle.position.alt)
+
+        ok = await self.go_to(vehicle, home, timeout_s=120.0)
+        if not ok:
+            print("[WARN] Could not reach home within timeout. Landing in place for safety.")
+        await vehicle.land()
+
+        seconds = (datetime.datetime.now() - self.start_time).total_seconds() if self.start_time else None
+        AERPAW_Platform.log_to_oeo(f"Done. Flight time={seconds:.1f}s" if seconds else "Done.")
+        return None
+```
+
+### 4.4.4 Understanding Waypoint Configuration
+
+The flight script defines waypoints using GPS coordinates. Review the `bs_data_list` section in the code above:
+
+```python
+bs_data_list = [
+    {"id": 0, "name": "start", "coordinates": {"latitude": 35.727367, "longitude": -78.69655491282358}, "intermediary": None},
+    {"id": 1, "name": "bs1", "coordinates": {"latitude": 35.7275287, "longitude": -78.6962216}, "intermediary": None},
+    {"id": 2, "name": "bs2", "coordinates": {"latitude": 35.72826, "longitude": -78.70060}, "intermediary": None},
+    {"id": 3, "name": "bs3", "coordinates": {"latitude": 35.7275287, "longitude": -78.6962216}, "intermediary": None},
+]
+```
+
+These coordinates define the base station locations. The drone will fly to each location in sequence.
+
+### 4.4.5 Understanding the Spoof Detection Logic
+
+Review the spoof detection code in the `go_next` state (lines 232-307 in the script above):
+
+The key logic at BS2 arrival:
+
+```python
+# ---- Spoof decision point at BS2 ----
+if self.enable_spoof_demo and target_bs_id == self.spoof_trigger_bs:
+    
+    # If ENC already received -> DO NOT spoof, continue mission
+    if self.last_cmd and self.last_cmd[0] == "enc":
+        AERPAW_Platform.log_to_oeo("ENC already present -> do NOT spoof; continue mission")
+        self.idx += 1
+        return "go_next"
+    
+    # If PLAINTEXT observed -> spoof, then wait for ENC
+    if self.last_cmd and self.last_cmd[0] == "plain":
+        AERPAW_Platform.log_to_oeo(
+            f"PLAINTEXT observed -> SPOOF: deviate {self.spoof_offset_east_m:.0f}m east"
+        )
+        
+        cur = vehicle.position
+        base = Coordinate(cur.lat, cur.lon, self.uav_altitude)
+        spoof_pos = self.offset_east(base, self.spoof_offset_east_m)
+        
+        moved_spoof = await self.go_to(vehicle, spoof_pos, timeout_s=None)
+        if moved_spoof:
+            AERPAW_Platform.log_to_oeo("Spoof waypoint reached. Waiting for ENC...")
+        else:
+            AERPAW_Platform.log_to_oeo("Spoof waypoint blocked by safety; holding anyway.")
+        
+        return "hold_spoofed"
+```
+
+This logic implements the core attack and defense behavior:
+
+1. At BS2, check if any commands have been received
+2. If encrypted command detected → Continue normal mission
+3. If plaintext command detected → Deviate 90m east, then wait for encrypted override
+4. If encrypted command arrives during hold → Return to launch and land
+
+### 4.4.6 Key Flight Parameters
+
+The script defines several configurable parameters (see lines 51-61 in the code):
+
+```python
+# Flight params
+uav_altitude = 25.0           # Flight altitude in meters
+target_speed = 10.0           # Airspeed in m/s
+dwell_seconds = 3.0           # Time to hover at each waypoint
+
+# Spoof demo config
+spoof_trigger_bs = 2          # BS2 is the trigger point
+spoof_offset_east_m = 90      # Distance to deviate during spoof
+spoof_hold_wait_s = 30.0      # Time to wait for encrypted override
+```
+
+These can be adjusted via command-line arguments when starting the experiment:
 
 ```bash
-sudo tcpdump -i <interface> udp
+--alt 25          # Altitude in meters
+--speed 10        # Speed in m/s
+--dwell 3         # Dwell time at each waypoint
+--spoof_east_m 90 # Spoof deviation distance
 ```
 
-* Observe the terminal output. You should see a continuous stream of UDP packets being transmitted between the GCS and UAV.
+## 4.5 Configuring the Receiver Script
 
-* These packets represent MAVLink telemetry and command messages.
+The receiver script listens for incoming navigation commands and writes their status to the command file.
 
-## 4.4 Filtering MAVLink Traffic by Port
+### 4.5.1 Receiver Functionality
 
-* MAVLink typically uses UDP port 14550 or 14551.
+The receiver monitors UDP port 14551 for incoming navigation commands and:
 
-* Refine the capture to only show MAVLink packets:
+1. Attempts to decrypt the command using the AES key
+2. Verifies the HMAC authentication
+3. Writes the result to `/tmp/flight_cmd.txt`
 
-```bash
-sudo tcpdump -i <interface> udp port 14550
-```
+### 4.5.2 Testing the Receiver
 
-**Confirm that:**
+You will test the receiver in Chapter 5 during flight execution.
 
-* Packets continue appearing
+## 4.6 Understanding the Sender Script
 
-* Source and destination IPs correspond to the GCS and UAV nodes
+The sender script (executed from the base station) transmits navigation commands to the drone.
 
-This confirms that MAVLink traffic is visible to the attacker.
+### 4.6.1 Sender Script Modes
 
-## 4.5 Saving MAVLink Traffic to a Capture File
+The sender can operate in plaintext mode (sends unencrypted commands) or encrypted mode (sends AES-256-GCM encrypted and HMAC-authenticated commands).
 
-* Stop the live capture using ``Ctrl+C``.
+## 4.7 Safety Checker Integration
 
-* Start a new capture and save the traffic to a file for analysis:
+The flight script integrates with AERPAW's safety checker to prevent unsafe maneuvers. Before executing any waypoint command, the script validates that the drone stays within authorized flight boundaries and altitude limits.
 
-```bash
-sudo tcpdump -i <interface> udp port 14550 -w mavlink_plaintext.pcap
-```
+## 4.8 Telemetry and Logging
 
-* Allow the capture to run for at least 30–60 seconds while the mission is active.
+The flight script logs telemetry data throughout the mission in CSV format, including timestamp, flight state, position, waypoint index, and command status.
 
-* After sufficient data is collected, stop the capture with ``Ctrl+C``.
+### 4.8.1 Log File Location
 
-## 4.6 Inspecting Captured Traffic
+Logs are saved to: `/root/Results/YYYY-MM-DD_HH-MM-SS_vehicleOut.txt`
 
-* List the captured file:
+## 4.9 Deployment Checklist
 
-```bash
-ls -lh mavlink_plaintext.pcap
-```
+Before proceeding to Chapter 5, verify the following:
 
-* Confirm that the file size is non-zero, indicating successful capture.
+### 4.9.1 File Checklist
 
-* Now inspect the contents in human-readable form:
-```bash
-tcpdump -r mavlink_plaintext.pcap
-```
+On the drone (`192.168.144.5`):
 
-Observe that:
+* [ ] Flight script exists in the correct directory
+* [ ] Receiver script is present
+* [ ] Cryptographic keys are in place
 
-* Packets are readable
-* Message lengths and headers are visible
-* No encryption is present
+On the base station (`192.168.144.1`):
 
-## 4.7 Identifying MAVLink Message Structure
+* [ ] Sender script is present
+* [ ] Cryptographic keys are in place
 
-* Use verbose output to inspect packet payloads:
+### 4.9.2 Configuration Checklist
 
-```bash
-tcpdump -r mavlink_plaintext.pcap -vvv
-```
+* [ ] Waypoint coordinates are correct
+* [ ] Flight parameters are within limits
+* [ ] QGroundControl is connected
+* [ ] GPS has adequate satellite lock
 
-**Look for recognizable MAVLink patterns:**
+## 4.10 As a Result
 
-* Message IDs
-* System IDs
-* Component IDs
-* Command identifiers
-
-These fields are transmitted in plaintext and can be interpreted by an attacker.
-
-## 4.8 Verifying Absence of Encryption
-
-**Confirm that:**
-
-* No ciphertext blobs appear
-
-* No TLS or encryption headers are present
-
-* Payloads are structured and consistent across packets
-
-This verifies that MAVLink traffic is not encrypted in this experiment configuration.
-
-## 4.9 Correlating MAVLink Messages with Mission Behavior
-
-* While reviewing captured traffic, correlate message timing with UAV behavior observed in Chapter 3.
-
-**Examples:**
-
-* Waypoint transitions correspond to specific MAVLink command messages
-
-* Arm/disarm actions correspond to command packets
-
-* Telemetry packets reflect position and altitude changes
-
-This correlation demonstrates that captured messages directly influence mission execution.
-
-## 4.10 Attacker Capability Assessment
-
-**At this point, the attacker has successfully achieved the following without detection:**
-
-* Observed all MAVLink communication
-
-* Identified command and telemetry messages
-
-* Learned system IDs and component IDs
-
-* Understood command timing and structure
-
-No authentication or authorization mechanisms prevented this observation.
-
-## 4.11 Key Observation Summary
-
-**From this chapter, the following conclusions can be made:**
-
-* MAVLink communication is transmitted in plaintext
-
-* Any node with network access can observe mission commands
-
-* Command structure and identifiers are easily extracted
-
-* Passive observation alone provides enough information to prepare an attack
-
-These observations set the stage for active command injection in the next chapter.
-
-## 4.12 As a Result
-
-The attacker is fully prepared to move from observation to action. In the next chapter, you will perform active MAVLink command injection, using the information gathered here to override mission behavior.
+As a result of completing this chapter, you have successfully implemented and configured the flight mission script with integrated spoof detection logic. You understand how the drone monitors incoming navigation commands, how it distinguishes between plaintext and encrypted commands, and how it responds to potential spoofing attacks. Your system is now ready for the final phase: executing the complete experiment in Chapter 5.
