@@ -27,11 +27,29 @@ From your local machine, ensure the SSH tunnel to the OEO Console is active.
 
 ### 5.3.2 Check Active Screen Sessions
 
-List active screen sessions to verify the mavproxy session is running.
+List active screen sessions:
+
+```bash
+screen -ls
+```
+
+You should see the mavproxy session already running. This session manages communication with the drone's autopilot.
 
 ### 5.3.3 Start the Experiment
 
-From the OEO Console, start the AERPAW experiment and execute all start_experiment commands.
+From the OEO Console, start the AERPAW experiment:
+
+```bash
+./startOEOConsole.sh
+```
+
+Then execute:
+
+```bash
+all start_experiment
+```
+
+This command starts the experiment scripts on all allocated nodes. You should see confirmation that the vehicle script has been activated on the drone.
 
 ## 5.4 Pre-Flight Procedures
 
@@ -53,7 +71,19 @@ In this scenario, you will demonstrate how unencrypted navigation commands can b
 
 ### 5.5.1 Start the Receiver on the Drone
 
-SSH into the drone and start the receiver in listening mode on UDP port 14551.
+SSH into the drone and start the receiver in listening mode:
+
+```bash
+ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5
+cd /root
+env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 receiver_v2.py \
+  --listen 0.0.0.0 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key
+```
+
+The receiver will begin listening for navigation commands on UDP port 14551.
 
 ### 5.5.2 Observe Initial Flight
 
@@ -61,7 +91,18 @@ Watch the drone take off, fly to BS1, dwell, and proceed toward BS2.
 
 ### 5.5.3 Send Plaintext Command from Base Station
 
-When the drone is approaching or at BS2, send a plaintext navigation command from the base station.
+When the drone is approaching or has reached BS2, SSH into the base station and send a plaintext navigation command:
+
+```bash
+ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.1
+cd /root
+env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 sender_v2.py \
+  --mode plain \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.69866117 \
+  --alt 25
+```
 
 ### 5.5.4 Observe Spoofing Behavior
 
@@ -75,11 +116,40 @@ This demonstrates a successful path spoofing attack due to lack of encryption.
 
 ### 5.5.5 Send Encrypted Override (Optional)
 
-Send an encrypted command to demonstrate recovery. The drone should return to launch position and land safely.
+To demonstrate recovery, send an encrypted command:
+
+```bash
+env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 sender_v2.py \
+  --mode enc \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.69866117 \
+  --alt 25
+```
+
+The drone should:
+
+1. Detect the encrypted command within the 30-second window
+2. Immediately return to launch position
+3. Land safely
 
 ### 5.5.6 Review Telemetry Logs
 
-After the drone lands, review the flight logs showing plaintext command detection, state transitions, and position data.
+After the drone lands, review the flight logs:
+
+```bash
+cd /root/Results
+ls -lt *.txt | head -1
+cat <most_recent_log_file>
+```
+
+The logs will show:
+
+* Timestamp of plaintext command detection
+* State transition to spoofed waypoint
+* Position data confirming the deviation
+* Encrypted command detection (if override was sent)
+* Return to launch behavior
 
 ## 5.6 Scenario 2: Encrypted Command Protection (Attack Prevented)
 
@@ -87,19 +157,53 @@ In this scenario, you will demonstrate how encryption prevents path spoofing att
 
 ### 5.6.1 Reset the Experiment
 
-Reset the experiment by stopping scripts, clearing command files, and restarting.
+If continuing from Scenario 1, reset the experiment:
+
+1. Stop all running scripts (Ctrl+C on receiver)
+2. Clear the command file:
+
+```bash
+rm /tmp/flight_cmd.txt
+```
+
+3. Ensure the drone is landed and disarmed
+4. Restart the experiment via OEO Console
 
 ### 5.6.2 Restart Receiver
 
-Restart the receiver on the drone.
+Restart the receiver on the drone:
+
+```bash
+env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 receiver_v2.py \
+  --listen 0.0.0.0 \
+  --port 14551 \
+  --aes-key ./mavlink_aes256.key \
+  --hmac-key ./mavlink_hmac.key
+```
 
 ### 5.6.3 Arm and Begin Flight
 
-Set GUIDED mode and arm the drone from the OEO Console.
+From OEO Console:
+
+```bash
+5 set_mode GUIDED
+5 arm
+```
+
+Observe the drone takeoff and begin its mission.
 
 ### 5.6.4 Send Encrypted Command at BS2
 
-When the drone approaches BS2, send an encrypted command from the base station.
+When the drone approaches BS2, send an encrypted command from the base station:
+
+```bash
+env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 sender_v2.py \
+  --mode enc \
+  --cmd goto \
+  --lat 35.7302614 \
+  --lon -78.69866117 \
+  --alt 25
+```
 
 ### 5.6.5 Observe Defense Behavior
 
@@ -114,7 +218,19 @@ This demonstrates successful prevention of the path spoofing attack through encr
 
 ### 5.6.6 Review Defense Logs
 
-Examine the flight logs showing encrypted command detection, no deviation, and safe landing.
+Examine the flight logs:
+
+```bash
+cd /root/Results
+cat <most_recent_log_file>
+```
+
+The logs will show:
+
+* Timestamp of encrypted command detection
+* No deviation to spoofed waypoint
+* Direct return to launch behavior
+* Successful landing
 
 ## 5.7 Analysis and Observations
 
@@ -138,11 +254,24 @@ Terminate all running experiment scripts.
 
 ### 5.8.2 Collect and Archive Data
 
-Gather all experimental data including logs and telemetry files.
+Gather all experimental data:
+
+```bash
+# On the drone
+cd /root/Results
+tar -czf experiment_results_$(date +%Y%m%d_%H%M%S).tar.gz *.txt *.csv
+
+# Download to local machine
+scp -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5:/root/Results/experiment_results_*.tar.gz ./
+```
 
 ### 5.8.3 Clean Up Temporary Files
 
-Remove temporary command files.
+Remove temporary command files:
+
+```bash
+rm /tmp/flight_cmd.txt
+```
 
 ### 5.8.4 Release AERPAW Resources
 
