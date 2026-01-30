@@ -1,133 +1,224 @@
-# Chapter 2 — AERPAW User Setup and Instance Preparation
+# Chapter 2 — AERPAW Environment Setup and Configuration
 
 ## 2.1 Overview
 
-This chapter walks through the complete environment setup required to perform the plaintext MAVLink experiment. All steps in this chapter must be completed before executing the mission or performing any attack actions.
+In this chapter, you will set up the AERPAW testbed environment required for the path spoofing experiment. This includes configuring the OEO Console for remote drone control, setting up experiment scripts on both the drone and base station nodes, and establishing a connection with QGroundControl for mission monitoring and execution.
 
-## 2.2 AERPAW Access and Node Roles
+The AERPAW (Aerial Experimentation and Research Platform for Advanced Wireless) testbed provides a realistic environment for testing UAV security mechanisms. Proper configuration of this environment is essential for conducting reproducible experiments and observing the effects of both attack and defense strategies.
 
-This experiment is conducted within the AERPAW testbed environment. The setup involves three logical components:
+By completing this chapter, you will have a fully configured experimental environment ready for implementing cryptographic defenses against path spoofing attacks.
 
-* **Ground Control Station (GCS):** Responsible for mission planning, command transmission, and telemetry visualization.
+## 2.2 Prerequisites and Environment Setup
 
-* **UAV / Vehicle Node:** Executes the mission and responds to MAVLink commands.
+Before starting this chapter, ensure that:
 
-* **Attacker Node:** Observes and injects MAVLink commands over the network.
+* A PC or laptop with a supported operating system (Linux recommended; Windows or macOS also supported)
+* Reliable internet connectivity
+* You have access to an active AERPAW experiment session
+* The drone and base station nodes are allocated and accessible
+* SSH keys are properly configured for AERPAW access
+* QGroundControl is installed on your local machine
+* Active OpenVPN connection to the AERPAW testbed
 
-Ensure that you have valid AERPAW credentials and active reservations for the required nodes.
+This chapter assumes that basic AERPAW user registration and resource allocation have already been completed.
 
-## 2.2 Logging into the AERPAW Environment
+## 2.3 Setting Up OEO Console
 
-* Open three terminal windows on your local system. Each terminal will be used for a different role.
+The OEO (Operator Experiment Operations) Console provides remote access to control the drone during experiments. It acts as a bridge between your local machine and the drone's autopilot system.
 
-* In the first terminal, connect to the GCS node:
+### 2.3.1 Establish SSH Tunnel to OEO Console
 
-```bash
-ssh <username>@<gcs-node-ip>
-```
-
-* In the second terminal, connect to the UAV node:
-
-```bash
-ssh <username>@<uav-node-ip>
-```
-* In the third terminal, connect to the attacker node:
+Open a terminal on your local machine and establish an SSH tunnel with port forwarding:
 
 ```bash
-ssh <username>@<attacker-node-ip>
+ssh -i ~/.ssh/aerpaw_id_rsa -L 5760:127.0.0.1:5760 root@192.168.144.62
 ```
-* Verify that you are logged into all three nodes successfully before proceeding.
 
-## 2.3 Verifying Network Connectivity
+**Parameter explanation:**
 
-* From each node, verify basic network connectivity by pinging the others.
+* `-i ~/.ssh/aerpaw_id_rsa`: Specifies the SSH private key for authentication
+* `-L 5760:127.0.0.1:5760`: Creates a local port forward from your machine's port 5760 to the remote port 5760
+* `root@192.168.144.62`: Connects to the OEO Console as root user
 
-* From the GCS node:
+This tunnel allows QGroundControl on your local machine to communicate with the drone's autopilot through the forwarded port.
+
+### 2.3.2 Verify Console Access
+
+Once connected, you should see the OEO Console prompt. Verify connectivity by checking the date:
 
 ```bash
-ping <uav-node-ip>
-ping <attacker-node-ip>
+date
 ```
 
-* From the attacker node:
+Keep this terminal window open throughout the experiment - closing it will terminate the SSH tunnel and disconnect QGroundControl from the drone.
+
+## 2.4 Configuring Experiment Scripts
+
+AERPAW experiments require configuration scripts on both the drone and base station nodes. These scripts control the behavior of each node during the experiment.
+
+### 2.4.1 Access the Drone Node
+
+Open a new terminal and SSH into the drone node:
 
 ```bash
-ping <gcs-node-ip>
-ping <uav-node-ip>
+ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5
 ```
-* Successful responses confirm that all nodes are reachable and operating on the same network.
 
-## 2.4 Preparing the Working Directory
+The drone node IP address is typically `192.168.144.5` in AERPAW experiments.
 
-* On all three nodes, create a working directory for the experiment:
+### 2.4.2 Configure Vehicle Start Script
+
+The drone requires a vehicle startup script that initializes the autopilot system. Copy the sample UAV data mule script:
 
 ```bash
-mkdir -p ~/mavlink_experiment
-cd ~/mavlink_experiment
-
+cp /root/Profiles/ProfileScripts/Vehicle/Samples/startUAVdataMule.sh \
+   /root/Profiles/ProfileScripts/Vehicle/startVehicle.sh
 ```
-* This directory will be used to store scripts, logs, and captured traffic during the experiment.
 
-## 2.5 Cloning the Experiment Repository
+This script will be automatically executed when the experiment starts.
 
-* On the GCS node and the attacker node, clone the MAVLink experiment repository:
+### 2.4.3 Enable Vehicle Script in Start Experiment
+
+Edit the main experiment startup script to enable the vehicle script:
 
 ```bash
-git clone https://github.com/BishwasWagle/Mavlink-AERPAW.git
-cd Mavlink-AERPAW
+nano /root/start_experiment.sh
 ```
-* Verify that the repository contents are present:
+
+Locate the line containing `./startVehicle.sh` and ensure it is uncommented (remove the `#` if present):
 
 ```bash
-ls
+# Uncomment this line:
+./Profiles/ProfileScripts/Vehicle/startVehicle.sh
 ```
-* You should see directories and scripts related to MAVLink communication and attack execution.
 
-## 2.6 Python Environment Verification
+Save the file and exit the editor (Ctrl+X, then Y, then Enter).
 
-* Check the Python version on both the GCS and attacker nodes:
+### 2.4.4 Access Base Station Node (Optional)
+
+If your experiment requires base station configuration, SSH into the base station:
 
 ```bash
-python3 --version
+ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.1
 ```
-* If required by the document, install dependencies listed in the repository:
+
+For this experiment, the base station configuration is minimal, as most operations will be performed from the OEO Console and through Python scripts.
+
+## 2.5 Connecting QGroundControl
+
+QGroundControl (QGC) is the ground control station software used to monitor and control the drone during flight.
+
+### 2.5.1 Launch QGroundControl
+
+Open QGroundControl on your local machine. The application should start and display a map view.
+
+### 2.5.2 Configure Communication Link
+
+Click on the **Q** icon in the top-left corner to access the application menu, then select **Application Settings**.
+
+Navigate to **Comm Links** in the left sidebar.
+
+### 2.5.3 Add New Connection
+
+Click the **Add** button to create a new communication link with the following settings:
+
+* **Name**: Remote Link (or any descriptive name)
+* **Type**: TCP
+* **Server Address**: 127.0.0.1
+* **Port**: 5760
+* **Automatically Connect on Start**: Checked (optional but recommended)
+
+Click **OK** to save the configuration.
+
+### 2.5.4 Establish Connection
+
+Select the newly created link from the list and click the **Connect** button.
+
+If the SSH tunnel is properly established and the drone is powered on, QGroundControl should connect successfully. You will see the drone appear on the map at its current location, and telemetry data will begin streaming in the interface.
+
+### 2.5.5 Verify Connection Status
+
+Check the top toolbar in QGroundControl:
+
+* Connection status should show "Ready to Fly" or "Armed" (depending on drone state)
+* GPS status should show a satellite count (e.g., "Satellites: 15")
+* Battery voltage should be displayed
+* Flight mode should be visible (typically "ALT_HOLD" or "STABILIZE" before takeoff)
+
+## 2.6 Understanding the Network Architecture
+
+The experimental setup uses the following network architecture:
+
+```
+Your Computer (Local Machine)
+    ↓ (SSH Tunnel - Port 5760)
+OEO Console (192.168.144.62)
+    ↓ (MAVLink Communication)
+Drone Autopilot (192.168.144.5)
+    ↓ (Command Execution)
+Drone Flight Controller
+```
+
+Base station and adversary nodes can inject commands directly to the drone at `192.168.144.5` on UDP port 14551, which is why encryption is necessary to prevent unauthorized command injection.
+
+## 2.7 Preparing for Flight Mission
+
+Before proceeding to the next chapter, ensure the following:
+
+### 2.7.1 Pre-Flight Checklist
+
+* [ ] SSH tunnel to OEO Console is active
+* [ ] QGroundControl is connected and showing telemetry
+* [ ] Drone node is accessible via SSH
+* [ ] Vehicle startup script is configured and enabled
+* [ ] GPS has sufficient satellite lock (typically 10+ satellites)
+* [ ] Battery level is sufficient for the planned flight
+* [ ] Flight area is clear and within authorized boundaries
+
+### 2.7.2 Verify Experiment Scripts
+
+On the drone node, verify that the experiment directory structure is in place:
 
 ```bash
-pip3 install -r requirements.txt
+ls -la /root/Profiles/AADMChallenge/PortableNode/
 ```
-* Ensure that no errors occur during installation.
 
-## 2.7 MAVLink Tool Availability Check
+You should see the experiment scripts directory. In the next chapter, we will add the flight mission script to this location.
 
-* Verify that MAVLink-related tools are available on the system.
+## 2.8 Troubleshooting Common Issues
 
-* On the attacker node, check for packet capture utilities:
+### Issue: QGroundControl Cannot Connect
 
-```bash
-tcpdump --version
-```
-* If not installed, install it:
+**Symptoms:** QGC shows "Waiting for Vehicle" or "Disconnected"
 
-```bash
-sudo apt update
-sudo apt install tcpdump
-```
-* These tools will be used later to observe plaintext MAVLink traffic.
+**Solutions:**
 
-## 2.8 Pre-Experiment Sanity Check
+* Verify SSH tunnel is active (check the terminal where you ran the ssh command)
+* Confirm port 5760 is correctly specified in both SSH tunnel and QGC settings
+* Restart QGroundControl and attempt to reconnect
+* Check that no firewall is blocking port 5760 on your local machine
 
-Before proceeding to mission execution, confirm the following:
+### Issue: Cannot SSH to Drone Node
 
-* All nodes are reachable
+**Symptoms:** "Connection refused" or "Host unreachable"
 
-* Repository is cloned correctly
+**Solutions:**
 
-* Required Python dependencies are installed
+* Verify OpenVPN connection to AERPAW is active
+* Check that the drone node is allocated and running in the AERPAW portal
+* Confirm you are using the correct IP address (192.168.144.5 for drone)
+* Verify SSH key permissions: `chmod 600 ~/.ssh/aerpaw_id_rsa`
 
-* No MAVLink services are running yet
+### Issue: Experiment Script Not Found
 
-* At this point, no mission has been launched and no attack activity has occurred.
+**Symptoms:** Error messages about missing scripts during experiment start
+
+**Solutions:**
+
+* Confirm you copied the sample script to the correct location
+* Check file permissions: `ls -l /root/Profiles/ProfileScripts/Vehicle/startVehicle.sh`
+* Verify the path in start_experiment.sh matches the actual file location
 
 ## 2.9 As a Result
 
-At the conclusion of this chapter, your AERPAW environment is fully prepared for the plaintext MAVLink experiment. You are now ready to launch a baseline mission and observe normal MAVLink behavior before introducing any adversarial actions.
+As a result of completing this chapter, you have successfully configured the AERPAW testbed environment for conducting the path spoofing experiment. You established remote access to the drone through the OEO Console, configured the necessary startup scripts, and connected QGroundControl for mission monitoring. Your environment is now ready for the next phase: implementing FIPS-compliant cryptography to secure MAVLink communications against path spoofing attacks.

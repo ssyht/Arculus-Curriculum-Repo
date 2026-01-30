@@ -1,176 +1,160 @@
-# Chapter 4 – Plaintext MAVLink Traffic Inspection and Analysis
+# Chapter 4 — Flight Mission Script and Spoof Detection Logic
 
 ## 4.1 Overview
 
-In this chapter, you will observe MAVLink communication passively while the baseline mission continues to run. The objective is to demonstrate that MAVLink messages are transmitted in plaintext and can be easily captured and interpreted by an attacker with network access. No commands are injected in this chapter. The attacker only listens and analyzes traffic.
+In this chapter, you will implement the flight mission script that controls the drone's autonomous flight path and incorporates spoof detection logic. This script is the core of the experiment, as it defines how the drone responds to both legitimate and malicious navigation commands.
 
-## 4.2 Establishing the Attacker Observation Point
+The flight script implements a sequential waypoint mission where the drone flies from its starting position through a series of base stations (BS1 → BS2 → BS3) and returns home. At a critical waypoint (BS2), the script checks whether incoming navigation commands are encrypted or plaintext. If plaintext commands are detected, the drone is programmed to deviate from its intended path, simulating a successful path spoofing attack. If encrypted commands are detected, the spoofing attempt is rejected and the drone returns safely to its launch position.
 
-* Ensure the baseline mission from Chapter 3 is still running and that communication between the GCS and UAV remains active.
+This chapter will guide you through understanding the flight script architecture, configuring waypoints, implementing the spoof detection mechanism, and deploying the script to the drone for execution.
 
-* On the attacker node, navigate to the working directory:
+By completing this chapter, you will have a fully functional flight mission script ready to demonstrate both the vulnerability of unencrypted commands and the protection provided by cryptographic defenses.
 
-```bash
-cd ~/mavlink_experiment/Mavlink-AERPAW
+## 4.2 Prerequisites
+
+Before starting this chapter, ensure that:
+
+* Chapters 2 and 3 are completed (AERPAW environment configured, cryptographic keys generated)
+* You have SSH access to the drone node
+* You are familiar with Python programming basics
+* You understand the MAVLink protocol fundamentals
+* The AERPAW library (aerpawlib) is installed on the drone
+
+## 4.3 Understanding the Flight Mission Architecture
+
+### 4.3.1 Mission Overview
+
+The flight mission consists of the following phases:
+
+1. **Takeoff**: Drone ascends to configured altitude (25 meters)
+2. **Sequential Waypoint Navigation**: Flies through BS1 → BS2 → BS3
+3. **Spoof Detection at BS2**: Checks for plaintext vs. encrypted commands
+4. **Attack Response**: 
+   - If plaintext detected → Deviates 90 meters east (simulated attack success)
+   - If encrypted detected → Returns to launch and lands (attack prevented)
+5. **Mission Continuation**: If no spoof triggered, continues to remaining waypoints
+6. **Return to Launch**: Upon mission completion or spoof detection
+
+### 4.3.2 Key Components
+
+The flight script uses several important components:
+
+* **StateMachine**: AERPAW framework for managing flight states
+* **Waypoint List**: Coordinates for each base station
+* **Spoof Detection Logic**: Monitors incoming command files
+* **Safety Checker**: Validates all waypoint commands before execution
+* **Telemetry Logger**: Records flight data throughout the mission
+
+### 4.3.3 Command File Monitoring
+
+The receiver script (which listens for navigation commands) writes command information to `/tmp/flight_cmd.txt` in the following format:
+
+```
+plain|GOTO|lat,lon,alt    # Plaintext command detected
+enc|GOTO|lat,lon,alt      # Encrypted command detected
 ```
 
-* Confirm that the attacker node can still reach both the GCS and UAV:
+The flight script monitors this file to determine whether incoming commands are encrypted or not.
+
+## 4.4 Flight Script Implementation
+
+### 4.4.1 Access the Drone and Navigate to Script Directory
+
+SSH into the drone and navigate to the experiment directory:
 
 ```bash
-ping <gcs-node-ip>
-ping <uav-node-ip>
+ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5
+cd /root/Profiles/AADMChallenge/PortableNode/
 ```
-* Successful responses confirm that the attacker is positioned on the same network segment.
 
-## 4.2 Identifying the MAVLink Communication Interface
+### 4.4.2 Download or Create the Flight Script
 
-* List available network interfaces on the attacker node:
+Obtain the flight script from the GitHub repository:
 
 ```bash
-ip addr
+wget https://raw.githubusercontent.com/BishwasWagle/Mavlink-AERPAW/main/uav_data_mule.py
 ```
-* Identify the interface connected to the AERPAW experiment network (commonly eth0 or tap0).
 
-* Make note of the interface name. This interface will be used for packet capture.
+Alternatively, if the repository is not accessible, you can copy the script from the provided materials.
 
-## 4.3 Capturing Plaintext MAVLink Traffic
+### 4.4.3 Understanding Waypoint Configuration
 
-* Start packet capture on the attacker node using tcpdump.
-
-* Run the following command, replacing <interface> with the identified interface name:
+The flight script defines waypoints using GPS coordinates. Open the script to review the waypoint configuration:
 
 ```bash
-sudo tcpdump -i <interface> udp
+nano uav_data_mule.py
 ```
 
-* Observe the terminal output. You should see a continuous stream of UDP packets being transmitted between the GCS and UAV.
+Locate the `bs_data_list` section that defines the base station waypoints.
 
-* These packets represent MAVLink telemetry and command messages.
+### 4.4.4 Understanding the Spoof Detection Logic
 
-## 4.4 Filtering MAVLink Traffic by Port
+The core spoof detection logic monitors for plaintext vs. encrypted commands at the BS2 waypoint. When plaintext commands are detected, the drone deviates from its path. When encrypted commands are detected, the attack is prevented.
 
-* MAVLink typically uses UDP port 14550 or 14551.
+### 4.4.5 Key Flight Parameters
 
-* Refine the capture to only show MAVLink packets:
+The script defines several configurable parameters including flight altitude, airspeed, dwell time at waypoints, spoof deviation distance, and timeout values. These can be adjusted via command-line arguments when starting the experiment.
 
-```bash
-sudo tcpdump -i <interface> udp port 14550
-```
+## 4.5 Configuring the Receiver Script
 
-**Confirm that:**
+The receiver script listens for incoming navigation commands and writes their status to the command file.
 
-* Packets continue appearing
+### 4.5.1 Receiver Functionality
 
-* Source and destination IPs correspond to the GCS and UAV nodes
+The receiver monitors UDP port 14551 for incoming navigation commands and:
 
-This confirms that MAVLink traffic is visible to the attacker.
+1. Attempts to decrypt the command using the AES key
+2. Verifies the HMAC authentication
+3. Writes the result to `/tmp/flight_cmd.txt`
 
-## 4.5 Saving MAVLink Traffic to a Capture File
+### 4.5.2 Testing the Receiver
 
-* Stop the live capture using ``Ctrl+C``.
+You will test the receiver in Chapter 5 during flight execution.
 
-* Start a new capture and save the traffic to a file for analysis:
+## 4.6 Understanding the Sender Script
 
-```bash
-sudo tcpdump -i <interface> udp port 14550 -w mavlink_plaintext.pcap
-```
+The sender script (executed from the base station) transmits navigation commands to the drone.
 
-* Allow the capture to run for at least 30–60 seconds while the mission is active.
+### 4.6.1 Sender Script Modes
 
-* After sufficient data is collected, stop the capture with ``Ctrl+C``.
+The sender can operate in plaintext mode (sends unencrypted commands) or encrypted mode (sends AES-256-GCM encrypted and HMAC-authenticated commands).
 
-## 4.6 Inspecting Captured Traffic
+## 4.7 Safety Checker Integration
 
-* List the captured file:
+The flight script integrates with AERPAW's safety checker to prevent unsafe maneuvers. Before executing any waypoint command, the script validates that the drone stays within authorized flight boundaries and altitude limits.
 
-```bash
-ls -lh mavlink_plaintext.pcap
-```
+## 4.8 Telemetry and Logging
 
-* Confirm that the file size is non-zero, indicating successful capture.
+The flight script logs telemetry data throughout the mission in CSV format, including timestamp, flight state, position, waypoint index, and command status.
 
-* Now inspect the contents in human-readable form:
-```bash
-tcpdump -r mavlink_plaintext.pcap
-```
+### 4.8.1 Log File Location
 
-Observe that:
+Logs are saved to: `/root/Results/YYYY-MM-DD_HH-MM-SS_vehicleOut.txt`
 
-* Packets are readable
-* Message lengths and headers are visible
-* No encryption is present
+## 4.9 Deployment Checklist
 
-## 4.7 Identifying MAVLink Message Structure
+Before proceeding to Chapter 5, verify the following:
 
-* Use verbose output to inspect packet payloads:
+### 4.9.1 File Checklist
 
-```bash
-tcpdump -r mavlink_plaintext.pcap -vvv
-```
+On the drone (`192.168.144.5`):
 
-**Look for recognizable MAVLink patterns:**
+* [ ] Flight script exists in the correct directory
+* [ ] Receiver script is present
+* [ ] Cryptographic keys are in place
 
-* Message IDs
-* System IDs
-* Component IDs
-* Command identifiers
+On the base station (`192.168.144.1`):
 
-These fields are transmitted in plaintext and can be interpreted by an attacker.
+* [ ] Sender script is present
+* [ ] Cryptographic keys are in place
 
-## 4.8 Verifying Absence of Encryption
+### 4.9.2 Configuration Checklist
 
-**Confirm that:**
+* [ ] Waypoint coordinates are correct
+* [ ] Flight parameters are within limits
+* [ ] QGroundControl is connected
+* [ ] GPS has adequate satellite lock
 
-* No ciphertext blobs appear
+## 4.10 As a Result
 
-* No TLS or encryption headers are present
-
-* Payloads are structured and consistent across packets
-
-This verifies that MAVLink traffic is not encrypted in this experiment configuration.
-
-## 4.9 Correlating MAVLink Messages with Mission Behavior
-
-* While reviewing captured traffic, correlate message timing with UAV behavior observed in Chapter 3.
-
-**Examples:**
-
-* Waypoint transitions correspond to specific MAVLink command messages
-
-* Arm/disarm actions correspond to command packets
-
-* Telemetry packets reflect position and altitude changes
-
-This correlation demonstrates that captured messages directly influence mission execution.
-
-## 4.10 Attacker Capability Assessment
-
-**At this point, the attacker has successfully achieved the following without detection:**
-
-* Observed all MAVLink communication
-
-* Identified command and telemetry messages
-
-* Learned system IDs and component IDs
-
-* Understood command timing and structure
-
-No authentication or authorization mechanisms prevented this observation.
-
-## 4.11 Key Observation Summary
-
-**From this chapter, the following conclusions can be made:**
-
-* MAVLink communication is transmitted in plaintext
-
-* Any node with network access can observe mission commands
-
-* Command structure and identifiers are easily extracted
-
-* Passive observation alone provides enough information to prepare an attack
-
-These observations set the stage for active command injection in the next chapter.
-
-## 4.12 As a Result
-
-The attacker is fully prepared to move from observation to action. In the next chapter, you will perform active MAVLink command injection, using the information gathered here to override mission behavior.
+As a result of completing this chapter, you have successfully implemented and configured the flight mission script with integrated spoof detection logic. You understand how the drone monitors incoming navigation commands, how it distinguishes between plaintext and encrypted commands, and how it responds to potential spoofing attacks. Your system is now ready for the final phase: executing the complete experiment in Chapter 5.
