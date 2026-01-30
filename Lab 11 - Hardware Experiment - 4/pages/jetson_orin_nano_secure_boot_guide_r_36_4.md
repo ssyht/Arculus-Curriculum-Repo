@@ -1,36 +1,44 @@
 # Secure Boot & Signed OS Guide — Jetson Orin Nano (Jetson Linux r36.4.3)
 
 > **Goal:** Produce a Jetson Orin Nano system that boots **only NVIDIA‑verified, cryptographically signed images**, using NVIDIA Secure Boot (PKC, optional SBK), and optionally UEFI Secure Boot.
->
-> **⚠️ Warning:** Burning fuses is **irreversible**. Always validate signed flashing on an **unfused** board first.
 
 ---
 
-## High‑Level Secure Boot Flow
+# High‑Level Secure Boot Flow
 
 **A. Software Setup**
 
-1. Download Jetson Linux BSP + Sample RootFS
+1. OS Update and Package Installation
 
-2. Build the root filesystem
+2. Download Jetson Linux r36.4.3 (BSP + RootFS)
 
-3. Generate Secure Boot keys (PKC / SBK)
+3. Extract BSP and Populate RootFS
 
-**B. Physical Setup and Booting Process**
+4. Sync Sources to Receive Proper OPTEE-Build Files
+
+5. Build OP-TEE with fTPM enabled
+
+6. Copy the built OP-TEE core (tee.bin) into the BSP Bootloader folder
+
+7. fTPM Check
+
+8. Copy the second part of the built OP-TEE core (tee.elf) into the BSP Bootloader folder
+
+9. Find the TrustZone Application (TA)
+
+10. Copy the TrustZone Application (TA) and Helper App to Optee_armtz
+
+
+**B. Physical Setup and Booting Process**
 
 1. Test signed flashing on an **unfused** board
 
 2. Prepare and burn fuses
 
-3. **(Steps 3-5)** Flash signed (and optionally encrypted) images
-
-4. Validate secure boot behavior
 
 ---
 
-
-
-## Host Requirements
+# Host Requirements
 
 - Ubuntu 22.04 (native host **strongly recommended**)
 - USB‑C cable capable of recovery mode
@@ -39,8 +47,11 @@
 > Virtual Box setups *can* work, but USB instability is a common failure point — especially during fuse burning.
 
 ---
+# Software Setup
 
-## A. Software Setup 
+## A-1. OS Update and Package Installation
+
+Update the OS and install the required packages:
 ```bash
 sudo apt update
 sudo apt install -y \
@@ -66,13 +77,16 @@ sudo apt install -y \
   gcc-aarch64-linux-gnu \
   g++-aarch64-linux-gnu \
   pkg-config
-
+```
+```bash
 sudo apt-get install qemu-user-tools
+```
+```bash
 sudo apt-get install libxml2-utils
 ```
+---
 
-
-## A-1. Download Jetson Linux r36.4.3 (BSP + RootFS)
+## A-2. Download Jetson Linux r36.4.3 (BSP + RootFS)
 
 Run the following from your Linux host:
 
@@ -88,7 +102,7 @@ wget https://developer.nvidia.com/downloads/embedded/l4t/r36_release_v4.3/releas
 
 ---
 
-## A-2. Extract BSP and Populate RootFS
+## A-3. Extract BSP and Populate RootFS
 
 ```bash
 tar xf Jetson_Linux_r36.4.3_aarch64.tbz2
@@ -102,7 +116,9 @@ At this point, the BSP and root filesystem are fully assembled.
 
 ---
 
-## A-3. Sync Sources to Receive Proper OPTEE-Build Files
+## A-4. Sync Sources to Receive Proper OPTEE-Build Files
+
+Go into **source** folder and run **source_sync.sh**
 
 ```bash
 cd ~/nvidia/Linux_for_Tegra/source
@@ -132,17 +148,21 @@ Syncing up with tag jetson_36.4...
 After sync, confirm OP-TEE shows up:
 
 ```bash
+# Check parent folder
 ls -lah tegra/optee-src
-
+# Check for files
 ls -lah tegra/optee-src/nv-optee | head
-
+# Check for any files in the sub folders with anything optee related
 find . -maxdepth 4 -iname "*optee*" | head -n 50
 ```
-![Screenshot 2026-01-29 215024.png](Screenshot%202026-01-29%20215024.png)
+
+![img_3.png](img_3.png)
+
 ---
 
-## A-4. Build OP-TEE with fTPM enabled 
+## A-5. Build OP-TEE with fTPM enabled 
 In your bundle, the build driver is usually optee_src_build.sh (you already have it). 
+
 First, make sure the paths are exported into the userspace:
 
 ```bash
@@ -157,60 +177,163 @@ export PKG_CONFIG=/usr/bin/pkg-config
 export UEFI_STMM_PATH=~/Linux_for_Tegra/bootloader/standalonemm_optee_t234.bin
 ```
 Now run the OP-TEE build. 
-One of these patterns will match your nvsrc_build.sh (the script help decides which exact syntax it expects):
- 
-The -t here is the NVIDIA convention used for enabling fTPM when building OP-TEE for Orin. If your script uses a different switch name, it will be visible in -h.
 
-For The Jetson Nano Orin, the tag will be (t234).
+> The -t here is the NVIDIA convention used for enabling fTPM when building OP-TEE for Orin. If your script uses a different switch name, it will be visible in -h.
+
+For The Jetson Nano Orin, the tag will be **(t234)**.
 
 ```bash
 cd ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee
 # Build OP-TEE + fTPM
 sudo -E ./optee_src_build.sh -p t234 -t
 ```
----
-## A-5. Copy the built OP-TEE core into the BSP bootloader folder
 
-L4T doesn’t usually generate a tos-optee_t234.img from this script; instead the packaging scripts pull in OP-TEE payloads (like tee.bin) during flash image generation.
+To confirm that the Optee source was built properly, run these ls commands to confirm the Optee files exist:
+
+```bash
+# Check for /optee-src
+ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/
+# Check for /optee
+ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee
+# Check for /t234
+ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/
+# Check for /core
+ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core
+# Check for tee.bin
+ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.bin
+# Check for tee.elf
+ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.elf
+```
+![img_4.png](img_4.png)![img_5.png](img_5.png)
+
+---
+
+## A-6. Copy the built OP-TEE core (tee.bin) into the BSP Bootloader folder
+
+Once the Optee_SRC_Build.sh ran successfully and confirmed it properly built the Optee Source, copy the tee.bin file into Bootloader.
 
 ```bash
 cd ~/nvidia/Linux_for_Tegra
 
-# backup (if you have space)
+# (optional) backup existing tee.bin if present
 cp -av bootloader/tee.bin bootloader/tee.bin.bak 2>/dev/null || true
 
-# copy your freshly built tee.bin into bootloader/
+# copy newly built tee.bin into bootloader/
 cp -av source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.bin bootloader/tee.bin
 
-# sanity check
+# verify
 ls -lah bootloader/tee.bin
 ```
+![img_7.png](img_7.png)
 
 ---
 
-## A-5. Quick “is fTPM actually in this build?” sanity check
+## A-7. fTPM System and File Check
 
 Run this grep:
 
 ```bash
-grep -RIn "CFG_FTPM\|ftpm\|tpm" \
+sudo grep -RIn "CFG_FTPM\|ftpm\|tpm" \
   ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/conf.mk \
   ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/optee_os/mk/config.mk \
   2>/dev/null | head -n 120
-
 ```
-And also check if an fTPM TA shows up in install output:
+And check if an fTPM TA shows up in install output:
+
 ```bash
-find ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234 -type f \
-  -iname "*tpm*" -o -iname "*ftpm*" -o -iname "*.ta" | head -n 50
+find ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234 \
+-type f \( -iname "*tpm*" -o -iname "*ftpm*" -o -iname " *. ta" \) | head -n 50
+```
+See if any tpm or ftpm related files are displayed after this command is used. 
+
+---
+## A-7. Copy the second part of the built OP-TEE core (tee.elf) into the BSP Bootloader folder
+
+Confirm that the tee.elf and tee.bin exist:
+```bash
+ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.bin
+
+ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.elf
+```
+
+Copy the tee.elf file into bootloader.
+```bash
+cp -av ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.elf bootloader/tee.elf
 ```
 
 ---
+## A-8. Find the TrustZone Application (TA) 
 
+Confirm that the fTPM files exist.
+
+```bash
+strings ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234/usr/sbin/nvftpm-helper-app | \
+  grep -iE "tpm|ftpm" | head -n 50
+```
+Example:
+![img_1.png](img_1.png)
+
+Run this as well to further confirm the fTPM files exist:
+```bash
+grep -RIn "ftpm\|tpm" \
+  ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/optee_os 2>/dev/null | head -n 120
+```
+An output should return with various file names.
+
+Run this script to find the Trustzone Application file:
+```bash
+for f in ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234/lib/optee_armtz/*.ta; do
+  if strings "$f" 2>/dev/null | grep -qiE 'ftpm|tpm2|tpm'; then
+    echo "==== MATCH: $(basename "$f") ===="
+    strings "$f" | grep -iE 'ftpm|tpm2|tpm' | head -n 40
+    echo
+  fi
+done
+```
+
+Example Output:
+![img_2.png](img_2.png)
+
+Example File:
+**MATCH: bc50d971-d4c9-42c4-82cb-343fb7f37896.ta**
+
+Confirm the Trust Application Files exist in `/optee_armtz`.
+```bash
+ls -lah ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234/lib/optee_armtz/*.ta | sort -k5 -h | tail -n 30
+```
+or, use the file name to find if that file exists in the folder.
+```bash
+ls -lah ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234/lib/optee_armtz/bc50d971-d4c9-42c4-82cb-343fb7f37896.ta
+```
+
+```bash
+sudo find ~/nvidia/Linux_for_Tegra/rootfs -type d -iname "optee_armtz" -print
+```
+![img_8.png](img_8.png)
 
 ---
 
-## **B. Physical Setup and Flashing Process**
+## A-9. Copy the TrustZone Application (TA) and Helper App to Optee_armtz
+
+Copy the TrustZone Application to the rootfs/lib/optee_armtz folder
+```bash
+sudo cp -av ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234/lib/optee_armtz/bc50d971-d4c9-42c4-82cb-343fb7f37896.ta ~/Linux_for_Tegra/rootfs/lib/optee_armtz/
+```
+
+Verify:
+```bash
+ls -lah ~/Linux_for_Tegra/rootfs/lib/optee_armtz/bc50d971-d4c9-42c4-82cb-343fb7f37896.ta
+```
+
+Copy the helper app into the rootfs
+```bash
+sudo cp -av ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234/usr/sbin/nvftpm-helper-app ~/Linux_for_Tegra/rootfs/usr/sbin/
+```
+
+![img_9.png](img_9.png)
+---
+
+# B. Physical Setup and Flashing Process
 
 ## B-1. Put Jetson Into Force Recovery Mode
 
@@ -230,28 +353,27 @@ lsusb | grep -i nvidia || true
 
 You should see an NVIDIA device in recovery mode. 
 
-Example: **0955:7xxx NVIDIA Corp.**
+Example: **0955:7xxx NVIDIA Corp. APX**
 
-If you don’t, flashing will not work (USB passthrough/filter needs fixing).
----
-
+**If you don’t, flashing will not work (USB passthrough/filter needs fixing).**
 
 ---
+## B-2. Run Flash Command
 
+Once It is confirmed that the Jetson Nano Device is in Recovery Mode. Go into the Linux_for_Tegra directory and run the flash command.
 
+```bash
+cd /Linux_for_Tegra
 
+sudo ./flash.sh jetson-orin-nano-devkit mmcblk0p1
 
----
+```
 
-
----
-
-
----
-
-
----
-
+Once the Flashing process ends successfully, you will recieve this message:
+```bash
+*** The target generic has been flashed successfully. ***
+Reset the board to boot from internal eMMC.
+```
 
 ---
 
