@@ -34,6 +34,8 @@ Open a terminal on your local machine and establish an SSH tunnel with port forw
 ssh -i ~/.ssh/aerpaw_id_rsa -L 5760:127.0.0.1:5760 root@192.168.144.62
 ```
 
+<p align="center"> <img src="../img/Ex1-1.png" width="900px"> </p>
+
 **Parameter explanation:**
 
 * `-i ~/.ssh/aerpaw_id_rsa`: Specifies the SSH private key for authentication
@@ -92,6 +94,8 @@ Locate the line containing `./startVehicle.sh` and ensure it is uncommented (rem
 ./Profiles/ProfileScripts/Vehicle/startVehicle.sh
 ```
 
+<p align="center"> <img src="../img/Ex1-2.png" width="700px"> </p>
+
 Save the file and exit the editor (Ctrl+X, then Y, then Enter).
 
 ### 2.4.4 Access Base Station Node (Optional)
@@ -112,11 +116,17 @@ QGroundControl (QGC) is the ground control station software used to monitor and 
 
 Open QGroundControl on your local machine. The application should start and display a map view.
 
+<p align="center"> <img src="../img/Ex1-3.png" width="900px"> </p>
+
 ### 2.5.2 Configure Communication Link
 
 Click on the **Q** icon in the top-left corner to access the application menu, then select **Application Settings**.
 
+<p align="center"> <img src="../img/Ex1-4.png" width="900px"> </p>
+
 Navigate to **Comm Links** in the left sidebar.
+
+<p align="center"> <img src="../img/Ex1-5.png" width="900px"> </p>
 
 ### 2.5.3 Add New Connection
 
@@ -128,6 +138,8 @@ Click the **Add** button to create a new communication link with the following s
 * **Port**: 5760
 * **Automatically Connect on Start**: Checked (optional but recommended)
 
+<p align="center"> <img src="../img/Ex1-6.png" width="900px"> </p>
+
 Click **OK** to save the configuration.
 
 ### 2.5.4 Establish Connection
@@ -135,6 +147,8 @@ Click **OK** to save the configuration.
 Select the newly created link from the list and click the **Connect** button.
 
 If the SSH tunnel is properly established and the drone is powered on, QGroundControl should connect successfully. You will see the drone appear on the map at its current location, and telemetry data will begin streaming in the interface.
+
+<p align="center"> <img src="../img/Ex1-7.png" width="900px"> </p>
 
 ### 2.5.5 Verify Connection Status
 
