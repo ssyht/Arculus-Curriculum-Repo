@@ -2,9 +2,14 @@
 
 ## 1. Put Jetson Into Force Recovery Mode
 
-1. Power off the Jetson
-2. Enter **Force Recovery Mode** (board-specific button/jumper sequence)
-3. Connect the Jetson to the host system using a USB cable capable of recovery mode (USB-A to USB-C is recommended, especially when using virtual machines).
+Main Steps to Enter Force Recovery Mode:
+1. Power Off: Ensure the Jetson Orin Nano is completely disconnected from power.
+2. Bridge Pins: Locate the J14 header (button header) on the carrier board. Place a 2.54mm jumper cap across pin 9 (FC_REC) and pin 10 (GND).
+![img_12.png](img_12.png)![img_13.png](img_13.png)
+3. Connect Power: Connect the power supply to the developer kit.
+4. Verify: Connect the USB-C port that is capable of data transfer to your Linux host PC (USB-A to USB-C is recommended, especially when using virtual machines). Run `lsusb` and look for `0955:7xxx NVidia Corp` to confirm it is in recovery mode.
+5. Remove Jumper: Once confirmed, you can remove the jumper. 
+
 
 Verify on host:
 ```bash
@@ -21,7 +26,7 @@ lsusb | grep -i nvidia || true
 
 You should see an NVIDIA device in recovery mode.
 
-Example: **0955:7xxx NVIDIA Corp. APX**
+Example: **0955:7523 NVIDIA Corp. APX**
 
 **If you don't, flashing will not work (USB passthrough/filter needs fixing).**
 
