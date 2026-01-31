@@ -36,7 +36,7 @@ sudo apt-get install qemu-user-tools
 ```bash
 sudo apt-get install libxml2-utils
 ```
----
+
 
 ## 2. Download Jetson Linux r36.4.3 (BSP + RootFS)
 
@@ -52,7 +52,7 @@ wget https://developer.nvidia.com/downloads/embedded/l4t/r36_release_v4.3/releas
 
 > You must be logged into your NVIDIA Developer account and have accepted the Jetson Linux license agreement, otherwise these downloads will fail or redirect to an authentication page.
 
----
+
 
 ## 3. Extract BSP and Populate RootFS
 
@@ -66,7 +66,7 @@ sudo ./apply_binaries.sh
 
 At this stage, the Jetson Linux BSP and Ubuntu root filesystem are fully assembled and ready for source synchronization and OP-TEE integration.
 
----
+
 
 ## 4. Sync Sources to Receive Proper OPTEE-Build Files
 
@@ -110,7 +110,6 @@ find . -maxdepth 4 -iname "*optee*" | head -n 50
 Example Output:
 ![img_3.png](img_3.png)
 
----
 
 ## 5. Build OP-TEE with fTPM enabled
 In the NVIDIA OP-TEE source tree synced via source_sync.sh, the correct build driver is optee_src_build.sh. This script is required for building OP-TEE with NVIDIA-specific integrations.
@@ -156,9 +155,9 @@ ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/
 # Check for tee.elf
 ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.elf
 ```
+Example Output:
 ![img_4.png](img_4.png)![img_5.png](img_5.png)
 
----
 
 ## 6. Copy the built OP-TEE core (tee.bin) into the BSP Bootloader folder
 
@@ -175,9 +174,9 @@ cp -av source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.bin bootloader/
 # verify
 ls -lah bootloader/tee.bin
 ```
+Example Output:
 ![img_7.png](img_7.png)
 
----
 
 ## 7. fTPM System and File Check
 
@@ -199,7 +198,7 @@ find ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234 \
 ```
 See if any tpm or ftpm related files are displayed after this command is used.
 
----
+
 ## A-8. Copy the second part of the built OP-TEE core (tee.elf) into the BSP Bootloader folder
 
 Confirm that the tee.elf and tee.bin exist:
@@ -215,7 +214,7 @@ Copy the `tee.elf` file into the BSP `bootloader` directory. This ELF image is r
 cp -av ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.elf bootloader/tee.elf
 ```
 
----
+
 ## 9. Find the TrustZone Application (TA)
 
 Confirm that the fTPM TrustZone Application (TA) and supporting binaries were generated as part of the OP-TEE build and install process.
@@ -251,6 +250,7 @@ done
 
 Example Output:
 ![img_2.png](img_2.png)
+<p align="center">Figure 2.5: Confirmed Displayed Output from Script Execution to find TA file.</p>
 
 Example Output:
 **MATCH: bc50d971-d4c9-42c4-82cb-343fb7f37896.ta**
@@ -267,9 +267,9 @@ ls -lah ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t
 ```bash
 sudo find ~/nvidia/Linux_for_Tegra/rootfs -type d -iname "optee_armtz" -print
 ```
+Example Output:
 ![img_8.png](img_8.png)
 
----
 
 ## 10. Copy the TrustZone Application (TA) and Helper App to Optee_armtz
 
@@ -290,5 +290,5 @@ Copy the nvftpm-helper-app into the target root filesystem. This userspace helpe
 ```bash
 sudo cp -av ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234/usr/sbin/nvftpm-helper-app ~/Linux_for_Tegra/rootfs/usr/sbin/
 ```
-
+Example Output:
 ![img_9.png](img_9.png)
