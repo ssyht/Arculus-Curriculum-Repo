@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Chapter 1</title>
+
+
+<style type="text/css">
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  /* padding-top: 10px;
+  padding-bottom: 10px; */
+  background-color: white;
+  /* padding: 30px; */ }
+
+body > *:first-child {
+  margin-top: 0 !important; }
+body > *:last-child {
+  margin-bottom: 0 !important; }
+
+a {
+  color: #4183C4; }
+a.absent {
+  color: #cc0000; }
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative; }
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA09pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoMTMuMCAyMDEyMDMwNS5tLjQxNSAyMDEyLzAzLzA1OjIxOjAwOjAwKSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUM2NjlDQjI4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUM2NjlDQjM4ODBGMTFFMTg1ODlEODNERDJBRjUwQTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QzY2OUNCMDg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QzY2OUNCMTg4MEYxMUUxODU4OUQ4M0REMkFGNTBBNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PsQhXeAAAABfSURBVHjaYvz//z8DJYCRUgMYQAbAMBQIAvEqkBQWXI6sHqwHiwG70TTBxGaiWwjCTGgOUgJiF1J8wMRAIUA34B4Q76HUBelAfJYSA0CuMIEaRP8wGIkGMA54bgQIMACAmkXJi0hKJQAAAABJRU5ErkJggg==) no-repeat 10px center;
+  text-decoration: none; }
+
+h1 tt, h1 code {
+  font-size: inherit; }
+
+h2 tt, h2 code {
+  font-size: inherit; }
+
+h3 tt, h3 code {
+  font-size: inherit; }
+
+h4 tt, h4 code {
+  font-size: inherit; }
+
+h5 tt, h5 code {
+  font-size: inherit; }
+
+h6 tt, h6 code {
+  font-size: inherit; }
+
+h1 {
+  font-size: 28px;
+  color: black; }
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #cccccc;
+  color: black; }
+
+h3 {
+  font-size: 18px; }
+
+h4 {
+  font-size: 16px; }
+
+h5 {
+  font-size: 14px; }
+
+h6 {
+  color: #777777;
+  font-size: 14px; }
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0; }
+
+hr {
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAECAYAAACtBE5DAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OENDRjNBN0E2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OENDRjNBN0I2NTZBMTFFMEI3QjRBODM4NzJDMjlGNDgiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Q0NGM0E3ODY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Q0NGM0E3OTY1NkExMUUwQjdCNEE4Mzg3MkMyOUY0OCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PqqezsUAAAAfSURBVHjaYmRABcYwBiM2QSA4y4hNEKYDQxAEAAIMAHNGAzhkPOlYAAAAAElFTkSuQmCC) repeat-x 0 0;
+  border: 0 none;
+  color: #cccccc;
+  height: 4px;
+  padding: 0;
+}
+
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+  body > h1:first-child + h2 {
+    margin-top: 0;
+    padding-top: 0; }
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0; }
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0; }
+
+li p.first {
+  display: inline-block; }
+li {
+  margin: 0; }
+ul, ol {
+  padding-left: 30px; }
+
+ul :first-child, ol :first-child {
+  margin-top: 0; }
+
+dl {
+  padding: 0; }
+  dl dt {
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    padding: 0;
+    margin: 15px 0 5px; }
+    dl dt:first-child {
+      padding: 0; }
+    dl dt > :first-child {
+      margin-top: 0; }
+    dl dt > :last-child {
+      margin-bottom: 0; }
+  dl dd {
+    margin: 0 0 15px;
+    padding: 0 15px; }
+    dl dd > :first-child {
+      margin-top: 0; }
+    dl dd > :last-child {
+      margin-bottom: 0; }
+
+blockquote {
+  border-left: 4px solid #dddddd;
+  padding: 0 15px;
+  color: #777777; }
+  blockquote > :first-child {
+    margin-top: 0; }
+  blockquote > :last-child {
+    margin-bottom: 0; }
+
+table {
+  padding: 0;border-collapse: collapse; }
+  table tr {
+    border-top: 1px solid #cccccc;
+    background-color: white;
+    margin: 0;
+    padding: 0; }
+    table tr:nth-child(2n) {
+      background-color: #f8f8f8; }
+    table tr th {
+      font-weight: bold;
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr td {
+      border: 1px solid #cccccc;
+      margin: 0;
+      padding: 6px 13px; }
+    table tr th :first-child, table tr td :first-child {
+      margin-top: 0; }
+    table tr th :last-child, table tr td :last-child {
+      margin-bottom: 0; }
+
+/* img {
+  max-width: 100%; } */
+
+span.frame {
+  display: block;
+  overflow: hidden; }
+  span.frame > span {
+    border: 1px solid #dddddd;
+    display: block;
+    float: left;
+    overflow: hidden;
+    margin: 13px 0 0;
+    padding: 7px;
+    width: auto; }
+  span.frame span img {
+    display: block;
+    float: left; }
+  span.frame span span {
+    clear: both;
+    color: #333333;
+    display: block;
+    padding: 5px 0 0; }
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-center > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: center; }
+  span.align-center span img {
+    margin: 0 auto;
+    text-align: center; }
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+  span.align-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px 0 0;
+    text-align: right; }
+  span.align-right span img {
+    margin: 0;
+    text-align: right; }
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left; }
+  span.float-left span {
+    margin: 13px 0 0; }
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right; }
+  span.float-right > span {
+    display: block;
+    overflow: hidden;
+    margin: 13px auto 0;
+    text-align: right; }
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px; }
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent; }
+
+.highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #cccccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px; }
+  pre code, pre tt {
+    background-color: transparent;
+    border: none; }
+
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #555;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px 0 #bbb
+}
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+/* @media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:0 auto;
+    }
+} */
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+  body {
+    padding: 2cm; 
+  }
+}
+</style>
+
+<style type="text/css">
+/**
+ * prism.js default theme for JavaScript, CSS and HTML
+ * Based on dabblet (http://dabblet.com)
+ * @author Lea Verou
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: black;
+	background: none;
+	text-shadow: 0 1px white;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+	text-shadow: none;
+	background: #b3d4fc;
+}
+
+pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+code[class*="language-"]::selection, code[class*="language-"] ::selection {
+	text-shadow: none;
+	background: #b3d4fc;
+}
+
+@media print {
+	code[class*="language-"],
+	pre[class*="language-"] {
+		text-shadow: none;
+	}
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+	padding: 1em;
+	margin: .5em 0;
+	overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #f5f2f0;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+	padding: .1em;
+	border-radius: .3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: slategray;
+}
+
+.token.punctuation {
+	color: #999;
+}
+
+.namespace {
+	opacity: .7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+	color: #905;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+	color: #690;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+	color: #a67f59;
+	background: hsla(0, 0%, 100%, .5);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+	color: #07a;
+}
+
+.token.function {
+	color: #DD4A68;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+	color: #e90;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.entity {
+	cursor: help;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<h2 id="toc_2">4.1 Overview</h2>
+
+<p>In this chapter, you will implement the flight mission script that controls the drone's autonomous flight path and incorporates spoof detection logic. This script is the core of the experiment, as it defines how the drone responds to both legitimate and malicious navigation commands.</p>
+
+<p>The flight script implements a sequential waypoint mission where the drone flies from its starting position through a series of base stations (BS1 → BS2 → BS3) and returns home. At a critical waypoint (BS2), the script checks whether incoming navigation commands are encrypted or plaintext. If plaintext commands are detected, the drone is programmed to deviate from its intended path, simulating a successful path spoofing attack. If encrypted commands are detected, the spoofing attempt is rejected and the drone returns safely to its launch position.</p>
+
+<p>This chapter will guide you through understanding the flight script architecture, configuring waypoints, implementing the spoof detection mechanism, and deploying the script to the drone for execution.</p>
+
+<p>By completing this chapter, you will have a fully functional flight mission script ready to demonstrate both the vulnerability of unencrypted commands and the protection provided by cryptographic defenses.</p>
+
+
+<h2 id="toc_3">4.2 Prerequisites</h2>
+
+<p>Before starting this chapter, ensure that:</p>
+
+<ul>
+  <li>Chapters 2 and 3 are completed (AERPAW environment configured, cryptographic keys generated)</li>
+  <li>You have SSH access to the drone node</li>
+  <li>You are familiar with Python programming basics</li>
+  <li>You understand the MAVLink protocol fundamentals</li>
+  <li>The AERPAW library (aerpawlib) is installed on the drone</li>
+</ul>
+
+
+<h2 id="toc_4">4.3 Understanding the Flight Mission Architecture</h2>
+
+<h3 id="toc_4_1">4.3.1 Mission Overview</h3>
+
+<p>The flight mission consists of the following phases:</p>
+
+<ol>
+  <li><strong>Takeoff</strong>: Drone ascends to configured altitude (25 meters)</li>
+  <li><strong>Sequential Waypoint Navigation</strong>: Flies through BS1 → BS2 → BS3</li>
+  <li><strong>Spoof Detection at BS2</strong>: Checks for plaintext vs. encrypted commands</li>
+  <li><strong>Attack Response</strong>:
+    <ul>
+      <li>If plaintext detected → Deviates 90 meters east (simulated attack success)</li>
+      <li>If encrypted detected → Returns to launch and lands (attack prevented)</li>
+    </ul>
+  </li>
+  <li><strong>Mission Continuation</strong>: If no spoof triggered, continues to remaining waypoints</li>
+  <li><strong>Return to Launch</strong>: Upon mission completion or spoof detection</li>
+</ol>
+
+<h3 id="toc_4_2">4.3.2 Key Components</h3>
+
+<p>The flight script uses several important components:</p>
+
+<ul>
+  <li><strong>StateMachine</strong>: AERPAW framework for managing flight states</li>
+  <li><strong>Waypoint List</strong>: Coordinates for each base station</li>
+  <li><strong>Spoof Detection Logic</strong>: Monitors incoming command files</li>
+  <li><strong>Safety Checker</strong>: Validates all waypoint commands before execution</li>
+  <li><strong>Telemetry Logger</strong>: Records flight data throughout the mission</li>
+</ul>
+
+<h3 id="toc_4_3">4.3.3 Command File Monitoring</h3>
+
+<p>The receiver script (which listens for navigation commands) writes command information to <code>/tmp/flight_cmd.txt</code> in the following format:</p>
+
+<pre><code>plain|GOTO|lat,lon,alt    # Plaintext command detected
+enc|GOTO|lat,lon,alt      # Encrypted command detected
+</code></pre>
+
+<p>The flight script monitors this file to determine whether incoming commands are encrypted or not.</p>
+
+
+<h2 id="toc_5">4.4 Flight Script Implementation</h2>
+
+<h3 id="toc_5_1">4.4.1 Access the Drone and Navigate to Script Directory</h3>
+
+<p>SSH into the drone and navigate to the experiment directory:</p>
+
+<pre><code class="language-bash">ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.5
+cd /root/Profiles/AADMChallenge/PortableNode/
+</code></pre>
+
+<h3 id="toc_5_2">4.4.2 Download or Create the Flight Script</h3>
+
+<p>Obtain the flight script from the GitHub repository:</p>
+
+<pre><code class="language-bash">wget https://raw.githubusercontent.com/BishwasWagle/Mavlink-AERPAW/main/uav_data_mule.py
+</code></pre>
+
+<p>Alternatively, if the repository is not accessible, create the script manually using the complete code provided below.</p>
+
+<h3 id="toc_5_3">4.4.3 Complete Flight Script Code</h3>
+
+<p>Below is the complete <code>uav_data_mule.py</code> script. This script should be placed at <code>/root/Profiles/AADMChallenge/PortableNode/uav_data_mule.py</code> on the drone:</p>
+
+<pre><code class="language-python">#!/usr/bin/env python3
+# sequential_fly_spoof_demo.py
+"""
+Sequential AERPAW Flight + Spoof Demo Triggered by Plaintext vs Encrypted Commands
+
+Behavior you requested:
+- Drone flies sequentially through visit_order.
+- When it reaches BS2 (or the configured spoof_trigger_bs):
+  - If it has seen a PLAINTEXT command (receiver writes "plain|GOTO|..."), it deviates 90m east.
+  - If it has seen an ENCRYPTED command (receiver writes "enc|GOTO|...") OR secure flag exists,
+    it discards spoofing and returns home and lands.
+- If messages are always encrypted, spoofing should not occur.
+
+Mechanism:
+- receiver_cmd.py writes:
+    /tmp/flight_cmd.txt =&gt; "plain|GOTO|lat,lon,alt" or "enc|GOTO|lat,lon,alt"
+    /tmp/secure_ok.flag =&gt; present when an encrypted command was verified+decrypted
+
+Usage:
+python3 sequential_fly_spoof_demo.py --safety_checker_ip &lt;IP&gt; --safety_checker_port &lt;PORT&gt; --dwell 3 --speed 10 --alt 25
+
+Notes:
+- "Home" for landing is vehicle.home_coords (RTL). The GOTO coordinates are used only as a trigger and for logging.
+- Spoof deviation is done as a deliberate wrong waypoint command (safe + reproducible).
+"""
+
+import asyncio
+import datetime
+import csv
+import os
+import math
+from typing import List
+from argparse import ArgumentParser
+
+from aerpawlib.runner import StateMachine, state, background
+from aerpawlib.aerpaw import AERPAW_Platform
+from aerpawlib.vehicle import Vehicle, Drone
+from aerpawlib.util import Coordinate
+from aerpawlib.safetyChecker import SafetyCheckerClient
+
+# === WAYPOINTS (Base Stations) ===
+bs_data_list = [
+    { "id": 0, "name": "start", "coordinates": { "latitude": 35.727367, "longitude": -78.69655491282358 }, "intermediary": None },
+    { "id": 1, "name": "bs1", "coordinates": { "latitude": 35.7275287, "longitude": -78.6962216 }, "intermediary": None },
+    { "id": 2, "name": "bs2", "coordinates": { "latitude": 35.72826, "longitude": -78.70060 }, "intermediary": None },
+    { "id": 3, "name": "bs3", "coordinates": { "latitude": 35.7275287, "longitude": -78.6962216 }, "intermediary": None },
+]
+
+CMD_FILE = "/tmp/flight_cmd.txt"
+
+class SequentialFlyerSpoofDemo(StateMachine):
+    # Flight params
+    uav_altitude = 25.0
+    target_speed = 10.0
+    dwell_seconds = 3.0
+
+    # Visit order: A -&gt; bs1 -&gt; bs2 -&gt; bs3 -&gt; A
+    visit_order = [1, 2, 3]
+
+    # Spoof demo config
+    enable_spoof_demo = True
+    spoof_trigger_bs = 2  # spoof decision at BS2 arrival
+    spoof_offset_east_m = 90  # deviate 90m east
+    override_wait_s = 20.0
+    spoof_hold_wait_s = 30.0  # after spoof, wait up to N sec for encrypted override
+    in_hold = False
+    
+    # internal state
+    start_time = None
+    idx = 0
+
+    secure_ok = False
+    last_cmd = None  # (mode, cmd, lat, lon, alt)
+
+    def initialize_args(self, extra_args: List[str]):
+        directory = "/root/Results"
+        os.makedirs(directory, exist_ok=True)
+
+        default_file = os.path.join(
+            directory,
+            f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_vehicleOut.txt"
+        )
+
+        parser = ArgumentParser()
+        parser.add_argument("--safety_checker_ip", required=True, help="Safety checker IP")
+        parser.add_argument("--safety_checker_port", required=True, help="Safety checker port")
+
+        parser.add_argument("--output", required=False, default=default_file)
+        parser.add_argument("--samplerate", required=False, type=float, default=1.0)
+
+        parser.add_argument("--dwell", required=False, type=float, default=self.dwell_seconds)
+        parser.add_argument("--speed", required=False, type=float, default=self.target_speed)
+        parser.add_argument("--alt", required=False, type=float, default=self.uav_altitude)
+
+        parser.add_argument("--enable_spoof", action="store_true", help="Enable plaintext-triggered spoof demo")
+        parser.add_argument("--disable_spoof", action="store_true", help="Disable spoof demo")
+        parser.add_argument("--spoof_bs", type=int, default=self.spoof_trigger_bs, help="BS id where spoof is triggered")
+        parser.add_argument("--spoof_east_m", type=float, default=self.spoof_offset_east_m, help="Spoof offset east (meters)")
+        parser.add_argument("--override_wait_s", type=float, default=self.override_wait_s, help="Wait for encrypted override (seconds)")
+
+        args = parser.parse_args(args=extra_args)
+
+        self.safety_checker = SafetyCheckerClient(args.safety_checker_ip, args.safety_checker_port)
+        self.dwell_seconds = float(args.dwell)
+        self.target_speed = float(args.speed)
+        self.uav_altitude = float(args.alt)
+
+        self.spoof_trigger_bs = int(args.spoof_bs)
+        self.spoof_offset_east_m = float(args.spoof_east_m)
+        self.override_wait_s = float(args.override_wait_s)
+
+        # spoof toggle
+        if args.disable_spoof:
+            self.enable_spoof_demo = False
+        elif args.enable_spoof:
+            self.enable_spoof_demo = True
+
+        # light logging
+        self._sampling_delay = 1.0 / float(args.samplerate)
+        self._log_file = open(args.output, "w+")
+        self._csv_writer = csv.writer(self._log_file)
+        self._csv_writer.writerow(["ts", "state", "lat", "lon", "alt", "idx", "secure_ok", "last_cmd"])
+        self._log_file.flush()
+
+    def log_row(self, vehicle: Vehicle, state_name: str):
+        pos = vehicle.position
+        ts = datetime.datetime.utcnow().isoformat()
+        self._csv_writer.writerow([
+            ts,
+            state_name,
+            pos.lat if pos else None,
+            pos.lon if pos else None,
+            pos.alt if pos else None,
+            self.idx,
+            int(self.secure_ok),
+            str(self.last_cmd) if self.last_cmd else ""
+        ])
+        self._log_file.flush()
+
+    @background
+    async def sampler(self, vehicle: Vehicle):
+        while True:
+            try:
+                self.log_row(vehicle, "sampler")
+            except Exception:
+                pass
+            await asyncio.sleep(self._sampling_delay)
+
+    @background
+    async def watch_cmd(self):
+        """Watch receiver-published files and update flags."""
+        while True:
+            try:
+                if os.path.exists(CMD_FILE):
+                    line = open(CMD_FILE, "r").read().strip()
+                    # mode|CMD|lat,lon,alt
+                    mode, cmd, coords = line.split("|")
+                    lat_s, lon_s, alt_s = coords.split(",")
+                    self.last_cmd = (mode, cmd, float(lat_s), float(lon_s), float(alt_s))
+            except Exception:
+                pass
+            await asyncio.sleep(0.2)
+
+    def bs_to_coord(self, bs_id: int) -&gt; Coordinate:
+        bs = bs_data_list[bs_id]
+        print(Coordinate(bs["coordinates"]["latitude"], bs["coordinates"]["longitude"], self.uav_altitude), "================")
+        return Coordinate(bs["coordinates"]["latitude"], bs["coordinates"]["longitude"], self.uav_altitude)
+
+    def offset_east(self, base: Coordinate, east_m: float) -&gt; Coordinate:
+        # east =&gt; negative East meters
+        east_m = east_m
+        dlon = east_m / (111111.0 * math.cos(math.radians(base.lat)))
+        return Coordinate(lat=base.lat, lon=base.lon + dlon, alt=base.alt)
+
+    async def go_to(self, vehicle: Drone, next_pos: Coordinate, timeout_s=None) -&gt; bool:
+        """Turn, safety-check, then goto. If timeout_s is None, wait indefinitely."""
+        cur_pos = vehicle.position
+        if cur_pos is None:
+            return False
+
+        # Turn
+        new_heading = cur_pos.bearing(next_pos)
+        try:
+            await asyncio.wait_for(vehicle.set_heading(new_heading), timeout=10.0)
+        except asyncio.TimeoutError:
+            print("[WARN] set_heading timed out")
+
+        # Safety check
+        valid, msg = self.safety_checker.validateWaypointCommand(cur_pos, next_pos)
+        if not valid:
+            print(f"[SAFETY] Waypoint rejected: {msg}")
+            return False
+
+        # Move
+        if timeout_s is None:
+            await vehicle.goto_coordinates(next_pos)
+            return True
+
+        try:
+            await asyncio.wait_for(vehicle.goto_coordinates(next_pos), timeout=timeout_s)
+            return True
+        except asyncio.TimeoutError:
+            print(f"[WARN] goto_coordinates timed out after {timeout_s}s")
+            return False
+
+    @state(name="start", first=True)
+    async def start(self, vehicle: Drone):
+        # --- CLEANUP stale command/secure flags from previous runs ---
+        if os.path.exists(CMD_FILE):
+            os.remove(CMD_FILE)
+        self.last_cmd = None
+        asyncio.ensure_future(self.sampler(vehicle))
+        asyncio.ensure_future(self.watch_cmd())
+
+        await vehicle.takeoff(self.uav_altitude)
+        await vehicle.set_groundspeed(self.target_speed)
+
+        self.start_time = datetime.datetime.now()
+        AERPAW_Platform.log_to_oeo(f"Takeoff to {self.uav_altitude}m; speed={self.target_speed}m/s")
+        return "go_next"
+
+    @state(name="hold_spoofed")
+    async def hold_spoofed(self, vehicle: Drone):
+        AERPAW_Platform.log_to_oeo("Holding at spoofed location. Waiting for ENC to RTL...")
+
+        # Optional: reduce speed so it doesn't try to continue anywhere
+        try:
+            await vehicle.set_groundspeed(0)
+        except Exception:
+            pass
+
+        while True:
+            # If ENC command arrives anytime, return home and land
+            if self.last_cmd and self.last_cmd[0] == "enc":
+                AERPAW_Platform.log_to_oeo("ENC received while holding -&gt; RTL + land")
+                return "return_to_launch_and_land"
+
+            # Keep holding
+            await asyncio.sleep(0.5)
+
+    @state(name="go_next")
+    async def go_next(self, vehicle: Drone):
+        # Finished route -&gt; land
+        if self.idx &gt;= len(self.visit_order):
+            return "return_to_launch_and_land"
+
+        target_bs_id = self.visit_order[self.idx]
+        next_pos = self.bs_to_coord(target_bs_id)
+
+        AERPAW_Platform.log_to_oeo(
+            f"Going to BS{target_bs_id} ({self.idx+1}/{len(self.visit_order)})"
+        )
+
+        moved = await self.go_to(vehicle, next_pos, timeout_s=None)
+        if not moved:
+            return "return_to_launch_and_land"
+
+        if self.dwell_seconds &gt; 0:
+            AERPAW_Platform.log_to_oeo(f"Arrived BS{target_bs_id}; dwell {self.dwell_seconds}s")
+            await asyncio.sleep(self.dwell_seconds)
+
+        # ---- Spoof decision point at BS2 ----
+        if self.enable_spoof_demo and target_bs_id == self.spoof_trigger_bs:
+
+            # If ENC already received any time before -&gt; DO NOT spoof, continue mission
+            if self.last_cmd and self.last_cmd[0] == "enc":
+                AERPAW_Platform.log_to_oeo("ENC already present -&gt; do NOT spoof; continue mission")
+                self.idx += 1
+                return "go_next"
+
+            # If PLAINTEXT observed -&gt; spoof, then wait 30s for ENC
+            if self.last_cmd and self.last_cmd[0] == "plain":
+                AERPAW_Platform.log_to_oeo(
+                    f"PLAINTEXT observed -&gt; SPOOF: deviate {self.spoof_offset_east_m:.0f}m east"
+                )
+
+                cur = vehicle.position
+                base = Coordinate(cur.lat, cur.lon, self.uav_altitude)
+                spoof_pos = self.offset_east(base, self.spoof_offset_east_m)
+
+                moved_spoof = await self.go_to(vehicle, spoof_pos, timeout_s=None)
+                if moved_spoof:
+                    AERPAW_Platform.log_to_oeo("Spoof waypoint reached. Waiting 30s for ENC...")
+                else:
+                    AERPAW_Platform.log_to_oeo("Spoof waypoint blocked by safety; holding anyway.")
+                return "hold_spoofed"
+
+                t0 = datetime.datetime.now()
+                while (datetime.datetime.now() - t0).total_seconds() &lt; self.spoof_hold_wait_s:
+                    if self.last_cmd and self.last_cmd[0] == "enc":
+                        AERPAW_Platform.log_to_oeo("ENC received within 30s -&gt; RTL + land")
+                        return "return_to_launch_and_land"
+                    await asyncio.sleep(0.2)
+
+                # No ENC within 30s -&gt; HOLD indefinitely
+                AERPAW_Platform.log_to_oeo("No ENC within 30s -&gt; holding at spoofed location indefinitely")
+                return "hold_spoofed"
+
+            # If neither plain nor enc exists, just continue mission (no spoof)
+            AERPAW_Platform.log_to_oeo("No command observed at trigger -&gt; continue mission")
+
+        # Normal progression (only reached if not spoof-holding / not RTL)
+        self.idx += 1
+        return "go_next"
+
+    @state(name="return_to_launch_and_land")
+    async def return_to_launch_and_land(self, vehicle: Drone):
+        print("Return to launch and landing.")
+
+        # Go home (vehicle.home_coords) and land
+        home = Coordinate(vehicle.home_coords.lat, vehicle.home_coords.lon, vehicle.position.alt)
+
+        ok = await self.go_to(vehicle, home, timeout_s=120.0)
+        if not ok:
+            print("[WARN] Could not reach home within timeout. Landing in place for safety.")
+        await vehicle.land()
+
+        seconds = (datetime.datetime.now() - self.start_time).total_seconds() if self.start_time else None
+        AERPAW_Platform.log_to_oeo(f"Done. Flight time={seconds:.1f}s" if seconds else "Done.")
+        return None
+</code></pre>
+
+<h3 id="toc_5_4">4.4.4 Understanding Waypoint Configuration</h3>
+
+<p>The flight script defines waypoints using GPS coordinates. Review the <code>bs_data_list</code> section in the code above:</p>
+
+<pre><code class="language-python">bs_data_list = [
+    {"id": 0, "name": "start", "coordinates": {"latitude": 35.727367, "longitude": -78.69655491282358}, "intermediary": None},
+    {"id": 1, "name": "bs1", "coordinates": {"latitude": 35.7275287, "longitude": -78.6962216}, "intermediary": None},
+    {"id": 2, "name": "bs2", "coordinates": {"latitude": 35.72826, "longitude": -78.70060}, "intermediary": None},
+    {"id": 3, "name": "bs3", "coordinates": {"latitude": 35.7275287, "longitude": -78.6962216}, "intermediary": None},
+]
+</code></pre>
+
+<p>These coordinates define the base station locations. The drone will fly to each location in sequence.</p>
+
+<h3 id="toc_5_5">4.4.5 Understanding the Spoof Detection Logic</h3>
+
+<p>Review the spoof detection code in the <code>go_next</code> state (lines 232-307 in the script above):</p>
+
+<p>The key logic at BS2 arrival:</p>
+
+<pre><code class="language-python"># ---- Spoof decision point at BS2 ----
+if self.enable_spoof_demo and target_bs_id == self.spoof_trigger_bs:
+    
+    # If ENC already received -&gt; DO NOT spoof, continue mission
+    if self.last_cmd and self.last_cmd[0] == "enc":
+        AERPAW_Platform.log_to_oeo("ENC already present -&gt; do NOT spoof; continue mission")
+        self.idx += 1
+        return "go_next"
+    
+    # If PLAINTEXT observed -&gt; spoof, then wait for ENC
+    if self.last_cmd and self.last_cmd[0] == "plain":
+        AERPAW_Platform.log_to_oeo(
+            f"PLAINTEXT observed -&gt; SPOOF: deviate {self.spoof_offset_east_m:.0f}m east"
+        )
+        
+        cur = vehicle.position
+        base = Coordinate(cur.lat, cur.lon, self.uav_altitude)
+        spoof_pos = self.offset_east(base, self.spoof_offset_east_m)
+        
+        moved_spoof = await self.go_to(vehicle, spoof_pos, timeout_s=None)
+        if moved_spoof:
+            AERPAW_Platform.log_to_oeo("Spoof waypoint reached. Waiting for ENC...")
+        else:
+            AERPAW_Platform.log_to_oeo("Spoof waypoint blocked by safety; holding anyway.")
+        
+        return "hold_spoofed"
+</code></pre>
+
+<p>This logic implements the core attack and defense behavior:</p>
+
+<ol>
+  <li>At BS2, check if any commands have been received</li>
+  <li>If encrypted command detected → Continue normal mission</li>
+  <li>If plaintext command detected → Deviate 90m east, then wait for encrypted override</li>
+  <li>If encrypted command arrives during hold → Return to launch and land</li>
+</ol>
+
+<h3 id="toc_5_6">4.4.6 Key Flight Parameters</h3>
+
+<p>The script defines several configurable parameters (see lines 51-61 in the code):</p>
+
+<pre><code class="language-python"># Flight params
+uav_altitude = 25.0           # Flight altitude in meters
+target_speed = 10.0           # Airspeed in m/s
+dwell_seconds = 3.0           # Time to hover at each waypoint
+
+# Spoof demo config
+spoof_trigger_bs = 2          # BS2 is the trigger point
+spoof_offset_east_m = 90      # Distance to deviate during spoof
+spoof_hold_wait_s = 30.0      # Time to wait for encrypted override
+</code></pre>
+
+<p>These can be adjusted via command-line arguments when starting the experiment:</p>
+
+<pre><code class="language-bash">--alt 25          # Altitude in meters
+--speed 10        # Speed in m/s
+--dwell 3         # Dwell time at each waypoint
+--spoof_east_m 90 # Spoof deviation distance
+</code></pre>
+
+
+<h2 id="toc_6">4.5 Configuring the Receiver Script</h2>
+
+<p>The receiver script listens for incoming navigation commands and writes their status to the command file.</p>
+
+<h3 id="toc_6_1">4.5.1 Receiver Functionality</h3>
+
+<p>The receiver monitors UDP port 14551 for incoming navigation commands and:</p>
+
+<ol>
+  <li>Attempts to decrypt the command using the AES key</li>
+  <li>Verifies the HMAC authentication</li>
+  <li>Writes the result to <code>/tmp/flight_cmd.txt</code></li>
+</ol>
+
+<h3 id="toc_6_2">4.5.2 Testing the Receiver</h3>
+
+<p>You will test the receiver in Chapter 5 during flight execution.</p>
+
+
+<h2 id="toc_7">4.6 Understanding the Sender Script</h2>
+
+<p>The sender script (executed from the base station) transmits navigation commands to the drone.</p>
+
+<h3 id="toc_7_1">4.6.1 Sender Script Modes</h3>
+
+<p>The sender can operate in plaintext mode (sends unencrypted commands) or encrypted mode (sends AES-256-GCM encrypted and HMAC-authenticated commands).</p>
+
+
+<h2 id="toc_8">4.7 Safety Checker Integration</h2>
+
+<p>The flight script integrates with AERPAW's safety checker to prevent unsafe maneuvers. Before executing any waypoint command, the script validates that the drone stays within authorized flight boundaries and altitude limits.</p>
+
+
+<h2 id="toc_9">4.8 Telemetry and Logging</h2>
+
+<p>The flight script logs telemetry data throughout the mission in CSV format, including timestamp, flight state, position, waypoint index, and command status.</p>
+
+<h3 id="toc_9_1">4.8.1 Log File Location</h3>
+
+<p>Logs are saved to: <code>/root/Results/YYYY-MM-DD_HH-MM-SS_vehicleOut.txt</code></p>
+
+
+<h2 id="toc_10">4.9 Deployment Checklist</h2>
+
+<p>Before proceeding to Chapter 5, verify the following:</p>
+
+<h3 id="toc_10_1">4.9.1 File Checklist</h3>
+
+<p>On the drone (<code>192.168.144.5</code>):</p>
+
+<ul>
+  <li>[ ] Flight script exists in the correct directory</li>
+  <li>[ ] Receiver script is present</li>
+  <li>[ ] Cryptographic keys are in place</li>
+</ul>
+
+<p>On the base station (<code>192.168.144.1</code>):</p>
+
+<ul>
+  <li>[ ] Sender script is present</li>
+  <li>[ ] Cryptographic keys are in place</li>
+</ul>
+
+<h3 id="toc_10_2">4.9.2 Configuration Checklist</h3>
+
+<ul>
+  <li>[ ] Waypoint coordinates are correct</li>
+  <li>[ ] Flight parameters are within limits</li>
+  <li>[ ] QGroundControl is connected</li>
+  <li>[ ] GPS has adequate satellite lock</li>
+</ul>
+
+
+<h2 id="toc_11">4.10 As a Result</h2>
+
+<p>As a result of completing this chapter, you have successfully implemented and configured the flight mission script with integrated spoof detection logic. You understand how the drone monitors incoming navigation commands, how it distinguishes between plaintext and encrypted commands, and how it responds to potential spoofing attacks. Your system is now ready for the final phase: executing the complete experiment in Chapter 5.</p>
+
+<script type="text/javascript">
+var _self="undefined"!=typeof window?window:"undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?self:{},Prism=function(){var e=/\blang(?:uage)?-(\w+)\b/i,t=0,n=_self.Prism={util:{encode:function(e){return e instanceof a?new a(e.type,n.util.encode(e.content),e.alias):"Array"===n.util.type(e)?e.map(n.util.encode):e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\u00a0/g," ")},type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},objId:function(e){return e.__id||Object.defineProperty(e,"__id",{value:++t}),e.__id},clone:function(e){var t=n.util.type(e);switch(t){case"Object":var a={};for(var r in e)e.hasOwnProperty(r)&&(a[r]=n.util.clone(e[r]));return a;case"Array":return e.map&&e.map(function(e){return n.util.clone(e)})}return e}},languages:{extend:function(e,t){var a=n.util.clone(n.languages[e]);for(var r in t)a[r]=t[r];return a},insertBefore:function(e,t,a,r){r=r||n.languages;var l=r[e];if(2==arguments.length){a=arguments[1];for(var i in a)a.hasOwnProperty(i)&&(l[i]=a[i]);return l}var o={};for(var s in l)if(l.hasOwnProperty(s)){if(s==t)for(var i in a)a.hasOwnProperty(i)&&(o[i]=a[i]);o[s]=l[s]}return n.languages.DFS(n.languages,function(t,n){n===r[e]&&t!=e&&(this[t]=o)}),r[e]=o},DFS:function(e,t,a,r){r=r||{};for(var l in e)e.hasOwnProperty(l)&&(t.call(e,l,e[l],a||l),"Object"!==n.util.type(e[l])||r[n.util.objId(e[l])]?"Array"!==n.util.type(e[l])||r[n.util.objId(e[l])]||(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,l,r)):(r[n.util.objId(e[l])]=!0,n.languages.DFS(e[l],t,null,r)))}},plugins:{},highlightAll:function(e,t){var a={callback:t,selector:'code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code'};n.hooks.run("before-highlightall",a);for(var r,l=a.elements||document.querySelectorAll(a.selector),i=0;r=l[i++];)n.highlightElement(r,e===!0,a.callback)},highlightElement:function(t,a,r){for(var l,i,o=t;o&&!e.test(o.className);)o=o.parentNode;o&&(l=(o.className.match(e)||[,""])[1],i=n.languages[l]),t.className=t.className.replace(e,"").replace(/\s+/g," ")+" language-"+l,o=t.parentNode,/pre/i.test(o.nodeName)&&(o.className=o.className.replace(e,"").replace(/\s+/g," ")+" language-"+l);var s=t.textContent,u={element:t,language:l,grammar:i,code:s};if(!s||!i)return n.hooks.run("complete",u),void 0;if(n.hooks.run("before-highlight",u),a&&_self.Worker){var c=new Worker(n.filename);c.onmessage=function(e){u.highlightedCode=e.data,n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(u.element),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},c.postMessage(JSON.stringify({language:u.language,code:u.code,immediateClose:!0}))}else u.highlightedCode=n.highlight(u.code,u.grammar,u.language),n.hooks.run("before-insert",u),u.element.innerHTML=u.highlightedCode,r&&r.call(t),n.hooks.run("after-highlight",u),n.hooks.run("complete",u)},highlight:function(e,t,r){var l=n.tokenize(e,t);return a.stringify(n.util.encode(l),r)},tokenize:function(e,t){var a=n.Token,r=[e],l=t.rest;if(l){for(var i in l)t[i]=l[i];delete t.rest}e:for(var i in t)if(t.hasOwnProperty(i)&&t[i]){var o=t[i];o="Array"===n.util.type(o)?o:[o];for(var s=0;s<o.length;++s){var u=o[s],c=u.inside,g=!!u.lookbehind,h=!!u.greedy,f=0,d=u.alias;u=u.pattern||u;for(var p=0;p<r.length;p++){var m=r[p];if(r.length>e.length)break e;if(!(m instanceof a)){u.lastIndex=0;var y=u.exec(m),v=1;if(!y&&h&&p!=r.length-1){var b=r[p+1].matchedStr||r[p+1],k=m+b;if(p<r.length-2&&(k+=r[p+2].matchedStr||r[p+2]),u.lastIndex=0,y=u.exec(k),!y)continue;var w=y.index+(g?y[1].length:0);if(w>=m.length)continue;var _=y.index+y[0].length,P=m.length+b.length;if(v=3,P>=_){if(r[p+1].greedy)continue;v=2,k=k.slice(0,P)}m=k}if(y){g&&(f=y[1].length);var w=y.index+f,y=y[0].slice(f),_=w+y.length,S=m.slice(0,w),O=m.slice(_),j=[p,v];S&&j.push(S);var A=new a(i,c?n.tokenize(y,c):y,d,y,h);j.push(A),O&&j.push(O),Array.prototype.splice.apply(r,j)}}}}}return r},hooks:{all:{},add:function(e,t){var a=n.hooks.all;a[e]=a[e]||[],a[e].push(t)},run:function(e,t){var a=n.hooks.all[e];if(a&&a.length)for(var r,l=0;r=a[l++];)r(t)}}},a=n.Token=function(e,t,n,a,r){this.type=e,this.content=t,this.alias=n,this.matchedStr=a||null,this.greedy=!!r};if(a.stringify=function(e,t,r){if("string"==typeof e)return e;if("Array"===n.util.type(e))return e.map(function(n){return a.stringify(n,t,e)}).join("");var l={type:e.type,content:a.stringify(e.content,t,r),tag:"span",classes:["token",e.type],attributes:{},language:t,parent:r};if("comment"==l.type&&(l.attributes.spellcheck="true"),e.alias){var i="Array"===n.util.type(e.alias)?e.alias:[e.alias];Array.prototype.push.apply(l.classes,i)}n.hooks.run("wrap",l);var o="";for(var s in l.attributes)o+=(o?" ":"")+s+'="'+(l.attributes[s]||"")+'"';return"<"+l.tag+' class="'+l.classes.join(" ")+'" '+o+">"+l.content+"</"+l.tag+">"},!_self.document)return _self.addEventListener?(_self.addEventListener("message",function(e){var t=JSON.parse(e.data),a=t.language,r=t.code,l=t.immediateClose;_self.postMessage(n.highlight(r,n.languages[a],a)),l&&_self.close()},!1),_self.Prism):_self.Prism;var r=document.currentScript||[].slice.call(document.getElementsByTagName("script")).pop();return r&&(n.filename=r.src,document.addEventListener&&!r.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",n.highlightAll)),_self.Prism}();"undefined"!=typeof module&&module.exports&&(module.exports=Prism),"undefined"!=typeof global&&(global.Prism=Prism);
+</script>
+
+</body>
+</html>

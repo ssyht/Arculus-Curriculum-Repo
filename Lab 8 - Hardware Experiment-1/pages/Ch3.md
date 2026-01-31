@@ -237,6 +237,8 @@ The script will:
 6. Run FIPS self-tests
 7. Configure environment variables
 
+<p align="center"> <img src="../img/Ch3-1.png" width="900px"> </p>
+
 ### 3.4.3 Verify Installation
 
 After installation completes, verify that FIPS-validated OpenSSL is properly installed:
@@ -247,6 +249,8 @@ which openssl
 openssl version -a
 openssl list -providers
 ```
+
+<p align="center"> <img src="../img/Ch3-2.png" width="900px"> </p>
 
 Expected output should show:
 
@@ -298,6 +302,8 @@ ls -l mavlink_aes256.key mavlink_hmac.key
 wc -c mavlink_aes256.key mavlink_hmac.key
 ```
 
+<p align="center"> <img src="../img/Ch3-3.png" width="900px"> </p>
+
 Each key should be exactly 32 bytes in size.
 
 ### 3.5.4 Set Appropriate Permissions
@@ -334,6 +340,8 @@ SSH into the base station and verify the keys are present:
 ssh -i ~/.ssh/aerpaw_id_rsa root@192.168.144.1
 ls -l mavlink_aes256.key mavlink_hmac.key
 ```
+
+<p align="center"> <img src="../img/Ch3-4.png" width="900px"> </p>
 
 Both keys should be present with 32-byte sizes.
 

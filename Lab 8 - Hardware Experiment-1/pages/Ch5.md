@@ -33,6 +33,8 @@ List active screen sessions:
 screen -ls
 ```
 
+<p align="center"> <img src="../img/Ch5-c1.png" width="900px"> </p>
+
 You should see the mavproxy session already running. This session manages communication with the drone's autopilot.
 
 ### 5.3.3 Start the Experiment
@@ -49,21 +51,44 @@ Then execute:
 all start_experiment
 ```
 
+<p align="center"> <img src="../img/Ch5-1.png" width="900px"> </p>
+
 This command starts the experiment scripts on all allocated nodes. You should see confirmation that the vehicle script has been activated on the drone.
 
 ## 5.4 Pre-Flight Procedures
 
 ### 5.4.1 Check Drone Status in QGroundControl
 
-Verify connection status, GPS lock, battery voltage, and home position.
+In QGroundControl, verify:
+
+* Connection status shows "Ready to Fly"
+* GPS has adequate satellite lock (10+ satellites)
+* Battery voltage is sufficient
+* Home position is set correctly
+
+<p align="center"> <img src="../img/Ch5-2.png" width="900px"> </p>
 
 ### 5.4.2 Set Flight Mode to GUIDED
 
-Set the drone to GUIDED mode from the OEO Console.
+From the OEO Console, set the drone to GUIDED mode:
+
+```bash
+5 set_mode GUIDED
+```
+
+<p align="center"> <img src="../img/Ch5-3.png" width="900px"> </p>
 
 ### 5.4.3 Arm the Drone
 
-Arm the drone's motors and verify armed status.
+Arm the drone's motors:
+
+```bash
+5 arm
+```
+
+<p align="center"> <img src="../img/Ch5-arm.png" width="900px"> </p>
+
+Verify in QGroundControl that the drone shows "Armed" status.
 
 ## 5.5 Scenario 1: Plaintext Command Vulnerability (Attack Succeeds)
 
@@ -83,11 +108,20 @@ env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 receiver_v2.py
   --hmac-key ./mavlink_hmac.key
 ```
 
+<p align="center"> <img src="../img/Ch5-4.png" width="900px"> </p>
+
 The receiver will begin listening for navigation commands on UDP port 14551.
 
 ### 5.5.2 Observe Initial Flight
 
-Watch the drone take off, fly to BS1, dwell, and proceed toward BS2.
+Watch the drone in QGroundControl as it:
+
+1. Takes off to 25 meters altitude
+2. Flies to BS1 (first waypoint)
+3. Dwells for the configured time
+4. Proceeds toward BS2
+
+<p align="center"> <img src="../img/Ch5-arm.png" width="900px"> </p>
 
 ### 5.5.3 Send Plaintext Command from Base Station
 
@@ -104,6 +138,8 @@ env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 sender_v2.py \
   --alt 25
 ```
 
+<p align="center"> <img src="../img/Ch5-5.png" width="900px"> </p>
+
 ### 5.5.4 Observe Spoofing Behavior
 
 Monitor QGroundControl to observe:
@@ -111,6 +147,8 @@ Monitor QGroundControl to observe:
 1. The receiver detects the plaintext command
 2. The drone deviates 90 meters east from the intended path
 3. The drone enters a holding pattern at the spoofed location
+
+<p align="center"> <img src="../img/Ch5-6.png" width="900px"> </p>
 
 This demonstrates a successful path spoofing attack due to lack of encryption.
 
@@ -127,6 +165,8 @@ env -u OPENSSL_CONF -u OPENSSL_MODULES -u OPENSSL_ENGINES python3 sender_v2.py \
   --alt 25
 ```
 
+<p align="center"> <img src="../img/Ch5-7.png" width="900px"> </p>
+
 The drone should:
 
 1. Detect the encrypted command within the 30-second window
@@ -142,6 +182,8 @@ cd /root/Results
 ls -lt *.txt | head -1
 cat <most_recent_log_file>
 ```
+
+<p align="center"> <img src="../img/Ch5-8.png" width="900px"> </p>
 
 The logs will show:
 
@@ -214,7 +256,11 @@ Monitor QGroundControl to observe:
 3. The drone immediately returns to launch position
 4. The drone lands safely
 
+<p align="center"> <img src="../img/Ch5-9.png" width="900px"> </p>
+
 This demonstrates successful prevention of the path spoofing attack through encryption.
+
+<p align="center"> <img src="../img/Ex1_Ch5_receiver_enc.png" width="900px"> </p>
 
 ### 5.6.6 Review Defense Logs
 
@@ -225,6 +271,8 @@ cd /root/Results
 cat <most_recent_log_file>
 ```
 
+<p align="center"> <img src="../img/Ch5-def.png" width="900px"> </p>
+
 The logs will show:
 
 * Timestamp of encrypted command detection
@@ -233,6 +281,18 @@ The logs will show:
 * Successful landing
 
 ## 5.7 Analysis and Observations
+
+<p align="center"> <img src="../img/Ch5-log1.png" width="900px"> </p>
+
+* During this whole process, at the drone’s end we see plaintext and encrypted messages
+being parsed
+
+<p align="center"> <img src="../img/Ch5-log2.png" width="900px"> </p>
+
+* And also we can see telemetry logs as
+
+<p align="center"> <img src="../img/Ch5-log3.png" width="900px"> </p>
+
 
 ### 5.7.1 Comparing Attack and Defense Scenarios
 
