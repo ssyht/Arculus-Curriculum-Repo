@@ -1,31 +1,49 @@
-# Chapter 3 Fuse Programming and Secure Boot Validation
+# Chapter 3: Physical Setup and Flashing Process
 
-## 3.1 Preparing Fuse Configuration
+## 1. Put Jetson Into Force Recovery Mode
 
-### 3.1.1 Once signed flashing has been validated, generate fuse configuration data without burning the fuses. Carefully inspect the configuration to ensure that the correct PKC hash, optional SBK, and secure boot flags are present.
+1. Power off the Jetson
+2. Enter **Force Recovery Mode** (board-specific button/jumper sequence)
+3. Connect the Jetson to the host system using a USB cable capable of recovery mode (USB-A to USB-C is recommended, especially when using virtual machines).
 
-* This step provides a final validation opportunity before irreversible changes are made.
+Verify on host:
+```bash
+lsusb
+```
+or
+```bash
+lsusb | grep NVIDIA
+```
+or
+```bash
+lsusb | grep -i nvidia || true
+```
 
-## 3.2 Burning Secure Boot Fuses
+You should see an NVIDIA device in recovery mode.
 
-### 3.2.1 After confirming fuse configuration, burn the secure boot fuses on the device.
+Example: **0955:7xxx NVIDIA Corp. APX**
 
-* This permanently programs the hardware with the cryptographic trust anchors required for secure boot. After this step, the device will permanently reject unsigned firmware and operating system images.
+**If you don't, flashing will not work (USB passthrough/filter needs fixing).**
 
-* This operation is irreversible and must be performed with caution.
+![img_11.png](img_11.png)
 
-## 3.3 Flashing Signed Images on a Fused Device
+---
+## 2. Run Flash Command
 
-* Repeat the signed flashing process used earlier.
+Once the Jetson Orin Nano is confirmed to be in recovery mode and detected by the host, navigate to the BSP directory and initiate flashing.
 
-* With fuses burned, the BootROM enforces cryptographic verification of all boot components. Only images signed with the fused keys will be accepted.
+This flash is performed on an unfused board and is intended to validate OP-TEE and fTPM functionality before any fuse-burning steps.
+```bash
+cd ~/Linux_for_Tegra
 
-## 3.4 Post-Fuse Validation
+sudo ./flash.sh jetson-orin-nano-devkit mmcblk0p1
 
-* Verify secure boot behavior by confirming that the device boots independently, unsigned images fail to boot, and signed reflashes succeed.
+```
 
-* If UEFI Secure Boot is enabled, verify that only approved kernels and bootloaders are allowed to run.
+Once the Flashing process ends successfully, you will recieve this message:
+```bash
+*** The target generic has been flashed successfully. ***
+Reset the board to boot from internal eMMC.
+```
 
-## 3.5 As a Result
-
-As a result of completing this module, you configured a Jetson Orin Nano system with a hardware-enforced secure boot chain. The device now boots only cryptographically signed firmware and operating system images, rejects unauthorized software, and enforces a root of trust from the BootROM upward. This provides a secure foundation for deploying Jetson-based systems in security-sensitive environments.
+![img_10.png](img_10.png)
