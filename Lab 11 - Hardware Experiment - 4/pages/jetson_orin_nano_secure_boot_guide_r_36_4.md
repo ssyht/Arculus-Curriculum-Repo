@@ -158,7 +158,7 @@ ls -lah tegra/optee-src/nv-optee | head
 find . -maxdepth 4 -iname "*optee*" | head -n 50
 ```
 Example Output:
-![img_3.png](img_3.png)
+![img_3.png](../img/img_3.png)
 
 ---
 
@@ -206,7 +206,7 @@ ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/
 # Check for tee.elf
 ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.elf
 ```
-![img_4.png](img_4.png)![img_5.png](img_5.png)
+![img_4.png](../img/img_4.png)![img_5.png](../img/img_5.png)
 
 ---
 
@@ -225,7 +225,7 @@ cp -av source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.bin bootloader/
 # verify
 ls -lah bootloader/tee.bin
 ```
-![img_7.png](img_7.png)
+![img_7.png](../img/img_7.png)
 
 ---
 
@@ -277,7 +277,7 @@ strings ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t
   grep -iE "tpm|ftpm" | head -n 50
 ```
 Example Output:
-![img_1.png](img_1.png)
+![img_1.png](../img/img_1.png)
 
 Run this grep as well to further confirm the fTPM files exist:
 
@@ -300,7 +300,7 @@ done
 ```
 
 Example Output:
-![img_2.png](img_2.png)
+![img_2.png](../img/img_2.png)
 
 Example Output:
 **MATCH: bc50d971-d4c9-42c4-82cb-343fb7f37896.ta**
@@ -317,7 +317,7 @@ ls -lah ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t
 ```bash
 sudo find ~/nvidia/Linux_for_Tegra/rootfs -type d -iname "optee_armtz" -print
 ```
-![img_8.png](img_8.png)
+![img_8.png](../img/img_8.png)
 
 ---
 
@@ -341,7 +341,7 @@ Copy the nvftpm-helper-app into the target root filesystem. This userspace helpe
 sudo cp -av ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234/usr/sbin/nvftpm-helper-app ~/Linux_for_Tegra/rootfs/usr/sbin/
 ```
 
-![img_9.png](img_9.png)
+![img_9.png](../img/img_9.png)
 ---
 
 # B. Physical Setup and Flashing Process
@@ -368,7 +368,7 @@ Example: **0955:7xxx NVIDIA Corp. APX**
 
 **If you don’t, flashing will not work (USB passthrough/filter needs fixing).**
 
-![img_11.png](img_11.png)
+![img_11.png](../img/img_11.png)
 
 ---
 ## B-2. Run Flash Command
@@ -389,7 +389,7 @@ Once the Flashing process ends successfully, you will recieve this message:
 Reset the board to boot from internal eMMC.
 ```
 
-![img_10.png](img_10.png)
+![img_10.png](../img/img_10.png)
 ---
 
 ## Common Failure Points

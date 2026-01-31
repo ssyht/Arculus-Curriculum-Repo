@@ -108,7 +108,7 @@ ls -lah tegra/optee-src/nv-optee | head
 find . -maxdepth 4 -iname "*optee*" | head -n 50
 ```
 Example Output:
-![img_3.png](img_3.png)
+![img_3.png](../img/img_3.png)
 
 
 ## 5. Build OP-TEE with fTPM enabled
@@ -156,7 +156,7 @@ ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/
 ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.elf
 ```
 Example Output:
-![img_4.png](img_4.png)![img_5.png](img_5.png)
+![img_4.png](../img/img_4.png)![img_5.png](../img/img_5.png)
 
 
 ## 6. Copy the built OP-TEE core (tee.bin) into the BSP Bootloader folder
@@ -175,7 +175,7 @@ cp -av source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.bin bootloader/
 ls -lah bootloader/tee.bin
 ```
 Example Output:
-![img_7.png](img_7.png)
+![img_7.png](../img/img_7.png)
 
 
 ## 7. fTPM System and File Check
@@ -226,7 +226,7 @@ strings ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t
   grep -iE "tpm|ftpm" | head -n 50
 ```
 Example Output:
-![img_1.png](img_1.png)
+![img_1.png](../img/img_1.png)
 
 Run this grep as well to further confirm the fTPM files exist:
 
@@ -249,7 +249,7 @@ done
 ```
 
 Example Output:
-![img_2.png](img_2.png)
+![img_2.png](../img/img_2.png)
 <p align="center">Figure 2.5: Confirmed Displayed Output from Script Execution to find TA file.</p>
 
 Example Output:
@@ -268,7 +268,7 @@ ls -lah ~/nvidia/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t
 sudo find ~/nvidia/Linux_for_Tegra/rootfs -type d -iname "optee_armtz" -print
 ```
 Example Output:
-![img_8.png](img_8.png)
+![img_8.png](../img/img_8.png)
 
 
 ## 10. Copy the TrustZone Application (TA) and Helper App to Optee_armtz
@@ -291,4 +291,4 @@ Copy the nvftpm-helper-app into the target root filesystem. This userspace helpe
 sudo cp -av ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234/usr/sbin/nvftpm-helper-app ~/Linux_for_Tegra/rootfs/usr/sbin/
 ```
 Example Output:
-![img_9.png](img_9.png)
+![img_9.png](../img/img_9.png)

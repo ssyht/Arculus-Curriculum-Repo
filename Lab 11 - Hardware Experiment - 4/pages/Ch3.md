@@ -6,8 +6,8 @@ Main Steps to Enter Force Recovery Mode:
 1. Power Off: Ensure the Jetson Orin Nano is completely disconnected from power.
 2. Bridge Pins: Locate the J14 header (button header) on the carrier board. Place a 2.54mm jumper cap across pin 9 (FC_REC) and pin 10 (GND).
 
-![img_12.png](img_12.png)
-![img_13.png](img_13.png)
+![img_12.png](../img/img_12.png)
+![img_13.png](../img/img_13.png)
 <p align="center">Jetson Orin Nano Carrier Board Placement - Top View (Red Line indicated PINS 9 and 10)</p>
 
 3. Connect Power: Connect the power supply to the developer kit.
@@ -34,7 +34,7 @@ Example: **0955:7523 NVIDIA Corp. APX**
 
 **If you don't, flashing will not work (USB passthrough/filter needs fixing).**
 
-![img_11.png](img_11.png)
+![img_11.png](../img/img_11.png)
 
 
 ## 2. Run Flash Command
@@ -54,4 +54,4 @@ Once the Flashing process ends successfully, you will recieve this message:
 Reset the board to boot from internal eMMC.
 ```
 
-![img_10.png](img_10.png)
+![img_10.png](../img/img_10.png)
