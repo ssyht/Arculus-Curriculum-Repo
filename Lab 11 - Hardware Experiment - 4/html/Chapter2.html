@@ -509,7 +509,6 @@ sudo apt install -y \
 <pre><code class="language-bash">sudo apt-get install libxml2-utils
 </code></pre>
 
-<hr>
 
 <h2 id="toc_2">2.2. Download Jetson Linux r36.4.3 (BSP + RootFS)</h2>
 
@@ -526,7 +525,6 @@ wget https://developer.nvidia.com/downloads/embedded/l4t/r36_release_v4.3/releas
 <p>You must be logged into your NVIDIA Developer account and have accepted the Jetson Linux license agreement, otherwise these downloads will fail or redirect to an authentication page.</p>
 </blockquote>
 
-<hr>
 
 <h2 id="toc_3">2.3. Extract BSP and Populate RootFS</h2>
 
@@ -539,7 +537,6 @@ sudo ./apply_binaries.sh
 
 <p>At this stage, the Jetson Linux BSP and Ubuntu root filesystem are fully assembled and ready for source synchronization and OP-TEE integration.</p>
 
-<hr>
 
 <h2 id="toc_4">2.4. Sync Sources to Receive Proper OPTEE-Build Files</h2>
 
@@ -583,7 +580,6 @@ find . -maxdepth 4 -iname &quot;*optee*&quot; | head -n 50
 <p>Example Output:
 <img src="../pages/img_3.png" alt="img_3.png"></p>
 
-<hr>
 
 <h2 id="toc_5">2.5. Build OP-TEE with fTPM enabled</h2>
 
@@ -633,7 +629,6 @@ ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/
 
 <p><img src="../pages/img_4.png" alt="img_4.png"><img src="../pages/img_5.png" alt="img_5.png"></p>
 
-<hr>
 
 <h2 id="toc_6">2.6. Copy the built OP-TEE core (tee.bin) into the BSP Bootloader folder</h2>
 
@@ -653,7 +648,6 @@ ls -lah bootloader/tee.bin
 
 <p><img src="../pages/img_7.png" alt="img_7.png"></p>
 
-<hr>
 
 <h2 id="toc_7">2.7. fTPM System and File Check</h2>
 
@@ -675,7 +669,6 @@ ls -lah bootloader/tee.bin
 
 <p>See if any tpm or ftpm related files are displayed after this command is used.</p>
 
-<hr>
 
 <h2 id="toc_8">2.8. Copy the second part of the built OP-TEE core (tee.elf) into the BSP Bootloader folder</h2>
 
@@ -691,7 +684,6 @@ ls -lah ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/
 <pre><code class="language-bash">cp -av ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/build/t234/core/tee.elf bootloader/tee.elf
 </code></pre>
 
-<hr>
 
 <h2 id="toc_9">2.9. Find the TrustZone Application (TA)</h2>
 
@@ -746,7 +738,6 @@ done
 
 <p><img src="../pages/img_8.png" alt="img_8.png"></p>
 
-<hr>
 
 <h2 id="toc_10">2.10. Copy the TrustZone Application (TA) and Helper App to Optee_armtz</h2>
 
