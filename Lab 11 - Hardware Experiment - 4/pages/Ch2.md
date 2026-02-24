@@ -199,7 +199,7 @@ find ~/Linux_for_Tegra/source/tegra/optee-src/nv-optee/optee/install/t234 \
 See if any tpm or ftpm related files are displayed after this command is used.
 
 
-## A-8. Copy the second part of the built OP-TEE core (tee.elf) into the BSP Bootloader folder
+## 8. Copy the second part of the built OP-TEE core (tee.elf) into the BSP Bootloader folder
 
 Confirm that the tee.elf and tee.bin exist:
 ```bash
