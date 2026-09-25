@@ -8,7 +8,7 @@
 ### Subheading 2
 
 Normal text
-**Normal Text**
+*Normal Text*
 
 
 
