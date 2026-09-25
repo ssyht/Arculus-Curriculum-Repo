@@ -7,6 +7,9 @@
 ## Subheading 1
 ### Subheading 2
 
+Normal text
+**Normal Text**
+
 
 
 
