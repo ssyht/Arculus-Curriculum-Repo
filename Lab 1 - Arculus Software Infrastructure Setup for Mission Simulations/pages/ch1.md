@@ -2,7 +2,13 @@
 
 # **Chapter 1** - Overview & Getting Started with Terraform 
 
-## Test line for showing
+# Title
+
+## Subheading 1
+### Subheading 2
+
+
+
 
 ## 1.1 Purpose of the Lab
 In this lab, you will learn how to use Terraform as the Infrastructure-as-Code (IaC) backbone for the Arculus edge-security testbed. You’ll learn how to describe cloud resources declaratively (VPCs, subnets, security groups, EC2 instances, IAM, SSM, KMS, and Secrets Manager), apply guardrails (least-privilege IAM, permission boundaries, encrypted storage, SSM-only access), and package repeatable environments as modules for students and instructors.
